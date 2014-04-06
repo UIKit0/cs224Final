@@ -1,5 +1,5 @@
-CS 224 Final Project Proposal
-Interactive Non-Photorealistic Rendering
+#### CS224 - Final Project
+### Interactive Non-Photorealistic Rendering
 
 Members:
 - Michael Murphy (mjm9)

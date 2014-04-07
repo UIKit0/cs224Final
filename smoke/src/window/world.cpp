@@ -5,6 +5,7 @@ World::World()
     dInitODE();
     m_world_id = dWorldCreate();
     dWorldSetGravity(m_world_id, 0, 0, 0);
+    dWorldSetLinearDamping(m_world_id, 0.5f);
     for (int i = 0; i < 10; i++){
         addBody();
     }
@@ -23,7 +24,7 @@ void World::addBody(){
                      dRandReal()*10 - 10);
     dBodySetLinearVel(body, dRandReal()*2 - 1, dRandReal(), dRandReal()*2 - 1);
     dMass mass;
-    dMassSetSphere(&mass, 10, 0.5);
+    dMassSetSphere(&mass, 10, 0.5f);
     dBodySetMass(body, &mass);
     bodies.append(Particle(body, dRandReal()*2, dRandReal()*2));
 }
@@ -37,21 +38,22 @@ void World::draw()
 {
     glColor3f(1,0,0);
     glBegin(GL_TRIANGLES);
+    GLUquadricObj* quad = gluNewQuadric();
+
     for (int i = 0; i < bodies.size(); i++){
         const dReal* pos = dBodyGetPosition(bodies[i].body);
-        glVertex3d(pos[0], pos[1], pos[2]);
-        glVertex3d(pos[0] + bodies[i].size1, pos[1], pos[2]);
-        glVertex3d(pos[0] + bodies[i].size1, pos[1], pos[2] + bodies[i].size2);
-        glVertex3d(pos[0], pos[1], pos[2]);
-        glVertex3d(pos[0] + bodies[i].size1, pos[1], pos[2] + bodies[i].size2);
-        glVertex3d(pos[0] + bodies[i].size1, pos[1], pos[2]);
+        glPushMatrix();
+        glTranslatef(pos[0], pos[1], pos[2]);
+        gluSphere(quad, bodies[i].size1, 32, 32);
+        glPopMatrix();
     }
     glEnd();
 }
 
 void World::tick(float seconds){
+    // Upwards force
     for (int i = 0; i < bodies.size(); i++){
-        dBodyAddForce(bodies[i].body, dRandReal()*2 - 1, dRandReal()*0.1, dRandReal()*2 - 1);
+        dBodyAddForce(bodies[i].body, dRandReal()*2 - 1, dRandReal()*0.1f, dRandReal()*2 - 1);
     }
     dWorldStep(m_world_id, 0.1f);
     for (int i = 0; i < 8; i++){

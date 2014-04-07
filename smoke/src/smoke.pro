@@ -17,7 +17,9 @@ CONFIG(release, debug|release) {
 # ODE library
 ODE = /contrib/projects/ODE/0.13
 LIBS += -L$${ODE}/lib \
-        -lode
+        -lode \
+        -lm \
+        -lpthread \
 
 INCLUDEPATH += $${ODE}/include
 

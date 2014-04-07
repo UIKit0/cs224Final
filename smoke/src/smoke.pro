@@ -6,7 +6,7 @@ TARGET = smoke
 
 QT += core gui opengl
 
-LIBS += -lGLU;
+LIBS += -lGLU
 
 TEMPLATE = app
 

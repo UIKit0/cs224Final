@@ -5,7 +5,7 @@ World::World()
     dInitODE();
     m_world_id = dWorldCreate();
     dWorldSetGravity(m_world_id, 0, 0, 0);
-    dWorldSetLinearDamping(m_world_id, 0.5f);
+    dWorldSetLinearDamping(m_world_id, 0.05f);
     for (int i = 0; i < 10; i++){
         addBody();
     }
@@ -53,10 +53,10 @@ void World::draw()
 void World::tick(float seconds){
     // Upwards force
     for (int i = 0; i < bodies.size(); i++){
-        dBodyAddForce(bodies[i].body, dRandReal()*2 - 1, dRandReal()*0.1f, dRandReal()*2 - 1);
+        dBodyAddForce(bodies[i].body, dRandReal()*2 - 1, dRandReal()*3, dRandReal()*2 - 1);
     }
     dWorldStep(m_world_id, 0.1f);
-    for (int i = 0; i < 8; i++){
+    for (int i = 0; i < 1; i++){
         addBody();
     }
 

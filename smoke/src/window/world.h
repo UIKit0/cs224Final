@@ -12,7 +12,7 @@
 #include <QList>
 
 #include <ode/ode.h>
-
+#include <GL/glu.h>
 
 #include <iostream>
 

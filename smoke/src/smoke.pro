@@ -21,6 +21,9 @@ isEmpty(ODE) {
     ODE = /contrib/projects/ODE/0.13
 }
 
+# GLU library
+LIBS += -lGLU
+
 # ODE library
 LIBS += -L$${ODE}/lib \
         -lode \

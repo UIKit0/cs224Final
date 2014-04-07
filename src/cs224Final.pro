@@ -30,15 +30,13 @@ SOURCES += \
     window/camera.cpp \
     window/openglwindow.cpp \
     window/window.cpp \
-    window/world.cpp \
-    window/smokeworld.cpp
+    window/world.cpp
 
 HEADERS += \
     window/camera.h \
     window/openglwindow.h \
     window/window.h \
-    window/world.h \
-    window/smokeworld.h
+    window/world.h
 
 RESOURCES += \
     $${RES}/resources.qrc

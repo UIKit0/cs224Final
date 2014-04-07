@@ -6,8 +6,6 @@ TARGET = smoke
 
 QT += core gui opengl
 
-LIBS += -lGLU
-
 TEMPLATE = app
 
 CONFIG(release, debug|release) {

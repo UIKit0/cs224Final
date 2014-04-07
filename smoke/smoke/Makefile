@@ -12,7 +12,7 @@ MAKEFILE      = Makefile
 
 CC            = gcc
 CXX           = g++
-DEFINES       = -DdDOUBLE -DGLM_FORCE_RADIANS -DQT_QML_DEBUG -DQT_DECLARATIVE_DEBUG -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
+DEFINES       = -DGLM_FORCE_RADIANS -DQT_QML_DEBUG -DQT_DECLARATIVE_DEBUG -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -g -Wall -W -D_REENTRANT -fPIE $(DEFINES)
 CXXFLAGS      = -pipe -std=c++11 -g -W -Waddress -Warray-bounds -Wc++0x-compat -Wchar-subscripts -Wformat -Wmain -Wmissing-braces -Wparentheses -Wreorder -Wreturn-type -Wsequence-point -Wsign-compare -Wstrict-aliasing -Wstrict-overflow=1 -Wswitch -Wtrigraphs -Wuninitialized -Wunused-label -Wunused-variable -Wvolatile-register-var -Wno-extra -D_REENTRANT -fPIE $(DEFINES)
 INCPATH       = -I../../../../../../../sys/shared/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/mkspecs/linux-g++ -I../src -I../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include -I../src/window -I../../lib/glm-0.9.5.1 -I../../../../../../../sys/shared/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include -I../../../../../../../sys/shared/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtOpenGL -I../../../../../../../sys/shared/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtWidgets -I../../../../../../../sys/shared/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtGui -I../../../../../../../sys/shared/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtCore -I.moc -I.
@@ -451,11 +451,11 @@ compiler_rcc_make_all: .rcc/qrc_resources.cpp
 compiler_rcc_clean:
 	-$(DEL_FILE) .rcc/qrc_resources.cpp
 .rcc/qrc_resources.cpp: ../../res/resources.qrc \
-		../../res/textures/cube2.png \
-		../../res/textures/cube.png \
 		../../res/textures/dirt.png \
-		../../res/textures/grid2.png \
+		../../res/textures/cube2.png \
 		../../res/textures/grid.png \
+		../../res/textures/grid2.png \
+		../../res/textures/cube.png \
 		../../res/textures/grass.png
 	/contrib/projects/qt5.2.0/5.2.0/gcc_64/bin/rcc -name resources ../../res/resources.qrc -o .rcc/qrc_resources.cpp
 

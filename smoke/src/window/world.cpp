@@ -1,24 +1,27 @@
 #include "world.h"
 
-World::World() :
-    m_world_id(dWorldCreate())
+World::World()
 {
+    dInitODE();
+    m_world_id = dWorldCreate();
     dWorldSetGravity(m_world_id, 0.0f, -0.1f, 0.0f);
     addBody();
     addBody();
+    dAllocateODEDataForThread(dAllocateMaskAll);
 }
 
 World::~World(){
     dWorldDestroy(m_world_id);
+    dCloseODE();
 }
 
 void World::addBody(){
-//    dBodyID body = dBodyCreate(m_world_id);
-//    dBodySetPosition(body, rand()/(double)RAND_MAX*10 - 5,
-//                            rand()/(double)RAND_MAX*10,
-//                            rand()/(double)RAND_MAX*10 - 5);
-//    dBodySetLinearVel(body, 0, 0, 0);
-//    bodies.append(body);
+    dBodyID body = dBodyCreate(m_world_id);
+    dBodySetPosition(body, rand()/(double)RAND_MAX*10 - 5,
+                            rand()/(double)RAND_MAX*10,
+                            rand()/(double)RAND_MAX*10 - 5);
+    dBodySetLinearVel(body, 0, 0, 0);
+    bodies.append(body);
 }
 
 void World::init()

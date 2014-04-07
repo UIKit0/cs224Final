@@ -22,8 +22,6 @@ LIBS += -L$${ODE}/lib \
         -lpthread \
         -lX11
 
-DEFINES += dDOUBLE
-
 INCLUDEPATH += $${ODE}/include
 
 # glm library

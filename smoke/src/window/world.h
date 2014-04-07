@@ -10,6 +10,7 @@
 #include <QtGui/QOpenGLShaderProgram>
 #include <QtGui/QOpenGLFunctions>
 #include <QList>
+#include <GL/glu.h>
 
 #include <ode/ode.h>
 
@@ -37,6 +38,8 @@ public:
     void draw();
     void tick(float seconds);
 
+    GLUquadric *quad;
+
 private:
     void addBody();
 
@@ -47,6 +50,7 @@ private:
      dMass m;
 
     QList<Particle> bodies;
+
 };
 
 #endif // WORLD_H

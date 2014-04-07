@@ -9,6 +9,8 @@ World::World()
         addBody();
     }
     dAllocateODEDataForThread(dAllocateMaskAll);
+
+    quad = gluNewQuadric();
 }
 
 World::~World(){
@@ -35,18 +37,27 @@ void World::init()
 
 void World::draw()
 {
+
     glColor3f(1,0,0);
-    glBegin(GL_TRIANGLES);
+
+//    glBegin(GL_TRIANGLES);
     for (int i = 0; i < bodies.size(); i++){
         const dReal* pos = dBodyGetPosition(bodies[i].body);
-        glVertex3d(pos[0], pos[1], pos[2]);
-        glVertex3d(pos[0] + bodies[i].size1, pos[1], pos[2]);
-        glVertex3d(pos[0] + bodies[i].size1, pos[1], pos[2] + bodies[i].size2);
-        glVertex3d(pos[0], pos[1], pos[2]);
-        glVertex3d(pos[0] + bodies[i].size1, pos[1], pos[2] + bodies[i].size2);
-        glVertex3d(pos[0] + bodies[i].size1, pos[1], pos[2]);
+
+        glPushMatrix();
+            glTranslatef(pos[0], pos[1], pos[2]);
+            glScalef(0.5f, 1.0f, 0.5f);
+            gluSphere(quad, 1, 32, 16);
+        glPopMatrix();
+
+//        glVertex3d(pos[0], pos[1], pos[2]);
+//        glVertex3d(pos[0] + bodies[i].size1, pos[1], pos[2]);
+//        glVertex3d(pos[0] + bodies[i].size1, pos[1], pos[2] + bodies[i].size2);
+//        glVertex3d(pos[0], pos[1], pos[2]);
+//        glVertex3d(pos[0] + bodies[i].size1, pos[1], pos[2] + bodies[i].size2);
+//        glVertex3d(pos[0] + bodies[i].size1, pos[1], pos[2]);
     }
-    glEnd();
+//    glEnd();
 }
 
 void World::tick(float seconds){

@@ -2,3 +2,7 @@ debug/
 release/
 *.user
 build-*
+*.o
+Makefile
+.obj/
+.rcc/

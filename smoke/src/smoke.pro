@@ -15,12 +15,11 @@ CONFIG(release, debug|release) {
 }
 
 # ODE library
-ODE = /contrib/projects/ODE/ode
+ODE = /contrib/projects/ODE/0.13
 LIBS += -L$${ODE}/lib \
         -lode \
         -lm \
         -lpthread \
-        -lX11
 
 INCLUDEPATH += $${ODE}/include
 

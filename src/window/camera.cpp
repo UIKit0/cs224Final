@@ -18,9 +18,9 @@ Camera::Camera()
     pMatrix = glm::perspective(m_fov, 4.0f / 3.0f, 0.1f, 100.f);
     vMatrix = glm::mat4(1.0f);
 
-    m_position = glm::vec3(7.41f, 4.15f, 6.64f);
+    m_position = glm::vec3(0.0f, 0.0f, 0.0f);
 //    m_position = glm::vec3(8.58f, 3.027f, 7.475f);
-    m_rotation = m_lastRotation = glm::vec2(220.0f, -8.0f);
+    m_rotation = m_lastRotation = glm::vec2(45.0f, 0.0f);
 }
 
 void Camera::setAspectRatio(float aspect)

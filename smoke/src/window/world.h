@@ -28,7 +28,12 @@ public:
 private:
     void addBody();
 
-    dWorldID m_world_id;
+     dWorldID m_world_id;
+     dSpaceID space;
+     dBodyID body;
+     dGeomID geom;
+     dMass m;
+
     QList<dBodyID> bodies;
 };
 

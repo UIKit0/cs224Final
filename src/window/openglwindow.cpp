@@ -36,15 +36,15 @@ OpenGLWindow::~OpenGLWindow()
 
 void OpenGLWindow::render()
 {
-//    m_painter->beginNativePainting();
+    m_painter->beginNativePainting();
     renderOpenGL();
-//    m_painter->endNativePainting();
+    m_painter->endNativePainting();
 
-//    m_painter->setPen(Qt::red);
-//    m_painter->setFont(QFont("Monospace", 11));
-//    m_painter->drawText(QRect(0,0,100,100), Qt::AlignCenter, "FPS: " + QString::number(m_fps));
+    m_painter->setPen(Qt::red);
+    m_painter->setFont(QFont("Monospace", 11));
+    m_painter->drawText(QRect(0,0,100,100), Qt::AlignCenter, "FPS: " + QString::number(m_fps));
 
-//    m_painter->end();
+    m_painter->end();
 }
 
 void OpenGLWindow::renderOpenGL()
@@ -123,16 +123,16 @@ void OpenGLWindow::renderNow()
 
     // check initialize qpainter context
 
-//    if (!m_device) {
-//        m_device = new QOpenGLPaintDevice;
-//        m_device->setSize(size());
+    if (!m_device) {
+        m_device = new QOpenGLPaintDevice;
+        m_device->setSize(size());
 
-//        m_painter = new QPainter(m_device);
-//    }
+        m_painter = new QPainter(m_device);
+    }
 
-//    if (!m_painter->isActive()) {
-//        m_painter->begin(m_device);
-//    }
+    if (!m_painter->isActive()) {
+        m_painter->begin(m_device);
+    }
 
     // render
 

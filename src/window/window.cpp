@@ -162,13 +162,13 @@ void Window::renderOpenGL()
     m_program->setUniformValue("texture", 0);
 
     m_world.drawWorld(m_program);
-    getErrors("rendering END");
 
     glDisableVertexAttribArray(m_posAttr);
     glDisableVertexAttribArray(m_texAttr);
 
     m_program->release();
 
+    getErrors("rendering END");
 }
 
 void Window::mousePressEvent(QMouseEvent *event)

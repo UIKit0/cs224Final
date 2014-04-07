@@ -41,6 +41,11 @@ HEADERS += \
 RESOURCES += \
     $${RES}/resources.qrc
 
+# ASSIMP
+INCLUDEPATH += /contrib/projects/assimp/3.0.1270/include
+LIBS += -L/contrib/projects/assimp/3.0.1270/lib \
+    -lassimp
+
 #  hide object files and misc
 OBJECTS_DIR = $${OUT_PWD}/.obj
 MOC_DIR = $${OUT_PWD}/.moc

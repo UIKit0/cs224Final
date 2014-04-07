@@ -6,7 +6,10 @@ release
 
 build-*
 Makefile
+
 *.o
+
 .obj
 .rcc
+.ui
 .moc

@@ -47,7 +47,7 @@ void World::draw()
         glPushMatrix();
             glTranslatef(pos[0], pos[1], pos[2]);
             glScalef(0.5f, 1.0f, 0.5f);
-            gluSphere(quad, 1, 32, 16);
+            gluSphere(quad, 1, 10, 10);
         glPopMatrix();
 
 //        glVertex3d(pos[0], pos[1], pos[2]);

@@ -15,10 +15,10 @@ CXX           = g++
 DEFINES       = -DGLM_FORCE_RADIANS -DQT_QML_DEBUG -DQT_DECLARATIVE_DEBUG -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -g -Wall -W -D_REENTRANT -fPIE $(DEFINES)
 CXXFLAGS      = -pipe -std=c++11 -g -W -Waddress -Warray-bounds -Wc++0x-compat -Wchar-subscripts -Wformat -Wmain -Wmissing-braces -Wparentheses -Wreorder -Wreturn-type -Wsequence-point -Wsign-compare -Wstrict-aliasing -Wstrict-overflow=1 -Wswitch -Wtrigraphs -Wuninitialized -Wunused-label -Wunused-variable -Wvolatile-register-var -Wno-extra -D_REENTRANT -fPIE $(DEFINES)
-INCPATH       = -I../../../../../../../sys/shared/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/mkspecs/linux-g++ -I../src -I../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include -I../src/window -I../../lib/glm-0.9.5.1 -I../../../../../../../sys/shared/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include -I../../../../../../../sys/shared/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtOpenGL -I../../../../../../../sys/shared/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtWidgets -I../../../../../../../sys/shared/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtGui -I../../../../../../../sys/shared/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtCore -I.moc -I.
+INCPATH       = -I../../../../../../../sys/shared/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/mkspecs/linux-g++ -I../src -I../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include -I../src/window -I../../lib/glm-0.9.5.1 -I../../../../../../../sys/shared/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include -I../../../../../../../sys/shared/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtOpenGL -I../../../../../../../sys/shared/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtWidgets -I../../../../../../../sys/shared/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtGui -I../../../../../../../sys/shared/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtCore -I.moc -I.
 LINK          = g++
 LFLAGS        = -Wl,-rpath,/contrib/projects/qt5.2.0/5.2.0/gcc_64 -Wl,-rpath,/contrib/projects/qt5.2.0/5.2.0/gcc_64/lib
-LIBS          = $(SUBLIBS) -lGLU -L/contrib/projects/ODE/ode/lib -lode -lm -lX11 -L/contrib/projects/qt5.2.0/5.2.0/gcc_64/lib -lQt5OpenGL -lQt5Widgets -lQt5Gui -lQt5Core -lGL -lpthread 
+LIBS          = $(SUBLIBS) -lGLU -L/contrib/projects/ODE/0.13/lib -lode -lm -L/contrib/projects/qt5.2.0/5.2.0/gcc_64/lib -lQt5OpenGL -lQt5Widgets -lQt5Gui -lQt5Core -lGL -lpthread 
 AR            = ar cqs
 RANLIB        = 
 QMAKE         = /contrib/projects/qt5.2.0/5.2.0/gcc_64/bin/qmake
@@ -451,12 +451,12 @@ compiler_rcc_make_all: .rcc/qrc_resources.cpp
 compiler_rcc_clean:
 	-$(DEL_FILE) .rcc/qrc_resources.cpp
 .rcc/qrc_resources.cpp: ../../res/resources.qrc \
+		../../res/textures/grass.png \
 		../../res/textures/dirt.png \
 		../../res/textures/cube2.png \
 		../../res/textures/grid.png \
 		../../res/textures/grid2.png \
-		../../res/textures/cube.png \
-		../../res/textures/grass.png
+		../../res/textures/cube.png
 	/contrib/projects/qt5.2.0/5.2.0/gcc_64/bin/rcc -name resources ../../res/resources.qrc -o .rcc/qrc_resources.cpp
 
 compiler_moc_header_make_all: .moc/moc_openglwindow.cpp
@@ -1168,31 +1168,31 @@ compiler_clean: compiler_rcc_clean compiler_moc_header_clean
 		../../../../../../../sys/shared/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtCore/qset.h \
 		../../../../../../../sys/shared/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtCore/qcontiguouscache.h \
 		../../../../../../../sys/shared/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtCore/QList \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/ode.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/odeconfig.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/precision.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/compatibility.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/common.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/error.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/odeinit.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/contact.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/memory.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/odemath.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/odemath_legacy.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/matrix.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/timer.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/rotation.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/mass.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/misc.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/objects.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/threading.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/collision_space.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/collision.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/collision_trimesh.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/threading_impl.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/export-dif.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/odecpp.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/odecpp_collision.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/ode.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/odeconfig.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/precision.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/compatibility.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/common.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/error.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/odeinit.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/contact.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/memory.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/odemath.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/odemath_legacy.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/matrix.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/timer.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/rotation.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/mass.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/misc.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/objects.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/threading.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/collision_space.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/collision.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/collision_trimesh.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/threading_impl.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/export-dif.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/odecpp.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/odecpp_collision.h \
 		../../../../../../../sys/shared/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtGui/QMouseEvent \
 		../../../../../../../sys/shared/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtGui/qevent.h \
 		../../../../../../../sys/shared/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtGui/qkeysequence.h \
@@ -2129,31 +2129,31 @@ compiler_clean: compiler_rcc_clean compiler_moc_header_clean
 		../../../../../../../sys/shared/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtCore/qset.h \
 		../../../../../../../sys/shared/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtCore/qcontiguouscache.h \
 		../../../../../../../sys/shared/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtCore/QList \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/ode.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/odeconfig.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/precision.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/compatibility.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/common.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/error.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/odeinit.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/contact.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/memory.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/odemath.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/odemath_legacy.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/matrix.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/timer.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/rotation.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/mass.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/misc.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/objects.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/threading.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/collision_space.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/collision.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/collision_trimesh.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/threading_impl.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/export-dif.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/odecpp.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/odecpp_collision.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/ode.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/odeconfig.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/precision.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/compatibility.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/common.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/error.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/odeinit.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/contact.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/memory.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/odemath.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/odemath_legacy.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/matrix.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/timer.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/rotation.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/mass.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/misc.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/objects.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/threading.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/collision_space.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/collision.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/collision_trimesh.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/threading_impl.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/export-dif.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/odecpp.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/odecpp_collision.h \
 		../../../../../../../sys/shared/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtGui/QMouseEvent \
 		../../../../../../../sys/shared/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtGui/qevent.h \
 		../../../../../../../sys/shared/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtGui/qkeysequence.h \
@@ -2481,31 +2481,31 @@ compiler_clean: compiler_rcc_clean compiler_moc_header_clean
 		../../../../../../../sys/shared/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtGui/qsurfaceformat.h \
 		../../../../../../../sys/shared/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtGui/qopenglversionfunctions.h \
 		../../../../../../../sys/shared/psfu/contrib/projects/qt5.2.0/5.2.0/gcc_64/include/QtCore/QList \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/ode.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/odeconfig.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/precision.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/compatibility.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/common.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/error.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/odeinit.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/contact.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/memory.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/odemath.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/odemath_legacy.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/matrix.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/timer.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/rotation.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/mass.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/misc.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/objects.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/threading.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/collision_space.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/collision.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/collision_trimesh.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/threading_impl.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/export-dif.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/odecpp.h \
-		../../../../../../../sys/shared/psfu/contrib/projects/ODE/ode/include/ode/odecpp_collision.h
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/ode.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/odeconfig.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/precision.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/compatibility.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/common.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/error.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/odeinit.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/contact.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/memory.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/odemath.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/odemath_legacy.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/matrix.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/timer.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/rotation.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/mass.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/misc.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/objects.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/threading.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/collision_space.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/collision.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/collision_trimesh.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/threading_impl.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/export-dif.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/odecpp.h \
+		../../../../../../../sys/shared/psfu/contrib/projects/ODE/0.13/include/ode/odecpp_collision.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/world.o ../src/window/world.cpp
 
 .obj/qrc_resources.o: .rcc/qrc_resources.cpp 

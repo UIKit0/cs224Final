@@ -15,6 +15,18 @@
 
 #include <iostream>
 
+struct Particle{
+    dBodyID body;
+    float size1;
+    float size2;
+
+    Particle(dBodyID b, float s1, float s2){
+        body = b;
+        size1 = s1;
+        size2 = s2;
+    }
+};
+
 class World : protected QOpenGLFunctions
 {
 public:
@@ -34,7 +46,7 @@ private:
      dGeomID geom;
      dMass m;
 
-    QList<dBodyID> bodies;
+    QList<Particle> bodies;
 };
 
 #endif // WORLD_H

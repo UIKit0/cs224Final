@@ -1,10 +1,5 @@
 #include "world.h"
 
-// divide by two
-
-#define CHUNKS_X 1
-#define CHUNKS_Y 1
-
 World::World()
     : m_numCubes(0)
 {
@@ -97,16 +92,7 @@ void World::initWorld()
     QVector<VertexData> vertices;
     QVector<GLushort> indices;
 
-    for (int x = 0; x < CHUNKS_X; x += 2) {
-        for (int y = 0; y < CHUNKS_Y; y += 2) {
-            float noiseF = glm::perlin(glm::vec3(x / 16.f, y / 16.f, 0.5f)) + 1.0f;
-            int noiseZ = glm::abs(glm::round(noiseF * 10.0f));
-            for (int z = 0; z < noiseZ; z += 2) {
-                addCube(x,y,z, vertices, indices);
-                ++m_numCubes;
-            }
-        }
-    }
+    addCube(0,0,0, vertices, indices);
 
     // vertices + texture
     glBindBuffer(GL_ARRAY_BUFFER, m_vboIds[0]);

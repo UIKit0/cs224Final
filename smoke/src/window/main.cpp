@@ -11,7 +11,6 @@ int main(int argc, char *argv[])
     Window window;
     window.resize(640, 480);
     window.setTitle("cs224 Final");
-//    window.setVisibility(QWindow::FullScreen);
 
 #ifdef Q_OS_MAC
     QSize screen = window.screen()->size();

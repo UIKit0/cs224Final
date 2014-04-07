@@ -1,7 +1,7 @@
 #include "camera.h"
 
 Camera::Camera()
-    : m_lookAt(0.25f, 0.25f, 0.25f)
+    : m_lookAt(0.0f, 0.0f, 0.0f)
     , m_up(0.0f, 1.0f, 0.0f)
     , m_velocity(0.0f)
     , m_fov(1.047f)
@@ -18,9 +18,9 @@ Camera::Camera()
     pMatrix = glm::perspective(m_fov, 4.0f / 3.0f, 0.1f, 100.f);
     vMatrix = glm::mat4(1.0f);
 
-//    m_position = glm::vec3(5.1f, 3.5f, 5.1f);
-    m_position = glm::vec3(0.0f, 20.0f, 0.0f);
-    m_rotation = m_lastRotation = glm::vec2(-45.0f, -20.0f);
+    m_position = glm::vec3(7.41f, 4.15f, 6.64f);
+//    m_position = glm::vec3(8.58f, 3.027f, 7.475f);
+    m_rotation = m_lastRotation = glm::vec2(220.0f, -8.0f);
 }
 
 void Camera::setAspectRatio(float aspect)
@@ -70,8 +70,10 @@ void Camera::update(float seconds)
         if (pressingLeft) m_position -= m_speed * seconds * cross;
         if (pressingRight) m_position += m_speed * seconds * cross;
     }
-
     m_lookAt += m_position;
+
+//    std::cout << "pos: " << glm::to_string(m_position) << std::endl;
+//    std::cout << "loo: " << glm::to_string(m_rotation) << std::endl;
 
     vMatrix = glm::lookAt(m_position, m_lookAt, m_up);
 }

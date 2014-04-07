@@ -62,9 +62,6 @@ void Window::onTick(const float seconds)
 
 void Window::initialize()
 {
-//    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-//    glEnable(GL_BLEND);
-
     glClearColor(1,1,1,1);
 
     // Enable depth buffer

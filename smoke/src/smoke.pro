@@ -6,20 +6,24 @@ TARGET = smoke
 
 QT += core gui opengl
 
-LIBS += -lGLU
-
 TEMPLATE = app
 
 CONFIG(release, debug|release) {
     DEFINES += QT_NO_DEBUG_OUTPUT QT_NO_WARNING_OUTPUT
 }
 
+ODE = $$(ODE_PATH)
+
+isEmpty(ODE) {
+    # default sunlab path
+    ODE = /contrib/projects/ODE/0.13
+}
+
 # ODE library
-ODE = /contrib/projects/ODE/0.13
 LIBS += -L$${ODE}/lib \
         -lode \
         -lm \
-        -lpthread \
+        -lpthread
 
 INCLUDEPATH += $${ODE}/include
 

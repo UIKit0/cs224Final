@@ -19,13 +19,25 @@
 
 struct Particle{
     dBodyID body;
-    float size1;
-    float size2;
+    dGeomID geom;
 
-    Particle(dBodyID b, float s1, float s2){
+    Particle(dBodyID b, dGeomID g){
         body = b;
-        size1 = s1;
-        size2 = s2;
+        geom = g;
+    }
+};
+
+struct Vortex{
+    dBodyID body;
+    dGeomID geom;
+    glm::vec3 axis;
+    float force;
+    float falloff;
+    float range;
+
+    Vortex(dBodyID b, dGeomID g){
+        body = b;
+        geom = g;
     }
 };
 
@@ -41,17 +53,25 @@ public:
 
     GLUquadric *quad;
 
-private:
     void addBody();
+    void addVortex();
 
-     dWorldID m_world_id;
-     dSpaceID space;
-     dBodyID body;
-     dGeomID geom;
-     dMass m;
+    dWorldID m_world_id;
+    dSpaceID space;
+    dGeomID geom;
+    dMass m;
 
-    QList<Particle> bodies;
+    dJointGroupID contactgroup;
 
+    QList<Particle> particles;
+
+    QList<Vortex> vortices;
+
+    // Sphere that moves left and right through the smoke
+    dBodyID object;
+    dGeomID obj;
+    dVector3 objVel;
+    bool movingPosX;
 };
 
 #endif // WORLD_H

@@ -48,14 +48,22 @@ SOURCES += \
     window/camera.cpp \
     window/openglwindow.cpp \
     window/window.cpp \
-    window/world.cpp
+    window/world.cpp \
+    window/smokeparticle.cpp \
+    window/vortex.cpp \
+    window/vortexshedder.cpp \
+    window/solidobject.cpp
 
 
 HEADERS += \
     window/camera.h \
     window/openglwindow.h \
     window/window.h \
-    window/world.h
+    window/world.h \
+    window/smokeparticle.h \
+    window/vortex.h \
+    window/vortexshedder.h \
+    window/solidobject.h
 
 RESOURCES += \
     $${RES}/resources.qrc

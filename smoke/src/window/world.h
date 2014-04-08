@@ -17,29 +17,9 @@
 
 #include <iostream>
 
-struct Particle{
-    dBodyID body;
-    dGeomID geom;
-
-    Particle(dBodyID b, dGeomID g){
-        body = b;
-        geom = g;
-    }
-};
-
-struct Vortex{
-    dBodyID body;
-    dGeomID geom;
-    glm::vec3 axis;
-    float force;
-    float falloff;
-    float range;
-
-    Vortex(dBodyID b, dGeomID g){
-        body = b;
-        geom = g;
-    }
-};
+#include "smokeparticle.h"
+#include "vortex.h"
+#include "solidobject.h"
 
 class World : protected QOpenGLFunctions
 {
@@ -56,22 +36,23 @@ public:
     void addBody();
     void addVortex();
 
+    // Values that are only created once per world
     dWorldID m_world_id;
     dSpaceID space;
-    dGeomID geom;
     dMass m;
 
     dJointGroupID contactgroup;
 
-    QList<Particle> particles;
+    QList<SmokeParticle> particles;
 
     QList<Vortex> vortices;
 
     // Sphere that moves left and right through the smoke
-    dBodyID object;
-    dGeomID obj;
-    dVector3 objVel;
-    bool movingPosX;
+    SolidObject sphere;
+
+    bool moveSphere;
+    bool drawVortices;
+    bool moveWing;
 };
 
 #endif // WORLD_H

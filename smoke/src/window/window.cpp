@@ -143,6 +143,13 @@ void Window::keyPressEvent(QKeyEvent *event)
     }
 
     if (event->key() == Qt::Key_Space) m_camera.pressingJump = true;
+
+    if (event->key() == Qt::Key_V) {
+        std::cout<<m_world.drawVortices<<std::endl;
+        m_world.drawVortices = !m_world.drawVortices;
+    }
+
+    if (event->key() == Qt::Key_B) m_world.moveSphere = !m_world.moveSphere;
 }
 
 void Window::keyReleaseEvent(QKeyEvent *event)

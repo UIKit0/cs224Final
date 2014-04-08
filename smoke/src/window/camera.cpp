@@ -19,8 +19,8 @@ Camera::Camera()
     vMatrix = glm::mat4(1.0f);
 
 //    m_position = glm::vec3(5.1f, 3.5f, 5.1f);
-    m_position = glm::vec3(0.0f, 20.0f, 0.0f);
-    m_rotation = m_lastRotation = glm::vec2(-45.0f, -20.0f);
+    m_position = glm::vec3(-1.2f, 3.84f, -8.06f);
+    m_rotation = m_lastRotation = glm::vec2(428.39f, -16.39f);
 }
 
 void Camera::setAspectRatio(float aspect)
@@ -62,7 +62,7 @@ void Camera::update(float seconds)
     if (pressingForward) {
         m_position += m_speed * seconds * glm::normalize(m_lookAt);
     }
-    if (pressingBackward){
+    if (pressingBackward) {
         m_position -= m_speed * seconds * glm::normalize(m_lookAt);
     }
     if (pressingLeft | pressingRight){

@@ -19,8 +19,6 @@ DEFINES += GLM_FORCE_RADIANS
 
 # resources
 RES = ../res
-GUI = $${RES}/gui
-TEXTURES = $${RES}/textures
 
 INCLUDEPATH += window $${GLM}
 DEPENDPATH += window

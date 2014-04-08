@@ -107,8 +107,8 @@ void World::addBody(){
     dBodySetPosition(body, dRandReal()*SPAWN_SIZE - SPAWN_SIZE/2,
                      dRandReal(),
                      dRandReal()*SPAWN_SIZE - SPAWN_SIZE/2);
-    float maxInitialVel = 0.2f;
-    float maxVerticalVel = 1.0f;
+    float maxInitialVel = 0.05f;
+    float maxVerticalVel = 0.3f;
     dBodySetLinearVel(body, dRandReal()*maxInitialVel*2 - maxInitialVel,
                             dRandReal()*maxVerticalVel,
                             dRandReal()*maxInitialVel*2 - maxInitialVel);
@@ -137,21 +137,27 @@ void World::addVortex(){
 void World::init()
 {
     initializeOpenGLFunctions();
+
+    GLfloat LightAmbient[]=  { 0.1f, 0.1f, 0.1f, 1.0f };
+    GLfloat LightDiffuse[]=  { 0.5f, 0.5f, 0.5f, 1.0f };
+    GLfloat LightPosition[]= { 0.0f, 0.0f, 2.0f, 1.0f };
+
+    glEnable(GL_COLOR_MATERIAL);
+    glEnable(GL_NORMALIZE);
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+
+    glLightfv(GL_LIGHT0, GL_AMBIENT, LightAmbient);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, LightDiffuse);
+    glLightfv(GL_LIGHT0, GL_POSITION, LightPosition);
+
+    glEnable(GL_TEXTURE_2D);
 }
 
 void World::draw()
 {
     glPushMatrix();
-    // Ground
-    glColor3f(1,1,0);
-    glBegin(GL_TRIANGLES);
-    glVertex3f(-100, 0, -100);
-    glVertex3f(-100, 0, 100);
-    glVertex3f(100, 0, 100);
-    glVertex3f(-100, 0, -100);
-    glVertex3f(100, 0, 100);
-    glVertex3f(100, 0, -100);
-    glEnd();
+    glScalef(0.3f, 0.3f, 0.3f);
 
     // Particles
     glColor3f(1,0,0);
@@ -184,7 +190,19 @@ void World::draw()
 //        glTranslatef(-pos[0], -pos[1], -pos[2]);
 //    }
 //    glDisable(GL_BLEND);
+
     glPopMatrix();
+
+    // Draw grid
+    glColor4f(0, 0, 0, 0.25);
+    glBegin(GL_LINES);
+    for (int s = 20, i = -s; i <= s; i++) {
+        glVertex3f(i, 0, -s);
+        glVertex3f(i, 0, +s);
+        glVertex3f(-s, 0, i);
+        glVertex3f(+s, 0, i);
+    }
+    glEnd();
 }
 
 void World::tick(float seconds){

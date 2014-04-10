@@ -8,7 +8,7 @@
 #define MAX_HEIGHT 20
 
 World::World() :
-    sphereMesh("sphere.obj")
+    sphereMesh("cube.obj")
 {
     dInitODE();
     m_world_id = dWorldCreate();

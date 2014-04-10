@@ -23,9 +23,12 @@ void SmokeParticle::destroy(){
 void SmokeParticle::draw(Obj &obj){
     const dReal* pos = dBodyGetPosition(body);
 
+    glPushMatrix();
     glTranslatef(pos[0], pos[1], pos[2]);
+    glScalef(0.2f, 0.2f, 0.2f);
     obj.draw();
-    glTranslatef(-pos[0], -pos[1], -pos[2]);
+//    glTranslatef(-pos[0], -pos[1], -pos[2]);
+    glPopMatrix();
 }
 
 void SmokeParticle::update(){

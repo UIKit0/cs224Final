@@ -48,6 +48,6 @@ void VortexShedder::update(float seconds){
     }
 }
 
-void VortexShedder::draw(GLUquadric *quad){
-    vortices[0].draw(quad);
+void VortexShedder::draw(Obj &obj){
+    vortices[0].draw(obj);
 }

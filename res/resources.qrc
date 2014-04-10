@@ -6,5 +6,6 @@
         <file>textures/grid2.png</file>
         <file>textures/cube.png</file>
         <file>textures/cube2.png</file>
+        <file>meshes/sphere.obj</file>
     </qresource>
 </RCC>

@@ -2,10 +2,11 @@
 #define SOLIDOBJECT_H
 
 #include <ode/ode.h>
-#include <GL/glu.h>
+//#include <OpenGL/glu.h>
 
 #include <glm/vec3.hpp>
 #include <glm/ext.hpp>
+#include "assets/obj.h"
 
 #define SPHERE_SIZE 2.0f
 
@@ -19,7 +20,7 @@ public:
 
     void update(float seconds);
     void stop();
-    void draw(GLUquadric *quad);
+    void draw(Obj &obj);
     void destroy();
 
     dBodyID body;

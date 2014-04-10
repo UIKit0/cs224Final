@@ -21,11 +21,11 @@ void Vortex::destroy(){
     active = false;
 }
 
-void Vortex::draw(GLUquadric* quad){
+void Vortex::draw(Obj &obj){
     const dReal* pos = dBodyGetPosition(body);
 
     glTranslatef(pos[0], pos[1], pos[2]);
-    gluSphere(quad, range, 16, 16);
+    obj.draw();
     glTranslatef(-pos[0], -pos[1], -pos[2]);
 }
 

@@ -2,13 +2,13 @@
 #define VORTEX_H
 
 #include <ode/ode.h>
-#include <GL/glu.h>
-
+//#include <OpenGL/glu.h>
+#include <qgl.h>
 #include <glm/vec3.hpp>
 #include <glm/ext.hpp>
 
 #include <iostream>
-
+#include "assets/obj.h"
 #define VORTEX_CATEGORY_BITS 7
 
 class Vortex
@@ -17,7 +17,7 @@ public:
     Vortex(dWorldID world, dSpaceID space, dMass mass, float r);
 
     void update(float seconds);
-    void draw(GLUquadric* quad);
+    void draw(Obj &obj);
     void destroy();
 
     dBodyID body;

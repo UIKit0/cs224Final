@@ -7,7 +7,8 @@
 #define SPAWN_SIZE 3
 #define MAX_HEIGHT 20
 
-World::World()
+World::World() :
+    sphereMesh("sphere.obj")
 {
     dInitODE();
     m_world_id = dWorldCreate();
@@ -15,8 +16,6 @@ World::World()
 
     // TODO: make this a quad structure maybe? or hash?
     space = dSimpleSpaceCreate(0);
-
-    quad = gluNewQuadric();
 
     for (int i = 0; i < 10; i++){
         addBody();
@@ -139,6 +138,8 @@ void World::init()
     glLightfv(GL_LIGHT0, GL_POSITION, LightPosition);
 
     glEnable(GL_TEXTURE_2D);
+
+
 }
 
 void World::draw()
@@ -149,11 +150,11 @@ void World::draw()
     // Particles
     glColor3f(1,0,0);
     for (int i = 0; i < particles.size(); i++){
-        particles[i].draw(quad);
+        particles[i].draw(sphereMesh);
     }
 
     // Sphere
-    sphere.draw(quad);
+    sphere.draw(sphereMesh);
 
     // Vortices
     if (drawVortices){
@@ -162,7 +163,7 @@ void World::draw()
 
         glColor3f(0.5f,0.5f,0.9f);
         for (int i = 0; i < vortices.size(); i++){
-              vortices[i].draw(quad);
+              vortices[i].draw(sphereMesh);
         }
         glDisable(GL_BLEND);
     }

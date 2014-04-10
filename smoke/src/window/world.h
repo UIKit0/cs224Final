@@ -10,10 +10,13 @@
 #include <QtGui/QOpenGLShaderProgram>
 #include <QtGui/QOpenGLFunctions>
 #include <QList>
-#include <GL/glu.h>
+
+#include "assets/obj.h"
+
+//#include <GL/glu.h>
+//#include <OpenGL/glu.h>
 
 #include <ode/ode.h>
-#include <GL/glu.h>
 
 #include <iostream>
 
@@ -31,7 +34,7 @@ public:
     void draw();
     void tick(float seconds);
 
-    GLUquadric *quad;
+//    GLUquadric *quad;
 
     void addBody();
     void addVortex();
@@ -49,6 +52,7 @@ public:
 
     // Sphere that moves left and right through the smoke
     SolidObject sphere;
+    Obj sphereMesh;
 
     bool moveSphere;
     bool drawVortices;

@@ -6,12 +6,12 @@
 #include <glm/vec3.hpp>
 #include <glm/ext.hpp>
 
-#include <GL/glu.h>
+//#include <OpenGL/glu.h>
 
 #include <QList>
 
 #include <vortex.h>
-
+#include "assets/obj.h"
 /**
  * Represents interaction between a moving object and smoke.
  * Currently there is one main vortex that sticks to the object.
@@ -28,7 +28,7 @@ public:
                   float f, float r);
 
     void update(float seconds);
-    void draw(GLUquadric* quad);
+    void draw(Obj &obj);
 
     dBodyID owner;
     // Location relative to the owner's center

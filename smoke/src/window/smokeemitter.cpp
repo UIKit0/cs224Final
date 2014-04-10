@@ -42,17 +42,17 @@ void SmokeEmitter::update(float seconds){
     }
 
     int toAdd;
-    if (particles.size() > 800)
-        toAdd = 2;
+    if (particles.size() > 1200)
+        toAdd = 3;
     else
-        toAdd = 6;
+        toAdd = 5;
 
     for (int i = 0; i < toAdd; i++){
         addBody();
     }
 
-//    if (dRandReal() < 0.5)
-//        addVortex();
+    if (dRandReal() < 0.5)
+        addVortex();
 
     for (int i = vortices.size() - 1; i >= 0; i--){
         if (!vortices[i].active){
@@ -110,13 +110,13 @@ void SmokeEmitter::addVortex(){
 
     // Spawn in a circle around the center
     float theta = dRandReal()*M_PI*2;
-    dBodySetPosition(v.body, SPAWN_SIZE*cos(theta), dRandReal()*2.0f, SPAWN_SIZE*sin(theta));
+    dBodySetPosition(v.body, SPAWN_SIZE*cos(theta)*0.8f, dRandReal()*1.0f, SPAWN_SIZE*sin(theta)*0.8f);
 
     v.axis = glm::normalize(glm::vec3(-sin(theta), 0, cos(theta)));
     v.falloff = 3.0f;
-    v.force = dRandReal()*0.01f;
-    v.centripetal = 2.5f;
-    v.forcedecay = 0.5f;
-    v.rangedecay = 0.05f;
+    v.force = dRandReal()*0.007f;
+    v.centripetal = 1.0f;
+    v.forcedecay = 0.7f;
+    v.rangedecay = 0.1f;
     vortices.append(v);
 }

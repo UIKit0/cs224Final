@@ -25,6 +25,9 @@ void Vortex::destroy(){
 }
 
 void Vortex::draw(Obj &obj){
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_ONE, GL_ONE_MINUS_DST_COLOR);
+    glColor3f(0.8f, 0.8f, 0.5f);
     const dReal* pos = dBodyGetPosition(body);
 
     glTranslatef(pos[0], pos[1], pos[2]);
@@ -43,7 +46,7 @@ void Vortex::update(float seconds){
     range = range/rangefactor;
 
     // Disable the vortex if it's too weak
-    if (force < 0.001f){
+    if (force < 0.0001f){
         destroy();
     }
     else{

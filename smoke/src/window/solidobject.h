@@ -19,13 +19,14 @@ public:
 
     void update(float seconds);
     void stop();
+    void start();
     void draw(GLUquadric *quad);
     void destroy();
 
     dBodyID body;
     dGeomID geom;
 
-    bool movingPosX;
+    int moving;
 
     QList<VortexShedder> shedders;
 };

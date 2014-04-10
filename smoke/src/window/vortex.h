@@ -7,9 +7,13 @@
 #include <glm/vec3.hpp>
 #include <glm/ext.hpp>
 
+#include <QHash>
+
 #include <iostream>
 
-#define VORTEX_CATEGORY_BITS 7
+#define VORTEX_CATEGORY_BITS 2
+// Only collide with particles
+#define VORTEX_COLLIDE_BITS 1
 
 class Vortex
 {
@@ -30,8 +34,11 @@ public:
     float force;
     float falloff;
     float range;
+    float centripetal;
     float forcedecay;
     float rangedecay;
+
+    static QHash<dBodyID, Vortex*> g_vortices;
 };
 
 #endif // VORTEX_H

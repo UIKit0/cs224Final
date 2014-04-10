@@ -7,8 +7,9 @@
 #include <glm/vec3.hpp>
 #include <glm/ext.hpp>
 
-#define PARTICLE_SIZE 0.3f
+#define PARTICLE_SIZE 0.5f
 #define PARTICLE_CATEGORY_BITS 1
+#define DAMPING_FACTOR 0.05f
 
 class SmokeParticle
 {

@@ -52,7 +52,8 @@ SOURCES += \
     window/smokeparticle.cpp \
     window/vortex.cpp \
     window/vortexshedder.cpp \
-    window/solidobject.cpp
+    window/solidobject.cpp \
+    window/smokeemitter.cpp
 
 
 HEADERS += \
@@ -63,7 +64,8 @@ HEADERS += \
     window/smokeparticle.h \
     window/vortex.h \
     window/vortexshedder.h \
-    window/solidobject.h
+    window/solidobject.h \
+    window/smokeemitter.h
 
 RESOURCES += \
     $${RES}/resources.qrc

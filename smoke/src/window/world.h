@@ -13,13 +13,13 @@
 #include <GL/glu.h>
 
 #include <ode/ode.h>
-#include <GL/glu.h>
 
 #include <iostream>
 
 #include "smokeparticle.h"
 #include "vortex.h"
 #include "solidobject.h"
+#include "smokeemitter.h"
 
 class World : protected QOpenGLFunctions
 {
@@ -31,10 +31,11 @@ public:
     void draw();
     void tick(float seconds);
 
-    GLUquadric *quad;
+    void toggleDrawVortices();
+    void toggleMovingSphere();
+    Vortex lookupVortex(dBodyID v);
 
-    void addBody();
-    void addVortex();
+    GLUquadric *quad;
 
     // Values that are only created once per world
     dWorldID m_world_id;
@@ -43,15 +44,12 @@ public:
 
     dJointGroupID contactgroup;
 
-    QList<SmokeParticle> particles;
-
-    QList<Vortex> vortices;
+    QList<SmokeEmitter*> emitters;
 
     // Sphere that moves left and right through the smoke
     SolidObject sphere;
 
     bool moveSphere;
-    bool drawVortices;
     bool moveWing;
 };
 

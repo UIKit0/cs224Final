@@ -7,6 +7,7 @@ SmokeParticle::SmokeParticle(dWorldID world, dSpaceID space, dMass mass)
 
     dGeomSetBody(geom, body);
 
+    // Collide with everything except self
     dGeomSetCategoryBits(geom, PARTICLE_CATEGORY_BITS);
     dGeomSetCollideBits(geom, ~PARTICLE_CATEGORY_BITS);
 
@@ -29,12 +30,12 @@ void SmokeParticle::draw(GLUquadric* quad){
 }
 
 void SmokeParticle::update(){
-    dBodyAddForce(body, 0, dRandReal()*0.05f, 0);
-    if (dRandReal() < 0.1){
-        dBodyAddForce(body, dRandReal()*0.2f - 0.1f, 0, dRandReal()*0.2f - 0.1f);
-    }
+    dBodyAddForce(body, 0, dRandReal()*0.02f, 0);
+//    if (dRandReal() < 0.1){
+//        dBodyAddForce(body, dRandReal()*0.2f - 0.1f, 0, dRandReal()*0.2f - 0.1f);
+//    }
     // Drag force
     const dReal* velocity = dBodyGetLinearVel(body);
     glm::vec3 vel(velocity[0], velocity[1], velocity[2]);
-    dBodyAddForce(body, -vel[0]*0.1f, -vel[1]*0.1f, -vel[2]*0.1f);
+    dBodyAddForce(body, -vel[0]*DAMPING_FACTOR, -vel[1]*DAMPING_FACTOR, -vel[2]*DAMPING_FACTOR);
 }

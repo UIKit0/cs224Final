@@ -4,8 +4,7 @@
 
 
 // TODO: move to a smoke emitter class
-#define SPAWN_SIZE 3
-#define MAX_HEIGHT 20
+
 
 World::World() :
     sphereMesh("cube.obj")
@@ -17,54 +16,63 @@ World::World() :
     // TODO: make this a quad structure maybe? or hash?
     space = dSimpleSpaceCreate(0);
 
-    for (int i = 0; i < 10; i++){
-        addBody();
-    }
+//    quad = gluNewQuadric();
 
-    addVortex();
+    emitters.append(new SmokeEmitter(m_world_id, space, m));
 
-//    object = dBodyCreate(m_world_id);
-//    dBodySetKinematic(object);
-//    dMassSetSphere(&m, 10.0f, SPHERE_SIZE);
-//    obj = dCreateSphere(space, SPHERE_SIZE);
-//    dGeomSetBody(obj, object);
-//    dBodySetPosition(object, 10, 10, 0);
-//    movingPosX = false;
     sphere = SolidObject(m_world_id, space, m);
 
     contactgroup = dJointGroupCreate(0);
 
     dAllocateODEDataForThread(dAllocateMaskAll);
 
-    drawVortices = false;
     moveSphere = false;
     moveWing = false;
 }
 
 World::~World(){
+    emitters.clear();
     dJointGroupDestroy(contactgroup);
     dSpaceDestroy(space);
     dWorldDestroy(m_world_id);
     dCloseODE();
 }
 
-static void handleVortexCollision(World *world, dBodyID vBody, dBodyID pbody){
-    for (int i = 0; i < world->vortices.size(); i++){
-        if (world->vortices[i].body == vBody){
-            Vortex v = world->vortices[i];
-            const dReal* ppos = dBodyGetPosition(pbody);
-            const dReal* vpos = dBodyGetPosition(vBody);
-            glm::vec3 r(ppos[0] - vpos[0], ppos[1] - vpos[1], ppos[2] - vpos[2]);
-            float rlength = r.length();
+void World::toggleDrawVortices(){
+    for (int i = 0; i < emitters.size(); i++){
+        emitters[i]->drawVortices = !emitters[i]->drawVortices;
+    }
+}
 
-            float force = -v.force*fmin(pow(rlength, -v.falloff), 1.0f);
-            glm::vec3 tangent = glm::cross(v.axis, r/rlength);
-            glm::vec3 f = (tangent + glm::cross(tangent, v.axis)*0.5f)*force;
-            dBodyAddForce(pbody, f[0], f[1], f[2]);
+void World::toggleMovingSphere(){
+    if (sphere.moving != 0)
+        sphere.stop();
+    else
+        sphere.start();
+}
 
-            return;
+// TODO: make this runtime not horrendous
+Vortex World::lookupVortex(dBodyID v){
+    for (int i = 0; i < emitters.size(); i++){
+        for (int j = 0; j < emitters[i]->vortices.size(); j++){
+            if (emitters[i]->vortices[j].body == v){
+                return emitters[i]->vortices[j];
+            }
         }
     }
+}
+
+static void handleVortexCollision(Vortex v, dBodyID pbody){
+    const dReal* ppos = dBodyGetPosition(pbody);
+    const dReal* vpos = dBodyGetPosition(v.body);
+    glm::vec3 r(ppos[0] - vpos[0], ppos[1] - vpos[1], ppos[2] - vpos[2]);
+    float rlength = glm::length(r);
+    r = glm::normalize(r);
+
+    float force = -v.force*fmin(pow(rlength, -v.falloff), 1.0f);
+    glm::vec3 tangent = glm::cross(v.axis, r);
+    glm::vec3 f = (tangent + glm::cross(tangent, v.axis)*v.centripetal)*force;
+    dBodyAddForce(pbody, f[0], f[1], f[2]);
 }
 
 static void nearCallback(void* data, dGeomID o1, dGeomID o2){
@@ -80,44 +88,16 @@ static void nearCallback(void* data, dGeomID o1, dGeomID o2){
     contact.surface.soft_cfm = 0.001;
     if (dCollide(o1, o2, 1, &contact.geom, sizeof(dContact))){
         if (dGeomGetCategoryBits(o1) == VORTEX_CATEGORY_BITS){
-            handleVortexCollision(world, b1, b2);
+            handleVortexCollision(world->lookupVortex(b1), b2);
         }
         else if (dGeomGetCategoryBits(o2) == VORTEX_CATEGORY_BITS){
-            handleVortexCollision(world, b2, b1);
+            handleVortexCollision(world->lookupVortex(b2), b1);
         }
         else{
             dJointID c = dJointCreateContact(world->m_world_id, world->contactgroup, &contact);
             dJointAttach(c, b1, b2);
         }
     }
-}
-
-void World::addBody(){
-    SmokeParticle sp = SmokeParticle(m_world_id, space, m);
-
-    dBodySetPosition(sp.body, dRandReal()*SPAWN_SIZE - SPAWN_SIZE/2,
-                     dRandReal(),
-                     dRandReal()*SPAWN_SIZE - SPAWN_SIZE/2);
-    float maxInitialVel = 0.05f;
-    float maxVerticalVel = 0.3f;
-    dBodySetLinearVel(sp.body, dRandReal()*maxInitialVel*2 - maxInitialVel,
-                            dRandReal()*maxVerticalVel,
-                            dRandReal()*maxInitialVel*2 - maxInitialVel);
-
-    particles.append(sp);
-}
-
-void World::addVortex(){
-    Vortex v = Vortex(m_world_id, space, m, dRandReal()*2 + 0.5f);
-
-    dBodySetPosition(v.body, dRandReal()*SPAWN_SIZE*2 - SPAWN_SIZE, 3, dRandReal()*SPAWN_SIZE*2 - SPAWN_SIZE);
-
-    v.axis = glm::normalize(glm::vec3(dRandReal(), dRandReal(), dRandReal()));
-    v.falloff = 2.0f;
-    v.force = dRandReal()*0.5f;
-    v.forcedecay = 0.5f;
-    v.rangedecay = 0.05f;
-    vortices.append(v);
 }
 
 void World::init()
@@ -147,26 +127,12 @@ void World::draw()
     glPushMatrix();
     glScalef(0.3f, 0.3f, 0.3f);
 
-//    // Particles
-    glColor3f(1,0,0);
-    for (int i = 0; i < particles.size(); i++){
-        particles[i].draw(sphereMesh);
+    for (int i = 0; i < emitters.size(); i++){
+        emitters[i]->draw(sphereMesh);
     }
 
 //    // Sphere
 //    sphere.draw(sphereMesh);
-
-//    // Vortices
-//    if (drawVortices){
-//        glEnable(GL_BLEND);
-//        glBlendFunc(GL_ONE, GL_ONE_MINUS_DST_COLOR);
-
-//        glColor3f(0.5f,0.5f,0.9f);
-//        for (int i = 0; i < vortices.size(); i++){
-//              vortices[i].draw(sphereMesh);
-//        }
-//        glDisable(GL_BLEND);
-//    }
 
     glPopMatrix();
 
@@ -186,57 +152,13 @@ void World::draw()
 void World::tick(float seconds){
     // Upwards force
     dSpaceCollide(space, this, nearCallback);
-    if (moveSphere){
-        sphere.update(seconds);
-    }
-    else{
-        sphere.stop();
+    sphere.update(seconds);
+
+    for (int i = 0; i < emitters.size(); i++){
+        emitters[i]->update(seconds);
     }
 
-    for (int i = 0; i < particles.size(); i++){
-        particles[i].update();
-    }
-
-    for (int i = 0; i < vortices.size(); i++){
-        vortices[i].update(seconds);
-    }
-
-    dWorldQuickStep(m_world_id, 0.15f);
+    dWorldQuickStep(m_world_id, 0.35f);
     dJointGroupEmpty(contactgroup);
-
-    int toAdd;
-    if (particles.size() > 1200)
-        toAdd = 2;
-    else
-        toAdd = 6;
-
-    for (int i = 0; i < toAdd; i++){
-        addBody();
-    }
-
-    if (dRandReal() < 0.05)
-        addVortex();
-
-    for (int i = vortices.size() - 1; i >= 0; i--){
-        if (!vortices[i].active){
-            vortices.removeAt(i);
-            continue;
-        }
-        const dReal *pos = dBodyGetPosition(vortices[i].body);
-        if (pos[1] > MAX_HEIGHT){
-            vortices[i].destroy();
-            vortices.removeAt(i);
-        }
-    }
-
-    // Remove from back of the list to avoid skipping elements
-    for (int i = particles.size() - 1; i >= 0; i--){
-        const dReal *pos = dBodyGetPosition(particles[i].body);
-        if (pos[1] > MAX_HEIGHT){
-            particles[i].destroy();
-            particles.removeAt(i);
-        }
-    }
-//    std::cout<<particles.size()<<std::endl;
 }
 

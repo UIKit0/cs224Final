@@ -11,6 +11,7 @@
 
 #define PARTICLE_SIZE 0.3f
 #define PARTICLE_CATEGORY_BITS 1
+#define DAMPING_FACTOR 0.05f
 
 class SmokeParticle
 {

@@ -7,18 +7,21 @@ Vortex::Vortex(dWorldID world, dSpaceID space, dMass mass, float r)
     dGeomSetBody(geom, body);
 
     dGeomSetCategoryBits(geom, VORTEX_CATEGORY_BITS);
-    dGeomSetCollideBits(geom, ~VORTEX_CATEGORY_BITS);
+    dGeomSetCollideBits(geom, VORTEX_COLLIDE_BITS);
 
     dBodySetKinematic(body);
 
     range = r;
     active = true;
+
+//    g_vortices.insert(body, this);
 }
 
 void Vortex::destroy(){
     dGeomDestroy(geom);
     dBodyDestroy(body);
     active = false;
+//    Vortex::g_vortices.remove(body);
 }
 
 void Vortex::draw(Obj &obj){
@@ -27,6 +30,8 @@ void Vortex::draw(Obj &obj){
     glTranslatef(pos[0], pos[1], pos[2]);
     obj.draw();
     glTranslatef(-pos[0], -pos[1], -pos[2]);
+
+    glDisable(GL_BLEND);
 }
 
 void Vortex::update(float seconds){
@@ -38,7 +43,7 @@ void Vortex::update(float seconds){
     range = range/rangefactor;
 
     // Disable the vortex if it's too weak
-    if (force < 0.01f){
+    if (force < 0.001f){
         destroy();
     }
     else{
@@ -48,9 +53,6 @@ void Vortex::update(float seconds){
         dGeomSetBody(geom, body);
 
         dGeomSetCategoryBits(geom, VORTEX_CATEGORY_BITS);
-        dGeomSetCollideBits(geom, ~VORTEX_CATEGORY_BITS);
-
-        const dReal *pos = dBodyGetPosition(body);
-        dBodySetPosition(body, pos[0], pos[1] + dRandReal()*0.1f, pos[2]);
+        dGeomSetCollideBits(geom, VORTEX_COLLIDE_BITS);
     }
 }

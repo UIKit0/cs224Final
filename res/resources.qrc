@@ -7,5 +7,7 @@
         <file>textures/cube.png</file>
         <file>textures/cube2.png</file>
         <file>meshes/sphere.obj</file>
+        <file>meshes/cube.obj</file>
+        <file>meshes/monkey.obj</file>
     </qresource>
 </RCC>

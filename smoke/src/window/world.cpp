@@ -147,28 +147,29 @@ void World::draw()
     glPushMatrix();
     glScalef(0.3f, 0.3f, 0.3f);
 
-    // Particles
+//    // Particles
     glColor3f(1,0,0);
     for (int i = 0; i < particles.size(); i++){
         particles[i].draw(sphereMesh);
     }
 
-    // Sphere
-    sphere.draw(sphereMesh);
+//    // Sphere
+//    sphere.draw(sphereMesh);
 
-    // Vortices
-    if (drawVortices){
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_ONE, GL_ONE_MINUS_DST_COLOR);
+//    // Vortices
+//    if (drawVortices){
+//        glEnable(GL_BLEND);
+//        glBlendFunc(GL_ONE, GL_ONE_MINUS_DST_COLOR);
 
-        glColor3f(0.5f,0.5f,0.9f);
-        for (int i = 0; i < vortices.size(); i++){
-              vortices[i].draw(sphereMesh);
-        }
-        glDisable(GL_BLEND);
-    }
+//        glColor3f(0.5f,0.5f,0.9f);
+//        for (int i = 0; i < vortices.size(); i++){
+//              vortices[i].draw(sphereMesh);
+//        }
+//        glDisable(GL_BLEND);
+//    }
 
     glPopMatrix();
+
 
     // Draw grid
     glColor4f(0, 0, 0, 0.25);

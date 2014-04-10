@@ -12,11 +12,12 @@ OpenGLWindow::OpenGLWindow(QWindow *parent)
     setSurfaceType(QWindow::OpenGLSurface);
 
     QSurfaceFormat format;
-    format.setSamples(16); // multi-sampling
+    format.setSamples(8); // multi-sampling
     format.setRenderableType(QSurfaceFormat::OpenGL); // change to opengles on mobile
 //    format.setProfile(QSurfaceFormat::CoreProfile);
 //    format.setMajorVersion(4);
 //    format.setMinorVersion(3);
+    format.setDepthBufferSize(1);
     setFormat(format);
 
     // Hide the cursor since this is a fullscreen app

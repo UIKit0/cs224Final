@@ -55,12 +55,12 @@ void SolidObject::update(float seconds){
     }
 }
 
-void SolidObject::draw(GLUquadric *quad){
+void SolidObject::draw(Obj &obj) {
     glColor3f(0,1,0);
     const dReal* pos = dBodyGetPosition(body);
 
     glTranslatef(pos[0], pos[1], pos[2]);
-    gluSphere(quad, SPHERE_SIZE, 16, 16);
+    obj.draw();
     glTranslatef(-pos[0], -pos[1], -pos[2]);
 
     for (int i = 0; i < shedders.size(); i++){

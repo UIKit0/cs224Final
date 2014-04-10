@@ -74,7 +74,7 @@ void Window::initialize()
     m_camera.setAspectRatio(width()/height());
 
     // world
-    m_world.init();
+//    m_world.init();
 
     // shaders
 
@@ -161,7 +161,7 @@ void Window::renderOpenGL()
 
     m_program->setUniformValue("texture", 0);
 
-    m_world.drawWorld(m_program);
+//    m_world.drawWorld(m_program);
 
     glDisableVertexAttribArray(m_posAttr);
     glDisableVertexAttribArray(m_texAttr);

@@ -20,7 +20,7 @@ Camera::Camera()
 
 //    m_position = glm::vec3(5.1f, 3.5f, 5.1f);
     m_position = glm::vec3(-1.2f, 3.84f, -8.06f);
-    m_rotation = m_lastRotation = glm::vec2(428.39f, -16.39f);
+    m_rotation = m_lastRotation = glm::vec2(68.39f, -16.39f);
 }
 
 void Camera::setAspectRatio(float aspect)

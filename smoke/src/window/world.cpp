@@ -6,7 +6,8 @@
 // TODO: move to a smoke emitter class
 
 
-World::World()
+World::World() :
+    sphereMesh("cube.obj")
 {
     dInitODE();
     m_world_id = dWorldCreate();
@@ -117,6 +118,8 @@ void World::init()
     glLightfv(GL_LIGHT0, GL_POSITION, LightPosition);
 
     glEnable(GL_TEXTURE_2D);
+
+
 }
 
 void World::draw()
@@ -126,12 +129,12 @@ void World::draw()
 
     for (int i = 0; i < emitters.size(); i++){
         emitters[i]->draw(quad);
-    }
 
-    // Sphere
-    sphere.draw(quad);
+//    // Sphere
+//    sphere.draw(sphereMesh);
 
     glPopMatrix();
+
 
     // Draw grid
     glColor4f(0, 0, 0, 0.25);

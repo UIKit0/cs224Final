@@ -84,6 +84,7 @@ void Window::renderOpenGL()
     glLoadMatrixf(glm::value_ptr(m_camera.vMatrix));
 
     m_world.draw();
+
     getErrors("rendering END");
 }
 

@@ -24,15 +24,11 @@ void Vortex::destroy(){
     g_vortices.remove(body);
 }
 
-void Vortex::draw(GLUquadric* quad){
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_ONE, GL_ONE_MINUS_DST_COLOR);
-
-    glColor3f(0.5f,0.5f,0.9f);
+void Vortex::draw(Obj &obj){
     const dReal* pos = dBodyGetPosition(body);
 
     glTranslatef(pos[0], pos[1], pos[2]);
-    gluSphere(quad, range, 16, 16);
+    obj.draw();
     glTranslatef(-pos[0], -pos[1], -pos[2]);
 
     glDisable(GL_BLEND);

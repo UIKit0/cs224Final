@@ -20,7 +20,7 @@ isEmpty(ODE) {
 }
 
 # GLU library
-LIBS += -lGLU
+#LIBS += -lGLU
 
 # ODE library
 LIBS += -L$${ODE}/lib \
@@ -53,7 +53,11 @@ SOURCES += \
     window/vortex.cpp \
     window/vortexshedder.cpp \
     window/solidobject.cpp \
+<<<<<<< HEAD
     window/smokeemitter.cpp
+=======
+    assets/obj.cpp
+>>>>>>> 2cf21ad35219b15dffa73b4f434ab4bab349f200
 
 
 HEADERS += \
@@ -65,7 +69,11 @@ HEADERS += \
     window/vortex.h \
     window/vortexshedder.h \
     window/solidobject.h \
+<<<<<<< HEAD
     window/smokeemitter.h
+=======
+    assets/obj.h
+>>>>>>> 2cf21ad35219b15dffa73b4f434ab4bab349f200
 
 RESOURCES += \
     $${RES}/resources.qrc
@@ -75,6 +83,15 @@ OBJECTS_DIR = $${OUT_PWD}/.obj
 MOC_DIR = $${OUT_PWD}/.moc
 RCC_DIR = $${OUT_PWD}/.rcc
 UI_DIR = $${OUT_PWD}/.ui
+
+macx {
+    INCLUDEPATH += /usr/X11/include
+    LIBS += -L/usr/X11R6/lib
+    # CLANG
+    QMAKE_LFLAGS += -std=c++11 -stdlib=libc++
+    QMAKE_CXXFLAGS += -stdlib=libc++
+    QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.7
+}
 
 QMAKE_CXXFLAGS += -std=c++11
 QMAKE_CXXFLAGS_RELEASE -= -O2

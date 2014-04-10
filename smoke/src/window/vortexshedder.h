@@ -28,12 +28,8 @@ public:
                   float f, float c, float r);
 
     void update(float seconds);
-<<<<<<< HEAD
-    void draw(GLUquadric* quad);
-    void destroy();
-=======
     void draw(Obj &obj);
->>>>>>> 2cf21ad35219b15dffa73b4f434ab4bab349f200
+    void destroy();
 
     dBodyID owner;
     // Transformation from velocity of owner to an offet for the location of the vortex

@@ -64,7 +64,7 @@ void SolidObject::draw(Obj &obj) {
     glTranslatef(-pos[0], -pos[1], -pos[2]);
 
     for (int i = 0; i < shedders.size(); i++){
-        shedders[i].draw(quad);
+        shedders[i].draw(obj);
     }
 }
 

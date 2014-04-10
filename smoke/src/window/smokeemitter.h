@@ -12,6 +12,7 @@
 
 #include "smokeparticle.h"
 #include "vortex.h"
+#include "assets/obj.h"
 
 #define SPAWN_SIZE 1.5f
 #define MAX_HEIGHT 20
@@ -24,7 +25,7 @@ public:
 
     void destroy();
     void update(float seconds);
-    void draw(GLUquadric* quad);
+    void draw(Obj &obj);
 
     void addBody();
     void addVortex();

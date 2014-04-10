@@ -20,12 +20,9 @@ public:
 
     void update(float seconds);
     void stop();
-<<<<<<< HEAD
     void start();
-    void draw(GLUquadric *quad);
-=======
+//    void draw(GLUquadric *quad);
     void draw(Obj &obj);
->>>>>>> 2cf21ad35219b15dffa73b4f434ab4bab349f200
     void destroy();
 
     dBodyID body;

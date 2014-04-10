@@ -16,7 +16,7 @@ World::World() :
     // TODO: make this a quad structure maybe? or hash?
     space = dSimpleSpaceCreate(0);
 
-    quad = gluNewQuadric();
+//    quad = gluNewQuadric();
 
     emitters.append(new SmokeEmitter(m_world_id, space, m));
 
@@ -128,7 +128,8 @@ void World::draw()
     glScalef(0.3f, 0.3f, 0.3f);
 
     for (int i = 0; i < emitters.size(); i++){
-        emitters[i]->draw(quad);
+        emitters[i]->draw(sphereMesh);
+    }
 
 //    // Sphere
 //    sphere.draw(sphereMesh);

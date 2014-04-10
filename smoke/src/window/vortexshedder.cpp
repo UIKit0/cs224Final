@@ -67,7 +67,7 @@ void VortexShedder::update(float seconds){
 //    }
 }
 
-void VortexShedder::draw(Obj *obj){
+void VortexShedder::draw(Obj &obj){
     if (mainVortex)
         mainVortex->draw(obj);
 }

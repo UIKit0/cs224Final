@@ -14,14 +14,14 @@ Vortex::Vortex(dWorldID world, dSpaceID space, dMass mass, float r)
     range = r;
     active = true;
 
-    g_vortices.insert(body, this);
+//    g_vortices.insert(body, this);
 }
 
 void Vortex::destroy(){
     dGeomDestroy(geom);
     dBodyDestroy(body);
     active = false;
-    g_vortices.remove(body);
+//    Vortex::g_vortices.remove(body);
 }
 
 void Vortex::draw(Obj &obj){

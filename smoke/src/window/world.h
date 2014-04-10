@@ -35,15 +35,12 @@ public:
     void draw();
     void tick(float seconds);
 
-<<<<<<< HEAD
     void toggleDrawVortices();
     void toggleMovingSphere();
     Vortex lookupVortex(dBodyID v);
-=======
 //    GLUquadric *quad;
->>>>>>> 2cf21ad35219b15dffa73b4f434ab4bab349f200
 
-    GLUquadric *quad;
+//    GLUquadric *quad;
 
     // Values that are only created once per world
     dWorldID m_world_id;

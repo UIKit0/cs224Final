@@ -12,17 +12,17 @@ SmokeEmitter::SmokeEmitter(dWorldID w, dSpaceID s, dMass m)
     drawVortices = false;
 }
 
-void SmokeEmitter::draw(GLUquadric *quad){
+void SmokeEmitter::draw(Obj &obj){
     // Particles
     glColor3f(1,0,0);
     for (int i = 0; i < particles.size(); i++){
-        particles[i].draw(quad);
+        particles[i].draw(obj);
     }
 
     // Vortices
     if (drawVortices){
         for (int i = 0; i < vortices.size(); i++){
-              vortices[i].draw(quad);
+              vortices[i].draw(obj);
         }
     }
 }

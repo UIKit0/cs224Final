@@ -9,5 +9,6 @@
         <file>meshes/sphere.obj</file>
         <file>meshes/cube.obj</file>
         <file>meshes/monkey.obj</file>
+        <file>meshes/pyramid.obj</file>
     </qresource>
 </RCC>

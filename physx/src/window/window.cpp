@@ -161,7 +161,7 @@ void Window::keyPressEvent(QKeyEvent *event)
             transform = PxTransform(eye, PxQuat(m));
         }
 
-        m_world.createDynamic(transform, PxSphereGeometry(3.0f), dir*200);
+        m_world.createDynamic(transform, PxSphereGeometry(3.0f), dir*100);
     }
 }
 

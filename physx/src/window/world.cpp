@@ -133,7 +133,7 @@ void World::initPhysics(bool interactive)
 void World::stepPhysics(bool interactive)
 {
     PX_UNUSED(interactive)
-    gScene->simulate(1.0f/60.0f);
+    gScene->simulate(1.0f/30.0f);
     gScene->fetchResults(true);
 }
 
@@ -148,8 +148,6 @@ void World::cleanupPhysics(bool interactive)
     gPhysics->release();
     profileZoneManager->release();
     gFoundation->release();
-
-    printf("SnippetHelloWorld done.\n");
 }
 
 void World::renderActors(PxRigidActor** actors, const PxU32 numActors, bool shadows)

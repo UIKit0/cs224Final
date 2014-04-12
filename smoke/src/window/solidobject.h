@@ -8,7 +8,8 @@
 #include <glm/ext.hpp>
 #include "assets/obj.h"
 
-#define SPHERE_SIZE 2.0f
+#define SIDE_LENGTH 2.0f
+#define HEIGHT 0.5f
 
 #include "vortexshedder.h"
 
@@ -21,7 +22,6 @@ public:
     void update(float seconds);
     void stop();
     void start();
-//    void draw(GLUquadric *quad);
     void draw(Obj &obj);
     void destroy();
 
@@ -30,7 +30,10 @@ public:
 
     int moving;
 
-    QList<VortexShedder> shedders;
+    glm::vec3 direction;
+    glm::vec3 left;
+
+    QList<VortexShedder*> shedders;
 };
 
 #endif // SOLIDOBJECT_H

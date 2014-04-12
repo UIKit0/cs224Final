@@ -1,11 +1,5 @@
 #include "world.h"
 
-//#define SPHERE_SIZE 2.0f
-
-
-// TODO: move to a smoke emitter class
-
-
 World::World() :
     sphereMesh("cube.obj")
 {
@@ -13,14 +7,25 @@ World::World() :
     m_world_id = dWorldCreate();
     dWorldSetGravity(m_world_id, 0, 0, 0);
 
-    // TODO: make this a quad structure maybe? or hash?
-    space = dSimpleSpaceCreate(0);
+    perlin = new PerlinNoise(0.2f, 5);
 
-//    quad = gluNewQuadric();
+    dVector3 center;
+    center[0] = 0;
+    center[1] = 0;
+    center[2] = 0;
+
+    dVector3 extent;
+    extent[0] = 1;
+    extent[1] = 1;
+    extent[2] = 1;
+    space = dHashSpaceCreate(0);
+    dHashSpaceSetLevels(space, 1, 5);
 
     emitters.append(new SmokeEmitter(m_world_id, space, m));
 
     sphere = SolidObject(m_world_id, space, m);
+
+    clouds.append(new Cloud(m_world_id, m, perlin));
 
     contactgroup = dJointGroupCreate(0);
 
@@ -52,26 +57,26 @@ void World::toggleMovingSphere(){
 }
 
 // TODO: make this runtime not horrendous
-Vortex World::lookupVortex(dBodyID v){
-    for (int i = 0; i < emitters.size(); i++){
-        for (int j = 0; j < emitters[i]->vortices.size(); j++){
-            if (emitters[i]->vortices[j].body == v){
-                return emitters[i]->vortices[j];
-            }
-        }
-    }
+Vortex* World::lookupVortex(dBodyID v){
+    if (g_vortices.contains(v))
+        return g_vortices.value(v);
+    std::cout<<"no"<<std::endl;
+    return NULL;
 }
 
-static void handleVortexCollision(Vortex v, dBodyID pbody){
+static void handleVortexCollision(Vortex* v, dBodyID pbody){
+    if (v == NULL)
+        return;
+
     const dReal* ppos = dBodyGetPosition(pbody);
-    const dReal* vpos = dBodyGetPosition(v.body);
+    const dReal* vpos = dBodyGetPosition(v->body);
     glm::vec3 r(ppos[0] - vpos[0], ppos[1] - vpos[1], ppos[2] - vpos[2]);
     float rlength = glm::length(r);
     r = glm::normalize(r);
 
-    float force = -v.force*fmin(pow(rlength, -v.falloff), 1.0f);
-    glm::vec3 tangent = glm::cross(v.axis, r);
-    glm::vec3 f = (tangent + glm::cross(tangent, v.axis)*v.centripetal)*force;
+    float force = -v->force*fmin(pow(rlength, -v->falloff), 1.0f);
+    glm::vec3 tangent = glm::cross(v->axis, r);
+    glm::vec3 f = (tangent + glm::cross(tangent, v->axis)*v->centripetal)*force;
     dBodyAddForce(pbody, f[0], f[1], f[2]);
 }
 
@@ -119,7 +124,6 @@ void World::init()
 
     glEnable(GL_TEXTURE_2D);
 
-
 }
 
 void World::draw()
@@ -131,11 +135,14 @@ void World::draw()
         emitters[i]->draw(sphereMesh);
     }
 
-//    // Sphere
-//    sphere.draw(sphereMesh);
+    for (int i = 0; i < clouds.size(); i++){
+        clouds[i]->draw(sphereMesh);
+    }
+
+    // Sphere
+    sphere.draw(sphereMesh);
 
     glPopMatrix();
-
 
     // Draw grid
     glColor4f(0, 0, 0, 0.25);

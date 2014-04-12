@@ -14,13 +14,14 @@
 #include "vortex.h"
 #include "assets/obj.h"
 
+#include "perlinnoise.h"
+
 #define SPAWN_SIZE 1.5f
-#define MAX_HEIGHT 20
+#define MAX_HEIGHT 15
 
 class SmokeEmitter
 {
 public:
-    SmokeEmitter();
     SmokeEmitter(dWorldID w, dSpaceID s, dMass m);
 
     void destroy();
@@ -34,9 +35,11 @@ public:
     dSpaceID space;
     dMass mass;
 
+    QList<PerlinNoise*> perlins;
+
     QList<SmokeParticle> particles;
 
-    QList<Vortex> vortices;
+    QList<Vortex*> vortices;
 
     bool drawVortices;
 };

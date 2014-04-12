@@ -1,73 +1,52 @@
 #include "vortexshedder.h"
 
-VortexShedder::VortexShedder(dWorldID w, dSpaceID s, dMass m, dBodyID o,
-              glm::mat3x3 loc, glm::mat3x3 at,
-              float vt, float vs,
-              float f, float c, float r){
+VortexShedder::VortexShedder(dWorldID w, dSpaceID s, dMass m, dBodyID o){
     owner = o;
-    locationtransform = loc;
-    axistransform = at;
-    velThreshold = vt;
-    velScale = vs;
-    force = f;
-    centripetal = c;
-    range = r;
-
     world = w;
     space = s;
     mass = m;
-
-    mainVortex = NULL;
 }
 
 void VortexShedder::destroy(){
-    if (mainVortex)
-        mainVortex->destroy();
+    vortices.clear();
 }
 
 void VortexShedder::update(float seconds){
     const dReal* v = dBodyGetLinearVel(owner);
     glm::vec3 vel(v[0], v[1], v[2]);
     float vlength = glm::length(vel);
-    if (vlength > velThreshold){
+    if (vlength > velThreshold && dRandReal() > 0.9f){
         float scale = exp(velScale*(vlength - velThreshold));
-        if (mainVortex == NULL)
-            mainVortex = new Vortex(world, space, mass, range*scale);
+        Vortex* newVortex = new Vortex(world, space, mass, range);
 
-//        mainVortex->falloff = 1.5f;
-//        mainVortex->axis = glm::vec3(1,0,0);//axistransform * vel / vlength;
-//        mainVortex->forcedecay = 0.0f;
-//        mainVortex->force = 10.5f;
-//        mainVortex->centripetal = centripetal;
-//        mainVortex->rangedecay = 0.0f;
-
-        mainVortex->falloff = 3.0f;
-        mainVortex->force = 0.05f;
-        mainVortex->centripetal = 2.5f;
-        mainVortex->forcedecay = 0.5f;
-        mainVortex->rangedecay = 0.05f;
-
-//        std::cout<<force*scale<<std::endl;
+        newVortex->axis = axis;
+        newVortex->falloff = falloff;
+        newVortex->force = force;
+        newVortex->forcedecay = forcedecay;
+        newVortex->centripetal = centripetal;
+        newVortex->rangedecay = 0.05f;
 
         const dReal* pos = dBodyGetPosition(owner);
-        glm::vec3 location = locationtransform * vel;
-        dBodySetPosition(mainVortex->body, pos[0] - 2.5f,
-                                    pos[1],
-                                    pos[2]);
-    }
-    else{
-        if (mainVortex)
-            mainVortex->destroy();
-        mainVortex = NULL;
+        dBodySetPosition(newVortex->body, location[0],
+                                    location[1],
+                                    location[2]);
+
+        const dReal* vel = dBodyGetLinearVel(owner);
+        dBodySetLinearVel(newVortex->body, vel[0], vel[1], vel[2]);
+        vortices.append(newVortex);
     }
 
-    // TODO: update everything else in the list
-//    for (int i = 1; i < vortices.size(); i++){
-//        vortices[i].update(seconds);
-//    }
+    for (int i = vortices.size() - 1; i >= 0; i--){
+        vortices[i]->update(seconds);
+        if (!vortices[i]->active){
+            delete vortices[i];
+            vortices.removeAt(i);
+        }
+    }
 }
 
 void VortexShedder::draw(Obj &obj){
-    if (mainVortex)
-        mainVortex->draw(obj);
+    for (int i = 1; i < vortices.size(); i++){
+        vortices[i]->draw(obj);
+    }
 }

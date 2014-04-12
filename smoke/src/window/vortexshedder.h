@@ -14,7 +14,8 @@
 #include "assets/obj.h"
 /**
  * Represents interaction between a moving object and smoke.
- * Currently there is one main vortex that sticks to the object.
+ * Generates vortices based on the velocity of the object.
+ * The owning object should set the fields of the shedder before calling update().
  *
  * Eventually, vortices will be generated as the object moves.
  * @brief The VortexShedder class
@@ -22,39 +23,42 @@
 class VortexShedder
 {
 public:
-    VortexShedder(dWorldID w, dSpaceID s, dMass m, dBodyID o,
-                  glm::mat3x3 loc, glm::mat3x3 at,
-                  float vt, float vs,
-                  float f, float c, float r);
+    VortexShedder(dWorldID w, dSpaceID s, dMass m, dBodyID o);
 
     void update(float seconds);
     void draw(Obj &obj);
     void destroy();
 
     dBodyID owner;
-    // Transformation from velocity of owner to an offet for the location of the vortex
-    glm::mat3x3 locationtransform;
-    // Transformation from the velocity of the owner to the axis of the main vortex
-    glm::mat3x3 axistransform;
-    // Minimum velocity for vortex to be enabled
-    float velThreshold;
-    // Scaling factor of the various parameters based on velocity
-    float velScale;
-    // Base force
-    float force;
-    // Base centripetal force
-    float centripetal;
-    // Base range (large velocity makes for larger range)
-    float range;
-
     dWorldID world;
     dSpaceID space;
     dMass mass;
 
-    Vortex *mainVortex;
+    // Axis of the vortices, to be varied slightly.
+    glm::vec3 axis;
+    // Scaling constant
+    float velScale;
+    // Threshold for when to generate vortices
+    float velThreshold;
 
-    // Will eventually have more than one vortex in it
-    QList<Vortex> vortices;
+    // Base falloff
+    float falloff;
+    // Base force
+    float force;
+    // Base force decay
+    float forcedecay;
+    // Base centripetal force
+    float centripetal;
+    // Base range (large velocity makes for larger range)
+    float range;
+    // Base range decay
+    float rangedecay;
+
+    // Offset relative to the center of the owner
+    glm::vec3 location;
+
+    // List of vortices that this shedder has generated.
+    QList<Vortex*> vortices;
 };
 
 #endif // VORTEXSHEDDER_H

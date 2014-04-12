@@ -19,6 +19,8 @@ isEmpty(ODE) {
     ODE = /contrib/projects/ODE/0.13
 }
 
+ODE = /Users/jixuanwang/Documents/cs224Final/smoke/ode/0.13
+
 # GLU library
 #LIBS += -lGLU
 
@@ -54,7 +56,9 @@ SOURCES += \
     window/vortexshedder.cpp \
     window/solidobject.cpp \
     window/smokeemitter.cpp \
-    assets/obj.cpp
+    assets/obj.cpp \
+    window/cloud.cpp \
+    window/perlinnoise.cpp
 
 
 HEADERS += \
@@ -67,7 +71,9 @@ HEADERS += \
     window/vortexshedder.h \
     window/solidobject.h \
     window/smokeemitter.h \
-    assets/obj.h
+    assets/obj.h \
+    window/cloud.h \
+    window/perlinnoise.h
 
 RESOURCES += \
     $${RES}/resources.qrc

@@ -20,10 +20,10 @@ class Vortex
 {
 public:
     Vortex(dWorldID world, dSpaceID space, dMass mass, float r);
+    virtual ~Vortex();
 
     void update(float seconds);
     void draw(Obj &obj);
-    void destroy();
 
     dBodyID body;
     dGeomID geom;
@@ -38,8 +38,8 @@ public:
     float centripetal;
     float forcedecay;
     float rangedecay;
-
-//    static QHash<dBodyID, Vortex*> g_vortices;
 };
+
+extern QHash<dBodyID, Vortex*> g_vortices;
 
 #endif // VORTEX_H

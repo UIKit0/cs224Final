@@ -24,6 +24,10 @@
 #include "vortex.h"
 #include "solidobject.h"
 #include "smokeemitter.h"
+#include "cloud.h"
+#include "perlinnoise.h"
+
+extern QHash<dBodyID, Vortex*> g_vortices;
 
 class World : protected QOpenGLFunctions
 {
@@ -37,19 +41,20 @@ public:
 
     void toggleDrawVortices();
     void toggleMovingSphere();
-    Vortex lookupVortex(dBodyID v);
-//    GLUquadric *quad;
-
-//    GLUquadric *quad;
+    Vortex* lookupVortex(dBodyID v);
 
     // Values that are only created once per world
     dWorldID m_world_id;
     dSpaceID space;
     dMass m;
 
+    PerlinNoise *perlin;
+
     dJointGroupID contactgroup;
 
     QList<SmokeEmitter*> emitters;
+
+    QList<Cloud*> clouds;
 
     // Sphere that moves left and right through the smoke
     SolidObject sphere;

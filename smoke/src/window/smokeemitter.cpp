@@ -8,7 +8,7 @@ SmokeEmitter::SmokeEmitter(dWorldID w, dSpaceID s, dMass m)
     drawVortices = false;
     perlins.append(new PerlinNoise(0.2f, 5));
 
-    QImage img = QGLWidget::convertToGLFormat(QImage(":/textures/smoke.jpg"));
+    QImage img = QGLWidget::convertToGLFormat(QImage(":/textures/smoke.png"));
     glGenTextures(1, &sprites);
     glBindTexture(GL_TEXTURE_2D, sprites);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -32,9 +32,12 @@ void SmokeEmitter::draw(Obj &obj){
     glm::vec3 dz(m[2], m[6], m[10]); // front-back
 
     glColor3f(1,0,0);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE);
     for (int i = 0; i < particles.size(); i++){
         particles[i].draw(dx, dy, obj);
     }
+    glDisable(GL_BLEND);
     glBindTexture(GL_TEXTURE_2D, 0);
 
     // Vortices
@@ -106,7 +109,7 @@ void SmokeEmitter::addBody(){
                      dRandReal(),
                      dRandReal()*SPAWN_SIZE - SPAWN_SIZE/2);
     float maxInitialVel = 0.3f;
-    float maxVerticalVel = 0.5f;
+    float maxVerticalVel = 2.0f;
     dBodySetLinearVel(sp.body, dRandReal()*maxInitialVel*2 - maxInitialVel,
                             dRandReal()*maxVerticalVel,
                             dRandReal()*maxInitialVel*2 - maxInitialVel);

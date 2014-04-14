@@ -19,8 +19,6 @@ isEmpty(ODE) {
     ODE = /contrib/projects/ODE/0.13
 }
 
-ODE = /Users/jixuanwang/Documents/cs224Final/smoke/ode/0.13
-
 # GLU library
 #LIBS += -lGLU
 

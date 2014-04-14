@@ -34,23 +34,23 @@ void SmokeParticle::draw(glm::vec3 u, glm::vec3 v, Obj &obj){
     glTranslatef(pos[0], pos[1], pos[2]);
 
 //    float decay = pow(0.85f, lifetime);
-    dReal scale = dGeomSphereGetRadius(geom);
-    glScalef(scale, scale, scale);
-    obj.draw();
-    glScalef(1/scale, 1/scale, 1/scale);
+//    dReal scale = dGeomSphereGetRadius(geom);
+//    glScalef(scale, scale, scale);
+//    obj.draw();
+//    glScalef(1/scale, 1/scale, 1/scale);
 
-//    glm::vec3 corner = u + v;
-//    glm::vec3 corner2 = v - u;
-//    glBegin(GL_QUADS);
-//    glTexCoord2f(0, 0);
-//    glVertex3f(corner[0], corner[1], corner[2]);
-//    glTexCoord2f(0, 0.25f);
-//    glVertex3f(corner2[0], corner2[1], corner2[2]);
-//    glTexCoord2f(0.25f, 0.25f);
-//    glVertex3f(-corner[0], -corner[1], -corner[2]);
-//    glTexCoord2f(0.25f, 0);
-//    glVertex3f(-corner2[0], -corner2[1], -corner2[2]);
-//    glEnd();
+    glm::vec3 corner = u + v;
+    glm::vec3 corner2 = v - u;
+    glBegin(GL_QUADS);
+    glTexCoord2f(0, 0);
+    glVertex3f(corner[0], corner[1], corner[2]);
+    glTexCoord2f(0, 1);
+    glVertex3f(corner2[0], corner2[1], corner2[2]);
+    glTexCoord2f(1, 1);
+    glVertex3f(-corner[0], -corner[1], -corner[2]);
+    glTexCoord2f(1, 0);
+    glVertex3f(-corner2[0], -corner2[1], -corner2[2]);
+    glEnd();
 
     glTranslatef(-pos[0], -pos[1], -pos[2]);
 }
@@ -60,7 +60,7 @@ void SmokeParticle::update(float seconds){
     lifetime += seconds;
 
     float decay = pow(0.85f, lifetime);
-    if (decay < 0.1f){
+    if (decay < 0.3f){
         active = false;
         return;
     }
@@ -71,13 +71,13 @@ void SmokeParticle::update(float seconds){
 //    dMassSetSphere(&mass, 1/PARTICLE_SIZE, PARTICLE_SIZE*decay);
 //    dBodySetMass(body, &mass);
 
-    float scale = 1.0f;//*decay;
+    float scale = 0.2f;
     dBodyAddForce(body, 0, dRandReal()*scale, 0);
     const dReal *loc = dBodyGetPosition(body);
 
-    float noise = perlin->perlin_noise(loc[1], time*scale*10, loc[0]*loc[0] + loc[2]*loc[2]);
-    float noise2 = perlin->perlin_noise(loc[1] + 1, time*scale*10, loc[0]*loc[0] + loc[2]*loc[2]);
-    dBodyAddForce(body, noise*scale, 0, noise2*scale);
+    float noise = perlin->perlin_noise(loc[1], time*scale, loc[0]*loc[0] + loc[2]*loc[2]);
+    float noise2 = perlin->perlin_noise(loc[1] + 1, time*scale, loc[0]*loc[0] + loc[2]*loc[2]);
+    dBodyAddForce(body, noise*scale*10, 0, noise2*scale*10);
 
     // Drag force
     const dReal* velocity = dBodyGetLinearVel(body);

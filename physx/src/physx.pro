@@ -8,6 +8,8 @@ QT += core gui opengl
 
 TEMPLATE = app
 
+#message($${CONFIG})
+
 # PHYSX build types:
 # -CHECKED debug mode + instruments
 # -PROFILE instruments
@@ -22,15 +24,17 @@ isEmpty(PHYSX) {
 
 INCLUDEPATH += $${PHYSX}/Include
 
+macx:LIBS += -L$${PHYSX}/Lib/osx64
+unix:!macx:LIBS += -L$${PHYSX}/Lib/linux64
+
 CONFIG(release, debug|release) {
     DEFINES += QT_NO_DEBUG_OUTPUT QT_NO_WARNING_OUTPUT
 
     # PHYSX library
     DEFINES += NDEBUG
 
-    LIBS += -L$${PHYSX}/Lib/linux64 \
-            -Wl,--start-group \
-            -lPvdRuntime \
+    !clang:LIBS += -Wl,--start-group
+    LIBS += -lPvdRuntime \
             -lSimulationController \
             -lSceneQuery \
             -lLowLevel \
@@ -43,9 +47,8 @@ CONFIG(release, debug|release) {
             -lPhysXProfileSDK \
             -lPhysXVisualDebuggerSDK \
             -lPxTask \
-            -lPhysX3Common \
-            -lSnippetRender \
-            -Wl,--end-group
+            -lPhysX3Common
+    !clang:LIBS += -Wl,--end-group
 
 } else {
     # PHYSX library
@@ -55,24 +58,22 @@ CONFIG(release, debug|release) {
         PX_CHECKED \
         PX_SUPPORT_VISUAL_DEBUGGER
 
-    LIBS += -L$${PHYSX}/Lib/linux64 \
-            -Wl,--start-group \
-            -lPvdRuntimeCHECKED \
-            -lSimulationControllerCHECKED \
-            -lSceneQueryCHECKED \
-            -lLowLevelCHECKED \
-            -lLowLevelClothCHECKED \
-            -lPhysX3CHECKED \
-            -lPhysX3VehicleCHECKED \
-            -lPhysX3CookingCHECKED \
-            -lPhysX3ExtensionsCHECKED \
-            -lPhysX3CharacterKinematicCHECKED \
-            -lPhysXProfileSDKCHECKED \
-            -lPhysXVisualDebuggerSDKCHECKED \
-            -lPxTaskCHECKED \
-            -lPhysX3CommonCHECKED \
-            -lSnippetRenderCHECKED \
-            -Wl,--end-group
+    !clang:LIBS += -Wl,--start-group
+    LIBS += -lPvdRuntimeCHECKED \
+        -lSimulationControllerCHECKED \
+        -lSceneQueryCHECKED \
+        -lLowLevelCHECKED \
+        -lLowLevelClothCHECKED \
+        -lPhysX3CHECKED \
+        -lPhysX3VehicleCHECKED \
+        -lPhysX3CookingCHECKED \
+        -lPhysX3ExtensionsCHECKED \
+        -lPhysX3CharacterKinematicCHECKED \
+        -lPhysXProfileSDKCHECKED \
+        -lPhysXVisualDebuggerSDKCHECKED \
+        -lPxTaskCHECKED \
+        -lPhysX3CommonCHECKED
+    !clang:LIBS += -Wl,--end-group
 }
 
 # PHYSX dependencies
@@ -118,14 +119,12 @@ MOC_DIR = $${OUT_PWD}/.moc
 RCC_DIR = $${OUT_PWD}/.rcc
 UI_DIR = $${OUT_PWD}/.ui
 
-macx {
-    INCLUDEPATH += /usr/X11/include
-    LIBS += -L/usr/X11R6/lib
-    # CLANG
+clang {
     QMAKE_LFLAGS += -std=c++11 -stdlib=libc++
     QMAKE_CXXFLAGS += -stdlib=libc++
-    QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.7
 }
+
+macx:QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.7
 
 QMAKE_CXXFLAGS += -std=c++11
 QMAKE_CXXFLAGS_RELEASE -= -O2

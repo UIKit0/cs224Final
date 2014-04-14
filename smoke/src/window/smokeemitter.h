@@ -9,6 +9,8 @@
 #include <glm/ext.hpp>
 
 #include <QList>
+#include <QImage>
+#include <QGLContext>
 
 #include "smokeparticle.h"
 #include "vortex.h"
@@ -42,6 +44,9 @@ public:
     QList<Vortex*> vortices;
 
     bool drawVortices;
+
+    float time;
+    unsigned int sprites;
 };
 
 #endif // SMOKEEMITTER_H

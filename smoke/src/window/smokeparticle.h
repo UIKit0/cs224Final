@@ -10,10 +10,11 @@
 #include "assets/obj.h"
 
 #include "perlinnoise.h"
+#include <iostream>
 
-#define PARTICLE_SIZE 0.3f
+#define PARTICLE_SIZE 0.5f
 #define PARTICLE_CATEGORY_BITS 1
-#define DAMPING_FACTOR 0.05f
+#define DAMPING_FACTOR 0.03f
 
 class SmokeParticle
 {
@@ -21,14 +22,19 @@ public:
     SmokeParticle(dWorldID world, dSpaceID space, dMass mass, PerlinNoise *perlin);
 
     void destroy();
-    void update(float seconds);
-    void draw(Obj &obj);
+    void update(float time);
+    void draw(glm::vec3 u, glm::vec3 v, Obj &obj);
 
     dBodyID body;
     dGeomID geom;
+    dMass mass;
     PerlinNoise *perlin;
+    int type;
+    float time;
+    bool active;
 
-    float t;
+private:
+    float lifetime;
 };
 
 #endif // SMOKEPARTICLE_H

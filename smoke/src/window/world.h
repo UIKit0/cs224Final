@@ -10,11 +10,9 @@
 #include <QtGui/QOpenGLShaderProgram>
 #include <QtGui/QOpenGLFunctions>
 #include <QList>
+#include <QGLContext>
 
 #include "assets/obj.h"
-
-//#include <GL/glu.h>
-//#include <OpenGL/glu.h>
 
 #include <ode/ode.h>
 

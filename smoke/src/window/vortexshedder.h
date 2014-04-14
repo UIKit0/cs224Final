@@ -54,6 +54,8 @@ public:
     // Base range decay
     float rangedecay;
 
+    float time;
+
     // Offset relative to the center of the owner
     glm::vec3 location;
 

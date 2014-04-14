@@ -34,7 +34,6 @@ void Window::initialize()
     // world
     m_world.init();
 
-
     getErrors("initialize");
 }
 

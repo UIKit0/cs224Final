@@ -33,10 +33,10 @@ void Cloud::generate(dWorldID w, dSpaceID s, dMass m, PerlinNoise* perlin){
 
 void Cloud::draw(Obj &obj){
     // Particles
-    glColor3f(1,0,0);
-    for (int i = 0; i < particles.size(); i++){
-        particles[i].draw(obj);
-    }
+//    glColor3f(1,0,0);
+//    for (int i = 0; i < particles.size(); i++){
+//        particles[i].draw(obj);
+//    }
 }
 
 void Cloud::update(float seconds){

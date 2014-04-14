@@ -3,6 +3,7 @@
 World::World() :
     sphereMesh("cube.obj")
 {
+    // Initialize ODE stuff
     dInitODE();
     m_world_id = dWorldCreate();
     dWorldSetGravity(m_world_id, 0, 0, 0);
@@ -20,12 +21,6 @@ World::World() :
     extent[2] = 1;
     space = dHashSpaceCreate(0);
     dHashSpaceSetLevels(space, 1, 5);
-
-    emitters.append(new SmokeEmitter(m_world_id, space, m));
-
-    sphere = SolidObject(m_world_id, space, m);
-
-    clouds.append(new Cloud(m_world_id, m, perlin));
 
     contactgroup = dJointGroupCreate(0);
 
@@ -124,6 +119,12 @@ void World::init()
 
     glEnable(GL_TEXTURE_2D);
 
+    emitters.append(new SmokeEmitter(m_world_id, space, m));
+
+    sphere = SolidObject(m_world_id, space, m);
+
+    clouds.append(new Cloud(m_world_id, m, perlin));
+
 }
 
 void World::draw()
@@ -165,7 +166,7 @@ void World::tick(float seconds){
         emitters[i]->update(seconds);
     }
 
-    dWorldQuickStep(m_world_id, 0.35f);
+    dWorldQuickStep(m_world_id, seconds);
     dJointGroupEmpty(contactgroup);
 }
 

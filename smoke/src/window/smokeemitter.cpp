@@ -7,16 +7,35 @@ SmokeEmitter::SmokeEmitter(dWorldID w, dSpaceID s, dMass m)
     mass = m;
     drawVortices = false;
     perlins.append(new PerlinNoise(0.2f, 5));
-    perlins.append(new PerlinNoise(0.25f, 5));
-    perlins.append(new PerlinNoise(0.5f, 6));
+
+    QImage img = QGLWidget::convertToGLFormat(QImage(":/textures/smoke.jpg"));
+    glGenTextures(1, &sprites);
+    glBindTexture(GL_TEXTURE_2D, sprites);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img.width(), img.height(),
+                    0, GL_RGBA, GL_UNSIGNED_BYTE, img.bits());
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    time = 0;
 }
 
 void SmokeEmitter::draw(Obj &obj){
     // Particles
+    glBindTexture(GL_TEXTURE_2D, sprites);
+    glEnable(GL_TEXTURE_2D);
+
+    float m[16];
+    glGetFloatv(GL_MODELVIEW_MATRIX, m);
+    glm::vec3 dx(m[0], m[4], m[8]); // left-right
+    glm::vec3 dy(m[1], m[5], m[9]); // up-down
+    glm::vec3 dz(m[2], m[6], m[10]); // front-back
+
     glColor3f(1,0,0);
     for (int i = 0; i < particles.size(); i++){
-        particles[i].draw(obj);
+        particles[i].draw(dx, dy, obj);
     }
+    glBindTexture(GL_TEXTURE_2D, 0);
 
     // Vortices
     if (drawVortices){
@@ -27,8 +46,13 @@ void SmokeEmitter::draw(Obj &obj){
 }
 
 void SmokeEmitter::update(float seconds){
-    for (int i = 0; i < particles.size(); i++){
+    time += seconds;
+    for (int i = particles.size() - 1; i >= 0; i--){
         particles[i].update(seconds);
+        if (!particles[i].active){
+            particles[i].destroy();
+            particles.removeAt(i);
+        }
     }
 
     for (int i = vortices.size() - 1; i >= 0; i--){
@@ -47,7 +71,7 @@ void SmokeEmitter::update(float seconds){
     if (particles.size() > 1000)
         toAdd = 1;
     else
-        toAdd = 4;
+        toAdd = 2;
 
     for (int i = 0; i < toAdd; i++){
         addBody();
@@ -67,25 +91,26 @@ void SmokeEmitter::update(float seconds){
     // Remove from back of the list to avoid skipping elements
     for (int i = particles.size() - 1; i >= 0; i--){
         const dReal *pos = dBodyGetPosition(particles[i].body);
-        if (pos[1] > MAX_HEIGHT){
-            particles[i].destroy();
-            particles.removeAt(i);
-        }
+//        if (pos[1] > MAX_HEIGHT){
+//            particles[i].destroy();
+//            particles.removeAt(i);
+//        }
     }
 }
 
 void SmokeEmitter::addBody(){
-    SmokeParticle sp = SmokeParticle(world, space, mass, perlins[(int)(dRandReal()*perlins.size())]);
+    SmokeParticle sp = SmokeParticle(world, space, mass,
+                                        perlins[(int)(dRandReal()*perlins.size())]);
 
     dBodySetPosition(sp.body, dRandReal()*SPAWN_SIZE - SPAWN_SIZE/2,
                      dRandReal(),
                      dRandReal()*SPAWN_SIZE - SPAWN_SIZE/2);
-    float maxInitialVel = 0.1f;
-    float maxVerticalVel = 0.3f;
+    float maxInitialVel = 0.3f;
+    float maxVerticalVel = 0.5f;
     dBodySetLinearVel(sp.body, dRandReal()*maxInitialVel*2 - maxInitialVel,
                             dRandReal()*maxVerticalVel,
                             dRandReal()*maxInitialVel*2 - maxInitialVel);
-
+    sp.time = time;
     particles.append(sp);
 }
 

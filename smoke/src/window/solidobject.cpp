@@ -18,25 +18,25 @@ SolidObject::SolidObject(dWorldID w, dSpaceID s, dMass m)
 
     VortexShedder* vs = new VortexShedder(w, s, m, body);
     vs->falloff = 1.0f;
-    vs->force = 0.01f;
+    vs->force = 0.1f;
     vs->forcedecay = 2.0f;
     vs->range = HEIGHT;
-    vs->rangedecay = 2.0f;
+    vs->rangedecay = 4.0f;
     // Don't scale too much with velocity
-    vs->velScale = 0.01f;
-    vs->centripetal = 1.5f;
+    vs->velScale = 0.1f;
+    vs->centripetal = 3.5f;
     vs->velThreshold = 0.01f;
     shedders.append(vs);
 
     vs = new VortexShedder(w, s, m, body);
     vs->falloff = 1.0f;
-    vs->force = 0.005f;
+    vs->force = 0.02f;
     vs->forcedecay = 2.0f;
     vs->range = HEIGHT;
-    vs->rangedecay = 2.0f;
+    vs->rangedecay = 4.0f;
     // Don't scale too much with velocity
     vs->velScale = 0.01f;
-    vs->centripetal = 1.5f;
+    vs->centripetal = 3.5f;
     vs->velThreshold = 0.01f;
     shedders.append(vs);
 }
@@ -51,10 +51,10 @@ void SolidObject::start(){
 
 void SolidObject::update(float seconds){
     if (moving > 0){
-        dBodySetLinearVel(body, 0.2f, 0, 0);
+        dBodySetLinearVel(body, 2.0f, 0, 0);
     }
     else if (moving < 0){
-        dBodySetLinearVel(body, -0.2f, 0, 0);
+        dBodySetLinearVel(body, -2.0f, 0, 0);
     }
     else{
         dBodySetLinearVel(body, 0, 0, 0);
@@ -103,9 +103,9 @@ void SolidObject::draw(Obj &obj) {
     glScalef(1.0f/SIDE_LENGTH, 1.0f/HEIGHT, 1.0f/SIDE_LENGTH);
     glTranslatef(-pos[0], -pos[1], -pos[2]);
 
-//    for (int i = 0; i < shedders.size(); i++){
-//        shedders[i]->draw(obj);
-//    }
+    for (int i = 0; i < shedders.size(); i++){
+        shedders[i]->draw(obj);
+    }
 }
 
 

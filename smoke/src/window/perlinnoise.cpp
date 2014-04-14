@@ -7,7 +7,7 @@ PerlinNoise::PerlinNoise(float p, int o)
 }
 
 float PerlinNoise::noise(int x1, int x2, int x3){
-    int n = x1 + x2*57 + x3*101;
+    int n = x1 + x2*57 + x3*61;
     n = (n << 13) ^ n;
     return (1.0f - ( (n * (n * n * 15731 + 789221) + 1376312589) & 0x7fffffff) / 1073741824.0f);
 }
@@ -17,7 +17,6 @@ float PerlinNoise::noise2D(int x1, int x2){
     n = (n << 13) ^ n;
     return (1.0f - ( (n * (n * n * 15731 + 789221) + 1376312589) & 0x7fffffff) / 1073741824.0f);
 }
-
 
 float PerlinNoise::smoothNoise2D(int x, int y){
     float corners = noise2D(x + 1, y + 1) +
@@ -67,21 +66,22 @@ float PerlinNoise::smoothNoise(int x, int y, int z){
                     noise(x - 1, y - 1, z - 1);
     corners = corners / 64;
 
-    // Centers of edges, each counted twice
-    float edges =   noise(x, y + 1, z + 1) +
-                    noise(x, y - 1, z + 1) +
-                    noise(x, y - 1, z - 1) +
-                    noise(x, y + 1, z - 1) +
-                    noise(x + 1, y, z + 1) +
-                    noise(x + 1, y, z - 1) +
-                    noise(x - 1, y, z - 1) +
-                    noise(x - 1, y, z + 1) +
-                    noise(x + 1, y + 1, z) +
-                    noise(x + 1, y - 1, z) +
-                    noise(x - 1, y - 1, z) +
-                    noise(x - 1, y + 1, z);
+//    // Centers of edges, each counted twice
+    float edges = 0;
+//    float edges =   noise(x, y + 1, z + 1) +
+//                    noise(x, y - 1, z + 1) +
+//                    noise(x, y - 1, z - 1) +
+//                    noise(x, y + 1, z - 1) +
+//                    noise(x + 1, y, z + 1) +
+//                    noise(x + 1, y, z - 1) +
+//                    noise(x - 1, y, z - 1) +
+//                    noise(x - 1, y, z + 1) +
+//                    noise(x + 1, y + 1, z) +
+//                    noise(x + 1, y - 1, z) +
+//                    noise(x - 1, y - 1, z) +
+//                    noise(x - 1, y + 1, z);
 
-    edges = edges / 32;
+//    edges = edges / 32;
 
     // Centers of faces, each counted 4 times
     float faces =   noise(x, y, z + 1) +

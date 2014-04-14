@@ -1,9 +1,10 @@
 #include "vortexshedder.h"
 
-VortexShedder::VortexShedder(dWorldID w, dSpaceID s, dMass m, dBodyID o){
+VortexShedder::VortexShedder(dWorldID w, dSpaceID s, dMass m, dBodyID o) : time(0)
+{
     owner = o;
-    world = w;
     space = s;
+    world = w;
     mass = m;
 }
 
@@ -12,10 +13,12 @@ void VortexShedder::destroy(){
 }
 
 void VortexShedder::update(float seconds){
+    time += seconds;
     const dReal* v = dBodyGetLinearVel(owner);
     glm::vec3 vel(v[0], v[1], v[2]);
     float vlength = glm::length(vel);
-    if (vlength > velThreshold && dRandReal() > 0.9f){
+    if (vlength > velThreshold && time > range*2/vlength){
+        time = 0;
         float scale = exp(velScale*(vlength - velThreshold));
         Vortex* newVortex = new Vortex(world, space, mass, range);
 
@@ -26,13 +29,11 @@ void VortexShedder::update(float seconds){
         newVortex->centripetal = centripetal;
         newVortex->rangedecay = 0.05f;
 
-        const dReal* pos = dBodyGetPosition(owner);
         dBodySetPosition(newVortex->body, location[0],
                                     location[1],
                                     location[2]);
 
-        const dReal* vel = dBodyGetLinearVel(owner);
-        dBodySetLinearVel(newVortex->body, vel[0], vel[1], vel[2]);
+        dBodySetLinearVel(newVortex->body, v[0], v[1], v[2]);
         vortices.append(newVortex);
     }
 

@@ -44,6 +44,7 @@ void SmokeParticle::draw(glm::vec3 u, glm::vec3 v, glm::vec3 z, Obj &obj){
     const dReal* pos = dBodyGetPosition(body);
     const dReal* orient = dBodyGetRotation(body);
 
+    glPushMatrix();
     glTranslatef(pos[0], pos[1], pos[2]);
 
     dReal scale = dGeomSphereGetRadius(geom)/PARTICLE_SIZE;
@@ -66,10 +67,7 @@ void SmokeParticle::draw(glm::vec3 u, glm::vec3 v, glm::vec3 z, Obj &obj){
     glVertex3f(-corner2[0], -corner2[1], -corner2[2]);
     glEnd();
 
-    glRotatef(-rotation*180/M_PI, z[0], z[1], z[2]);
-    glScalef(1/scale, 1/scale, 1/scale);
-
-    glTranslatef(-pos[0], -pos[1], -pos[2]);
+    glPopMatrix();
 }
 
 void SmokeParticle::update(float seconds){

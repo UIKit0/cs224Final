@@ -160,11 +160,12 @@ void World::draw()
         clouds[i]->draw(sphereMesh);
     }
 
+    circlingEmitter->draw(sphereMesh);
+
     for (int i = 0; i < emitters.size(); i++){
         emitters[i]->draw(sphereMesh);
     }
 
-    circlingEmitter->draw(sphereMesh);
 
     glPopMatrix();
 }

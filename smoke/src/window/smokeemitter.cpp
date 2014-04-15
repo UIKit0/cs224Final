@@ -55,8 +55,8 @@ void SmokeEmitter::draw(Obj &obj){
         particles[i].draw(glm::normalize(dx), glm::normalize(dy), glm::normalize(dz), obj);
     }
 
-    glDepthMask(GL_TRUE);
     glDisable(GL_BLEND);
+    glDepthMask(GL_TRUE);
     glDisable(GL_TEXTURE_2D);
 
     // Vortices

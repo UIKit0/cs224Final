@@ -7,8 +7,8 @@ OpenGLWindow::OpenGLWindow(QWindow *parent)
     , m_animating(false)
     , m_context(0)
     , m_device(0)
-    , m_frames(0)
     , m_fps(0)
+    , m_frames(0)
 {
     setSurfaceType(QWindow::OpenGLSurface);
 
@@ -18,6 +18,7 @@ OpenGLWindow::OpenGLWindow(QWindow *parent)
 //    format.setProfile(QSurfaceFormat::CoreProfile);
 //    format.setMajorVersion(4);
 //    format.setMinorVersion(3);
+//    format.setDepthBufferSize(1);
     setFormat(format);
 
     // Hide the cursor since this is a fullscreen app

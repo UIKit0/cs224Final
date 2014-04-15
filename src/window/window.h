@@ -17,6 +17,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/ext.hpp>
 
+#include "assets/obj.h"
+
 class Window : public OpenGLWindow
 {
 public:
@@ -43,9 +45,12 @@ private:
     GLuint m_textureUniform;
     GLuint m_texture;
 
+
     bool m_resetMouse;
 
     QOpenGLShaderProgram *m_program;
+
+    Obj m_mesh;
 
     virtual void onTick(const float seconds);
 

@@ -3,6 +3,7 @@
 Window::Window()
     : m_resetMouse(true)
     , m_program(0)
+    , m_mesh("monkey.obj")
 {
 
 }
@@ -15,36 +16,74 @@ Window::~Window()
 // TODO: move shaders to resources
 
 static const char *vertexShaderSource =
-    "#ifdef GL_ES\n"
-    "precision highp float;\n"
-    "precision highp int;\n"
-    "precision lowp sampler2D;\n"
-    "#endif\n"
-    "attribute highp vec3 a_position;\n"
-    ""
-    "attribute lowp vec2 a_texcoord;\n"
-    "varying lowp vec2 v_texcoord;\n"
-    ""
-    "uniform highp mat4 matrix;\n"
-    ""
-    "void main() {\n"
-    "   v_texcoord = a_texcoord;\n"
-    "   gl_Position = matrix * vec4(a_position, 1);\n"
-    "}\n";
+	"#ifdef GL_ES\n"
+	"precision highp float;\n"
+	"precision highp int;\n"
+	"precision lowp sampler2D;\n"
+	"#endif\n"
+	"attribute highp vec3 a_position;\n"
+	""
+	"attribute lowp vec2 a_texcoord;\n"
+	"varying lowp vec2 v_texcoord;\n"
+	""
+	"uniform highp mat4 matrix;\n"
+	""
+	"uniform vec3 LightPosition;\n"
+	"varying float NdotL;\n"
+	"varying vec3  ReflectVec;\n"
+	"varying vec3  ViewVec;\n"
+	""
+	"void main() {\n"
+        ""
+        "vec3 ecPos    = vec3 (gl_ModelViewMatrix * gl_Vertex);\n"
+        "vec3 tnorm    = normalize(gl_NormalMatrix * gl_Normal);\n"
+        "vec3 lightVec = normalize(LightPosition - ecPos);\n"
+        "ReflectVec    = normalize(reflect(-lightVec, tnorm));\n"
+        "ViewVec       = normalize(-ecPos);\n"
+        "NdotL         = (dot (lightVec, tnorm) + 1.0) * 0.5;\n"
+        "gl_Position   = ftransform();\n"
+        ""
+        ""
+	"}\n";
+
+//	"v_texcoord = a_texcoord;\n"
+//	"gl_Position = matrix * vec4(a_position, 1);\n"
 
 static const char *fragmentShaderSource =
-    "#ifdef GL_ES\n"
-    "precision highp float;\n"
-    "precision highp int;\n"
-    "precision lowp sampler2D;\n"
-    "#endif\n"
-    "uniform lowp sampler2D texture;\n"
-    "varying lowp vec2 v_texcoord;\n"
-    ""
-    "void main() {\n"
-    "   vec4 c = texture2D(texture, v_texcoord);\n"
-    "   gl_FragColor = c;\n"
-    "}\n";
+	"#ifdef GL_ES\n"
+	"precision highp float;\n"
+	"precision highp int;\n"
+	"precision lowp sampler2D;\n"
+	"#endif\n"
+	""
+	"uniform lowp sampler2D texture;\n"
+	"varying lowp vec2 v_texcoord;\n"
+	""
+	"uniform highp vec3  SurfaceColor;\n"
+	"uniform highp vec3  WarmColor;\n"
+	"uniform highp vec3  CoolColor;\n"
+	"uniform highp float DiffuseWarm;\n"
+	"uniform highp float DiffuseCool;\n"
+	""
+	"varying highp float NdotL;\n"
+	"varying highp vec3  ReflectVec;\n"
+	"varying highp vec3  ViewVec;\n"
+	""
+	"void main() {\n"
+	""
+	"vec3 kcool    = min (CoolColor + DiffuseCool * SurfaceColor, 1.0);\n"
+	"vec3 kwarm    = min (WarmColor + DiffuseWarm * SurfaceColor, 1.0);\n"
+	"vec3 kfinal   = mix (kcool, kwarm, NdotL);\n"
+	""
+	"vec3 nreflect = normalize (ReflectVec);\n"
+	"vec3 nview    = normalize (ViewVec);\n"
+	""
+	"float spec    = max (dot (nreflect, nview), 0.0);\n"
+	"spec          = pow (spec, 32.0);\n"
+	""
+	"gl_FragColor  = vec4 (min (kfinal + spec, 1.0), 1.0);\n"
+	""
+	"}\n";
 
 GLuint Window::loadShader(GLenum type, const char *source)
 {
@@ -86,8 +125,15 @@ void Window::initialize()
     m_posAttr = m_program->attributeLocation("a_position");
     m_texAttr = m_program->attributeLocation("a_texcoord");
 
-    m_matrixUniform = m_program->uniformLocation("matrix");
-    m_textureUniform = m_program->uniformLocation("texture");
+//    m_matrixUniform = m_program->uniformLocation("matrix");
+//    m_textureUniform = m_program->uniformLocation("texture");
+
+    m_program->uniformLocation("LightPosition");
+    m_program->uniformLocation("SurfaceColor");
+    m_program->uniformLocation("WarmColor");
+    m_program->uniformLocation("CoolColor");
+    m_program->uniformLocation("DiffuseWarm");
+    m_program->uniformLocation("DiffuseCool");
 
     // textures
 
@@ -149,25 +195,53 @@ void Window::renderOpenGL()
 
     getErrors("rendering START");
 
+    glEnable(GL_DEPTH_TEST);
+
     const qreal retinaScale = devicePixelRatio();
     glViewport(0, 0, width() * retinaScale, height() * retinaScale);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glLoadMatrixf(glm::value_ptr(m_camera.pMatrix));
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glLoadMatrixf(glm::value_ptr(m_camera.vMatrix));
+
     m_program->bind();
 
-    glm::mat4 mvp = m_camera.pMatrix * m_camera.vMatrix * glm::rotate(glm::mat4(1.0f),glm::radians(270.0f),glm::vec3(1.0f, 0.0f, 0.0f));
-    glUniformMatrix4fv(m_matrixUniform, 1, GL_FALSE, glm::value_ptr(mvp));
+//    glm::mat4 mvp = m_camera.pMatrix * m_camera.vMatrix;
+//    glUniformMatrix4fv(m_matrixUniform, 1, GL_FALSE, glm::value_ptr(mvp));
+//    m_program->setUniformValue("texture", 0);
 
-    m_program->setUniformValue("texture", 0);
+    m_program->setUniformValue("LightPosition", 0.0f, 10.0f, 4.0f);
+    m_program->setUniformValue("SurfaceColor", 0.75f, 0.75f, 0.75f);
+    m_program->setUniformValue("WarmColor", 0.6f, 0.6f, 0.0f);
+    m_program->setUniformValue("CoolColor", 0.0f, 0.0f, 0.6f);
+    m_program->setUniformValue("DiffuseWarm", 0.45f);
+    m_program->setUniformValue("DiffuseCool", 0.45f);
 
 //    m_world.drawWorld(m_program);
+    m_mesh.draw();
 
-    glDisableVertexAttribArray(m_posAttr);
-    glDisableVertexAttribArray(m_texAttr);
+    // Draw grid
+    glColor4f(0, 0, 0, 0.25);
+    glBegin(GL_LINES);
+    for (int s = 20, i = -s; i <= s; i++) {
+        glVertex3f(i, 0, -s);
+        glVertex3f(i, 0, +s);
+        glVertex3f(-s, 0, i);
+        glVertex3f(+s, 0, i);
+    }
+    glEnd();
+
+//    glDisableVertexAttribArray(m_posAttr);
+//    glDisableVertexAttribArray(m_texAttr);
 
     m_program->release();
 
+    glDisable(GL_DEPTH_TEST);
     getErrors("rendering END");
 }
 

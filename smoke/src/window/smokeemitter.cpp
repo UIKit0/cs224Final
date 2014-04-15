@@ -8,22 +8,32 @@ SmokeEmitter::SmokeEmitter(dWorldID w, dSpaceID s, dMass m)
     drawVortices = false;
     perlins.append(new PerlinNoise(0.2f, 5));
 
-    QImage img = QGLWidget::convertToGLFormat(QImage(":/textures/smoke.png"));
+    QImage img = QImage(":/textures/smoke.png");
+
+    if (img.isNull()) {
+        qCritical("Unable to load texture!");
+        return;
+    }
+
+    img = img.convertToFormat(QImage::Format_RGBA8888);
+
     glGenTextures(1, &sprites);
     glBindTexture(GL_TEXTURE_2D, sprites);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img.width(), img.height(),
-                    0, GL_RGBA, GL_UNSIGNED_BYTE, img.bits());
-    glBindTexture(GL_TEXTURE_2D, 0);
+                 0, GL_RGBA, GL_UNSIGNED_BYTE, img.bits());
 
     time = 0;
 }
 
 void SmokeEmitter::draw(Obj &obj){
     // Particles
-    glBindTexture(GL_TEXTURE_2D, sprites);
-    glEnable(GL_TEXTURE_2D);
 
     float m[16];
     glGetFloatv(GL_MODELVIEW_MATRIX, m);
@@ -31,14 +41,22 @@ void SmokeEmitter::draw(Obj &obj){
     glm::vec3 dy(m[1], m[5], m[9]); // up-down
     glm::vec3 dz(m[2], m[6], m[10]); // front-back
 
-    glColor3f(1,0,0);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, sprites);
+
     glEnable(GL_BLEND);
-    glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE);
+    glDisable(GL_DEPTH_TEST);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//    glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE);
+
+    glColor3f(1,1,1);
     for (int i = 0; i < particles.size(); i++){
         particles[i].draw(dx, dy, obj);
     }
+
     glDisable(GL_BLEND);
-    glBindTexture(GL_TEXTURE_2D, 0);
+    glEnable(GL_DEPTH_TEST);
+    glDisable(GL_TEXTURE_2D);
 
     // Vortices
     if (drawVortices){

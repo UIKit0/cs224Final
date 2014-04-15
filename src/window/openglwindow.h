@@ -48,6 +48,7 @@ private:
 
     QElapsedTimer m_tickTimer;
     QElapsedTimer m_fpsTimer;
+
     int m_fps;
     int m_frames;
 

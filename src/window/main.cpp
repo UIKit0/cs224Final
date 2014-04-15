@@ -14,8 +14,8 @@ int main(int argc, char *argv[])
 //    window.setVisibility(QWindow::FullScreen);
 
 #ifdef Q_OS_MAC
-    QSize screen = window.screen()->size();
-    window.setGeometry(0,0,screen.width(),screen.height());
+//    QSize screen = window.screen()->size();
+//    window.setGeometry(0,0,screen.width(),screen.height());
 #endif
 
     window.show();

@@ -10,8 +10,7 @@
         <file>meshes/cube.obj</file>
         <file>meshes/monkey.obj</file>
         <file>meshes/pyramid.obj</file>
-        <file>textures/smoke.jpg</file>
         <file>textures/smoke.png</file>
-        <file>textures/smoke.gif</file>
+        <file>textures/smoke2.png</file>
     </qresource>
 </RCC>

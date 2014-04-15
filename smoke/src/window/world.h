@@ -52,6 +52,8 @@ public:
 
     QList<SmokeEmitter*> emitters;
 
+    SmokeEmitter *circlingEmitter;
+
     QList<Cloud*> clouds;
 
     // Sphere that moves left and right through the smoke

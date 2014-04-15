@@ -47,6 +47,10 @@ public:
 
     float time;
     unsigned int sprites;
+
+    glm::vec3 maxInitialVel;
+    glm::vec3 minInitialVel;
+    glm::vec3 location;
 };
 
 #endif // SMOKEEMITTER_H

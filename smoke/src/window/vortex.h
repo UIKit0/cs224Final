@@ -38,6 +38,9 @@ public:
     float centripetal;
     float forcedecay;
     float rangedecay;
+    float lifetime;
+
+    float time;
 };
 
 extern QHash<dBodyID, Vortex*> g_vortices;

@@ -23,18 +23,19 @@ public:
 
     void destroy();
     void update(float time);
-    void draw(glm::vec3 u, glm::vec3 v, Obj &obj);
+    void draw(glm::vec3 u, glm::vec3 v, glm::vec3 z, Obj &obj);
 
     dBodyID body;
     dGeomID geom;
     dMass mass;
     PerlinNoise *perlin;
+
+    float rotation;
+
     int type;
     float time;
-    bool active;
-
-private:
     float lifetime;
+    bool active;
 };
 
 #endif // SMOKEPARTICLE_H

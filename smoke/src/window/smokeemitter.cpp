@@ -8,7 +8,7 @@ SmokeEmitter::SmokeEmitter(dWorldID w, dSpaceID s, dMass m)
     drawVortices = false;
     perlins.append(new PerlinNoise(0.2f, 5));
 
-    QImage img = QImage(":/textures/smoke.png");
+    QImage img = QImage(":/textures/smoke2.png");
 
     if (img.isNull()) {
         qCritical("Unable to load texture!");
@@ -30,6 +30,9 @@ SmokeEmitter::SmokeEmitter(dWorldID w, dSpaceID s, dMass m)
                  0, GL_RGBA, GL_UNSIGNED_BYTE, img.bits());
 
     time = 0;
+
+    maxInitialVel = glm::vec3(0,0,0);
+    minInitialVel = glm::vec3(0,0,0);
 }
 
 void SmokeEmitter::draw(Obj &obj){
@@ -46,12 +49,11 @@ void SmokeEmitter::draw(Obj &obj){
 
     glEnable(GL_BLEND);
     glDisable(GL_DEPTH_TEST);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-//    glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE);
+    glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
 
     glColor3f(1,1,1);
     for (int i = 0; i < particles.size(); i++){
-        particles[i].draw(dx, dy, obj);
+        particles[i].draw(glm::normalize(dx), glm::normalize(dy), glm::normalize(dz), obj);
     }
 
     glDisable(GL_BLEND);
@@ -123,15 +125,17 @@ void SmokeEmitter::addBody(){
     SmokeParticle sp = SmokeParticle(world, space, mass,
                                         perlins[(int)(dRandReal()*perlins.size())]);
 
-    dBodySetPosition(sp.body, dRandReal()*SPAWN_SIZE - SPAWN_SIZE/2,
-                     dRandReal(),
-                     dRandReal()*SPAWN_SIZE - SPAWN_SIZE/2);
-    float maxInitialVel = 0.3f;
-    float maxVerticalVel = 2.0f;
-    dBodySetLinearVel(sp.body, dRandReal()*maxInitialVel*2 - maxInitialVel,
-                            dRandReal()*maxVerticalVel,
-                            dRandReal()*maxInitialVel*2 - maxInitialVel);
+    dBodySetPosition(sp.body, location[0] + dRandReal()*SPAWN_SIZE - SPAWN_SIZE/2,
+                     location[1] + dRandReal()*SPAWN_SIZE - SPAWN_SIZE/2,
+                     location[2] + dRandReal()*SPAWN_SIZE - SPAWN_SIZE/2);
+
+    dBodySetLinearVel(sp.body, dRandReal()*(maxInitialVel[0] - minInitialVel[0]) + minInitialVel[0],
+                            dRandReal()*(maxInitialVel[1] - minInitialVel[1]) + minInitialVel[1],
+                            dRandReal()*(maxInitialVel[2] - minInitialVel[2]) + minInitialVel[2]);
+
+    sp.rotation = dRandReal() - 0.5f;
     sp.time = time;
+    sp.lifetime = dRandReal()*2 - 1.0f;
     particles.append(sp);
 }
 

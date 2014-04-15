@@ -17,6 +17,8 @@ Vortex::Vortex(dWorldID world, dSpaceID space, dMass mass, float r)
     active = true;
 
     g_vortices.insert(body, this);
+
+    time = 0;
 }
 
 Vortex::~Vortex(){
@@ -41,6 +43,11 @@ void Vortex::draw(Obj &obj){
 }
 
 void Vortex::update(float seconds){
+    time += seconds;
+    if (time > lifetime){
+        active = false;
+        return;
+    }
     float forcefactor = exp(-forcedecay*seconds);
     float rangefactor = exp(-rangedecay*seconds);
     // TODO: right thing to do?
@@ -49,7 +56,7 @@ void Vortex::update(float seconds){
     range = range/rangefactor;
 
     // Disable the vortex if it's too weak
-    if (force < 0.00001f){
+    if (force < 0.01f){
         active = false;
     }
     else{

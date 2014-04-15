@@ -28,16 +28,30 @@ void SmokeParticle::destroy(){
     dBodyDestroy(body);
 }
 
-void SmokeParticle::draw(glm::vec3 u, glm::vec3 v, Obj &obj){
+void ODEtoOGL(float* M, const float* pos, const float* R)
+{
+    M[0]  = R[0]; M[1]  = R[4]; M[2]  = R[8];  M[3]  = 0;
+
+    M[4]  = R[1]; M[5]  = R[5]; M[6]  = R[9];  M[7]  = 0;
+
+    M[8]  = R[2]; M[9]  = R[6]; M[10] = R[10]; M[11] = 0;
+
+    M[12] = pos[0]; M[13] = pos[1]; M[14] = pos[2];  M[15] = 1;
+
+}
+
+void SmokeParticle::draw(glm::vec3 u, glm::vec3 v, glm::vec3 z, Obj &obj){
     const dReal* pos = dBodyGetPosition(body);
+    const dReal* orient = dBodyGetRotation(body);
 
     glTranslatef(pos[0], pos[1], pos[2]);
 
-//    float decay = pow(0.85f, lifetime);
-//    dReal scale = dGeomSphereGetRadius(geom);
-//    glScalef(scale, scale, scale);
+    dReal scale = dGeomSphereGetRadius(geom)/PARTICLE_SIZE;
+    glScalef(scale, scale, scale);
+
+    glRotatef(rotation*180/M_PI, z[0], z[1], z[2]);
+
 //    obj.draw();
-//    glScalef(1/scale, 1/scale, 1/scale);
 
     glm::vec3 corner = u + v;
     glm::vec3 corner2 = v - u;
@@ -52,6 +66,9 @@ void SmokeParticle::draw(glm::vec3 u, glm::vec3 v, Obj &obj){
     glVertex3f(-corner2[0], -corner2[1], -corner2[2]);
     glEnd();
 
+    glRotatef(-rotation*180/M_PI, z[0], z[1], z[2]);
+    glScalef(1/scale, 1/scale, 1/scale);
+
     glTranslatef(-pos[0], -pos[1], -pos[2]);
 }
 
@@ -60,10 +77,12 @@ void SmokeParticle::update(float seconds){
     lifetime += seconds;
 
     float decay = pow(0.85f, lifetime);
-    if (decay < 0.3f){
+    if (decay < 0.2f){
         active = false;
         return;
     }
+
+    rotation += seconds/M_PI;
 
     dGeomSphereSetRadius(geom, PARTICLE_SIZE*decay);
 

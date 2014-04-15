@@ -119,18 +119,28 @@ void World::init()
 
     glEnable(GL_TEXTURE_2D);
 
-    emitters.append(new SmokeEmitter(m_world_id, space, m));
+    SmokeEmitter *emitter = new SmokeEmitter(m_world_id, space, m);
+    emitter->maxInitialVel = glm::vec3(0.5f, 2.0f, 0.5f);
+    emitter->minInitialVel = glm::vec3(-0.5f, 0.5f, -0.5f);
+    emitters.append(emitter);
+
+    circlingEmitter = new SmokeEmitter(m_world_id, space, m);
+    circlingEmitter->location = glm::vec3(30,0,0);
 
     sphere = SolidObject(m_world_id, space, m);
 
     clouds.append(new Cloud(m_world_id, m, perlin));
-
 }
 
 void World::draw()
 {
     glPushMatrix();
+    glScalef(0.3f, 0.3f, 0.3f);
 
+    for (int i = 0; i < emitters.size(); i++){
+        emitters[i]->draw(sphereMesh);
+    }
+    circlingEmitter->draw(sphereMesh);
 
     // Draw grid
     glColor4f(0, 0, 0, 0.25);
@@ -156,7 +166,6 @@ void World::draw()
         clouds[i]->draw(sphereMesh);
     }
 
-
     glPopMatrix();
 }
 
@@ -168,6 +177,13 @@ void World::tick(float seconds){
     for (int i = 0; i < emitters.size(); i++){
         emitters[i]->update(seconds);
     }
+    float angle = atan2(circlingEmitter->location[2], circlingEmitter->location[0]);
+    std::cout<<angle<<std::endl;
+    if (angle < 0)
+        angle = M_PI*2 + angle;
+
+    circlingEmitter->location = glm::vec3(30*cos(angle + 0.02f), 0, 30*sin(angle + 0.02f));
+    circlingEmitter->update(seconds);
 
     dWorldQuickStep(m_world_id, seconds);
     dJointGroupEmpty(contactgroup);

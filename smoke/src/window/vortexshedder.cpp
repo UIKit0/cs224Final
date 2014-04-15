@@ -28,12 +28,13 @@ void VortexShedder::update(float seconds){
         newVortex->forcedecay = forcedecay;
         newVortex->centripetal = centripetal;
         newVortex->rangedecay = 0.05f;
+        newVortex->lifetime = lifetime;
 
         dBodySetPosition(newVortex->body, location[0],
                                     location[1],
                                     location[2]);
 
-        dBodySetLinearVel(newVortex->body, v[0], v[1], v[2]);
+//        dBodySetLinearVel(newVortex->body, v[0], v[1], v[2]);
         vortices.append(newVortex);
     }
 

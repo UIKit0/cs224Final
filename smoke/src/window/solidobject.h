@@ -9,7 +9,7 @@
 #include "assets/obj.h"
 
 #define SIDE_LENGTH 2.0f
-#define HEIGHT 0.5f
+#define HEIGHT 1.0f
 
 #include "vortexshedder.h"
 

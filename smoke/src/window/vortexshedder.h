@@ -53,6 +53,7 @@ public:
     float range;
     // Base range decay
     float rangedecay;
+    float lifetime;
 
     float time;
 

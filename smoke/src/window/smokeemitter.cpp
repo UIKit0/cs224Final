@@ -45,17 +45,17 @@ void SmokeEmitter::draw(Obj &obj){
     glBindTexture(GL_TEXTURE_2D, sprites);
 
     glEnable(GL_BLEND);
-    glDisable(GL_DEPTH_TEST);
+    glDepthMask(GL_FALSE);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-//    glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE);
+    glBlendEquation(GL_FUNC_ADD);
 
     glColor3f(1,1,1);
     for (int i = 0; i < particles.size(); i++){
         particles[i].draw(dx, dy, obj);
     }
 
+    glDepthMask(GL_TRUE);
     glDisable(GL_BLEND);
-    glEnable(GL_DEPTH_TEST);
     glDisable(GL_TEXTURE_2D);
 
     // Vortices

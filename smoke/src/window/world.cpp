@@ -130,20 +130,7 @@ void World::init()
 void World::draw()
 {
     glPushMatrix();
-    glScalef(0.3f, 0.3f, 0.3f);
 
-    for (int i = 0; i < emitters.size(); i++){
-        emitters[i]->draw(sphereMesh);
-    }
-
-    for (int i = 0; i < clouds.size(); i++){
-        clouds[i]->draw(sphereMesh);
-    }
-
-    // Sphere
-    sphere.draw(sphereMesh);
-
-    glPopMatrix();
 
     // Draw grid
     glColor4f(0, 0, 0, 0.25);
@@ -155,6 +142,22 @@ void World::draw()
         glVertex3f(+s, 0, i);
     }
     glEnd();
+
+    glScalef(0.3f, 0.3f, 0.3f);
+
+    // Sphere
+    sphere.draw(sphereMesh);
+
+    for (int i = 0; i < emitters.size(); i++){
+        emitters[i]->draw(sphereMesh);
+    }
+
+    for (int i = 0; i < clouds.size(); i++){
+        clouds[i]->draw(sphereMesh);
+    }
+
+
+    glPopMatrix();
 }
 
 void World::tick(float seconds){

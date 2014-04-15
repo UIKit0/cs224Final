@@ -40,8 +40,8 @@ RES = ../../res
 GUI = $${RES}/gui
 TEXTURES = $${RES}/textures
 
-INCLUDEPATH += window $${GLM}
-DEPENDPATH += window
+INCLUDEPATH += . window $${GLM}
+DEPENDPATH += . window
 
 SOURCES += \
     window/main.cpp \

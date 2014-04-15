@@ -101,7 +101,7 @@ float PerlinNoise::smoothNoise(int x, int y, int z){
 
 // Cosine interpolation
 float PerlinNoise::interpolate(float a, float b, float t){
-    float ft = t * M_PI;
+    float ft = t * 3.14159f;
     float f = (1 - cos(ft)) * 0.5f;
     return a * (1 - f) + b * f;
 }

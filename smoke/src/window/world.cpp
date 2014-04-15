@@ -136,10 +136,6 @@ void World::draw()
 {
     glPushMatrix();
     glScalef(0.5f, 0.5f, 0.5f);
-    for (int i = 0; i < emitters.size(); i++){
-        emitters[i]->draw(sphereMesh);
-    }
-    circlingEmitter->draw(sphereMesh);
 
     // Draw grid
     glColor4f(0, 0, 0, 0.25);
@@ -155,11 +151,20 @@ void World::draw()
     // Sphere
     sphere.draw(sphereMesh);
 
-    glScalef(2.0f, 2.0f, 2.0f);
+//    glPopMatrix();
+
+//    glPushMatrix();
+//    glScalef(2.0f, 2.0f, 2.0f);
 
     for (int i = 0; i < clouds.size(); i++){
         clouds[i]->draw(sphereMesh);
     }
+
+    for (int i = 0; i < emitters.size(); i++){
+        emitters[i]->draw(sphereMesh);
+    }
+
+    circlingEmitter->draw(sphereMesh);
 
     glPopMatrix();
 }
@@ -179,7 +184,7 @@ void World::tick(float seconds){
     circlingEmitter->location = glm::vec3(30*cos(angle + 0.02f), 0, 30*sin(angle + 0.02f));
     circlingEmitter->update(seconds);
 
-    dWorldQuickStep(m_world_id, seconds);
+    dWorldQuickStep(m_world_id, 1/60.0f);
     dJointGroupEmpty(contactgroup);
 }
 

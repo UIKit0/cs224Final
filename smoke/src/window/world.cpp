@@ -129,14 +129,13 @@ void World::init()
 
     sphere = SolidObject(m_world_id, space, m);
 
-    clouds.append(new Cloud(m_world_id, m, perlin));
+//    clouds.append(new Cloud(m_world_id, m, perlin));
 }
 
 void World::draw()
 {
     glPushMatrix();
-    glScalef(0.3f, 0.3f, 0.3f);
-
+    glScalef(0.5f, 0.5f, 0.5f);
     for (int i = 0; i < emitters.size(); i++){
         emitters[i]->draw(sphereMesh);
     }
@@ -153,14 +152,10 @@ void World::draw()
     }
     glEnd();
 
-    glScalef(0.3f, 0.3f, 0.3f);
-
     // Sphere
     sphere.draw(sphereMesh);
 
-    for (int i = 0; i < emitters.size(); i++){
-        emitters[i]->draw(sphereMesh);
-    }
+    glScalef(2.0f, 2.0f, 2.0f);
 
     for (int i = 0; i < clouds.size(); i++){
         clouds[i]->draw(sphereMesh);
@@ -178,7 +173,6 @@ void World::tick(float seconds){
         emitters[i]->update(seconds);
     }
     float angle = atan2(circlingEmitter->location[2], circlingEmitter->location[0]);
-    std::cout<<angle<<std::endl;
     if (angle < 0)
         angle = M_PI*2 + angle;
 

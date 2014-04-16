@@ -134,8 +134,8 @@ void World::init()
 
 void World::draw()
 {
-    glPushMatrix();
-    glScalef(0.5f, 0.5f, 0.5f);
+//    glPushMatrix();
+//    glScalef(0.5f, 0.5f, 0.5f);
 
     // Draw grid
     glColor4f(0, 0, 0, 0.25);
@@ -167,7 +167,7 @@ void World::draw()
     }
 
 
-    glPopMatrix();
+//    glPopMatrix();
 }
 
 void World::tick(float seconds){
@@ -185,7 +185,7 @@ void World::tick(float seconds){
     circlingEmitter->location = glm::vec3(30*cos(angle + 0.02f), 0, 30*sin(angle + 0.02f));
     circlingEmitter->update(seconds);
 
-    dWorldQuickStep(m_world_id, 1/60.0f);
+    dWorldQuickStep(m_world_id, 1/30.0f);
     dJointGroupEmpty(contactgroup);
 }
 

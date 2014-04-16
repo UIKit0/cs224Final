@@ -20,7 +20,7 @@ void Cloud::generate(dWorldID w, dSpaceID s, dMass m, PerlinNoise* perlin){
         }
         float noise = perlin->perlin_noise(offset[0]*scale, offset[1]*scale, offset[2]*scale);
         if (noise > 0){
-            SmokeParticle sp = SmokeParticle(w, s, m, perlin);
+            SmokeParticle sp = SmokeParticle(w, s, m, perlin, fabs(noise));
 
             dBodySetPosition(sp.body, location[0] + offset[0],
                                         location[1] + offset[1],

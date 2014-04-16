@@ -13,7 +13,7 @@ SolidObject::SolidObject(dWorldID w, dSpaceID s, dMass m)
     dGeomSetBody(geom, body);
     dGeomSetCategoryBits(geom, 4);
     dGeomSetCollideBits(geom, 1);
-    dBodySetPosition(body, 10, 10, 0);
+    dBodySetPosition(body, 10, 5, 0);
     moving = 0;
 
     VortexShedder* vs = new VortexShedder(w, s, m, body);

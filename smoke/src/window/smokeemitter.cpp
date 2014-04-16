@@ -90,7 +90,7 @@ void SmokeEmitter::update(float seconds){
     }
 
     int toAdd;
-    if (particles.size() > 1000)
+    if (particles.size() > 1500)
         toAdd = 1;
     else
         toAdd = 2;
@@ -113,16 +113,13 @@ void SmokeEmitter::update(float seconds){
     // Remove from back of the list to avoid skipping elements
     for (int i = particles.size() - 1; i >= 0; i--){
         const dReal *pos = dBodyGetPosition(particles[i].body);
-//        if (pos[1] > MAX_HEIGHT){
-//            particles[i].destroy();
-//            particles.removeAt(i);
-//        }
     }
 }
 
 void SmokeEmitter::addBody(){
     SmokeParticle sp = SmokeParticle(world, space, mass,
-                                        perlins[(int)(dRandReal()*perlins.size())]);
+                                        perlins[(int)(dRandReal()*perlins.size())],
+                                        dRandReal()*0.05f + 0.03f);
 
     dBodySetPosition(sp.body, location[0] + dRandReal()*SPAWN_SIZE - SPAWN_SIZE/2,
                      location[1] + dRandReal()*SPAWN_SIZE - SPAWN_SIZE/2,
@@ -135,6 +132,11 @@ void SmokeEmitter::addBody(){
     sp.rotation = dRandReal() - 0.5f;
     sp.time = time;
     sp.lifetime = dRandReal()*2 - 1.0f;
+
+    sp.shrink = 0.05f;
+    sp.minScale = 0.1f;
+    sp.fade = -0.4f;
+    sp.minAlpha = 0.02f;
     particles.append(sp);
 }
 

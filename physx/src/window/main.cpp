@@ -9,10 +9,10 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     Window window;
-    window.resize(640, 480);
+//    window.resize(640, 480);
     window.setTitle("cs224 Final");
 
-    window.show();
+    window.showFullScreen();
     // will tick according to sreen refresh screen rate
     window.setAnimating(true);
 

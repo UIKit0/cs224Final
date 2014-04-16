@@ -19,7 +19,7 @@ PHYSX = $$(PHYSX_PATH)
 
 isEmpty(PHYSX) {
     # default sunlab path
-    PHYSX = /contrib/projects/physx/3.3.0
+    PHYSX = /contrib/projects/physX3.3.0
 }
 
 INCLUDEPATH += $${PHYSX}/Include

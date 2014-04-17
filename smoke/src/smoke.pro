@@ -53,10 +53,12 @@ SOURCES += \
     interaction/vortex.cpp \
     interaction/vortexshedder.cpp \
     interaction/solidobject.cpp \
-    particles/smokeemitter.cpp \
     assets/obj.cpp \
     particles/cloud.cpp \
     world/perlinnoise.cpp \
+    particles/basicsmokeemitter.cpp \
+    particles/particleemitter.cpp \
+    particles/smoketrailemitter.cpp
 
 
 HEADERS += \
@@ -68,10 +70,12 @@ HEADERS += \
     interaction/vortex.h \
     interaction/vortexshedder.h \
     interaction/solidobject.h \
-    particles/smokeemitter.h \
     assets/obj.h \
     particles/cloud.h \
-    world/perlinnoise.h
+    world/perlinnoise.h \
+    particles/basicsmokeemitter.h \
+    particles/particleemitter.h \
+    particles/smoketrailemitter.h
 
 RESOURCES += \
     $${RES}/resources.qrc

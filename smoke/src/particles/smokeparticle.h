@@ -18,7 +18,7 @@
 class SmokeParticle
 {
 public:
-    SmokeParticle(dWorldID world, dSpaceID space, dMass mass, PerlinNoise *perlin, float radius);
+    SmokeParticle(dWorldID world, dSpaceID space, dMass mass, float radius);
 
     void destroy();
     void update(float time);
@@ -27,14 +27,13 @@ public:
     dBodyID body;
     dGeomID geom;
     dMass mass;
-    PerlinNoise *perlin;
 
     // Initial size of particle
     float size;
 
     // Movement parameters
     float rotation;
-    float rotDirection;
+    float rotationSpeed;
     glm::vec3 wind;     // Force to be applied to the particle, use for buoyancy as well
 
     // Timers for the particle

@@ -21,7 +21,8 @@
 #include "particles/smokeparticle.h"
 #include "interaction/vortex.h"
 #include "interaction/solidobject.h"
-#include "particles/smokeemitter.h"
+#include "particles/basicsmokeemitter.h"
+#include "particles/smoketrailemitter.h"
 #include "world/perlinnoise.h"
 
 extern QHash<dBodyID, Vortex*> g_vortices;
@@ -49,9 +50,9 @@ public:
 
     dJointGroupID contactgroup;
 
-    QList<SmokeEmitter*> emitters;
+    QList<ParticleEmitter*> emitters;
 
-    SmokeEmitter *circlingEmitter;
+    ParticleEmitter *circlingEmitter;
 
     // Sphere that moves left and right through the smoke
     SolidObject sphere;

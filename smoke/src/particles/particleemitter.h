@@ -18,26 +18,23 @@
 
 #include "world/perlinnoise.h"
 
-#define SPAWN_SIZE 1.5f
-#define MAX_HEIGHT 15
-
-class SmokeEmitter
+class ParticleEmitter
 {
 public:
-    SmokeEmitter(dWorldID w, dSpaceID s, dMass m);
+    ParticleEmitter(dWorldID w, dSpaceID s, dMass m);
 
     void destroy();
     void update(float seconds);
     void draw(Obj &obj);
 
-    void addBody();
-    void addVortex();
+    virtual void updateParticles() = 0;
+    virtual void updateVortices() = 0;
+    virtual void spawnParticles() = 0;
+    virtual void spawnVortices() = 0;
 
     dWorldID world;
     dSpaceID space;
     dMass mass;
-
-    QList<PerlinNoise*> perlins;
 
     QList<SmokeParticle> particles;
 
@@ -48,8 +45,6 @@ public:
     float time;
     unsigned int sprites;
 
-    glm::vec3 maxInitialVel;
-    glm::vec3 minInitialVel;
     glm::vec3 location;
 };
 

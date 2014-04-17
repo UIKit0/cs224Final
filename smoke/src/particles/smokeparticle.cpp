@@ -1,6 +1,6 @@
 #include "smokeparticle.h"
 
-SmokeParticle::SmokeParticle(dWorldID world, dSpaceID space, dMass mass, PerlinNoise *perlin, float radius)
+SmokeParticle::SmokeParticle(dWorldID world, dSpaceID space, dMass mass, float radius)
 {
     this->mass = mass;
     this->size = radius;
@@ -17,17 +17,12 @@ SmokeParticle::SmokeParticle(dWorldID world, dSpaceID space, dMass mass, PerlinN
     dMassSetSphereTotal(&mass, 1.0f, radius);
     dBodySetMass(body, &mass);
 
-    this->perlin = perlin;
     time = 0;
     lifetime = 0;
     active = true;
 
     // Random rotation
     rotation = dRandReal()*M_PI*2;
-    if (dRandReal() < 0.5f)
-        rotDirection = 1;
-    else
-        rotDirection = -1;
 
     // Start
     scale = 1.0f;
@@ -69,26 +64,19 @@ void SmokeParticle::draw(glm::vec3 u, glm::vec3 v, glm::vec3 z, Obj &obj){
 
 void SmokeParticle::update(float seconds){
     time += seconds;
-    lifetime += seconds;
 
-    scale = exp(lifetime*shrink);
-    alpha = exp(lifetime*fade);
+    scale = exp(time*shrink);
+    alpha = exp(time*fade);
     if (scale < minScale || alpha < minAlpha){
         active = false;
         return;
     }
 
-    rotation += seconds/M_PI*rotDirection;
+    rotation += seconds*rotationSpeed;
 
-    float timescale = 0.2f;
+    // TODO: change the geom size
+
     dBodyAddForce(body, wind[0]*dRandReal(), wind[1]*dRandReal(), wind[2]*dRandReal());
-//    dBodyAddForce(body, 0, dRandReal(), 0);
-    const dReal *loc = dBodyGetPosition(body);
-
-    float noise = perlin->perlin_noise(loc[1], time*timescale, loc[0]*loc[0] + loc[2]*loc[2]);
-    float noise2 = perlin->perlin_noise(loc[1] + 1, time*timescale, loc[0]*loc[0] + loc[2]*loc[2]);
-    float noise3 = perlin->perlin_noise(loc[1] + 2, time*timescale, loc[0]*loc[0] + loc[2]*loc[2]);
-    dBodyAddForce(body, noise, noise2, noise3);
 
     // Drag force
     const dReal* velocity = dBodyGetLinearVel(body);

@@ -119,12 +119,12 @@ void World::init()
 
     glEnable(GL_TEXTURE_2D);
 
-    SmokeEmitter *emitter = new SmokeEmitter(m_world_id, space, m);
+    BasicSmokeEmitter *emitter = new BasicSmokeEmitter(m_world_id, space, m);
     emitter->maxInitialVel = glm::vec3(0.5f, 2.0f, 0.5f);
     emitter->minInitialVel = glm::vec3(-0.5f, 0.5f, -0.5f);
     emitters.append(emitter);
 
-    circlingEmitter = new SmokeEmitter(m_world_id, space, m);
+    circlingEmitter = new SmokeTrailEmitter(m_world_id, space, m);
     circlingEmitter->location = glm::vec3(30,0,0);
 
     sphere = SolidObject(m_world_id, space, m);

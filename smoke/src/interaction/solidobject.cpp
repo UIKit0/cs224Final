@@ -100,11 +100,11 @@ void SolidObject::draw(Obj &obj) {
     glColor3f(0,1,0);
     const dReal* pos = dBodyGetPosition(body);
 
-    glTranslatef(pos[0], pos[1], pos[2]);
-    glScalef(SIDE_LENGTH, HEIGHT, SIDE_LENGTH);
-    obj.draw();
-    glScalef(1.0f/SIDE_LENGTH, 1.0f/HEIGHT, 1.0f/SIDE_LENGTH);
-    glTranslatef(-pos[0], -pos[1], -pos[2]);
+    glPushMatrix();
+        glTranslatef(pos[0], pos[1], pos[2]);
+        glScalef(SIDE_LENGTH, HEIGHT, SIDE_LENGTH);
+        obj.draw();
+    glPopMatrix();
 
 //    for (int i = 0; i < shedders.size(); i++){
 //        shedders[i]->draw(obj);

@@ -216,14 +216,15 @@ void Window::renderOpenGL()
 //    m_program->setUniformValue("texture", 0);
 
     m_program->setUniformValue("LightPosition", 0.0f, 10.0f, 4.0f);
-    m_program->setUniformValue("SurfaceColor", 0.75f, 0.75f, 0.75f);
+    m_program->setUniformValue("SurfaceColor", 0.4f, 0.75f, 0.75f);
     m_program->setUniformValue("WarmColor", 0.6f, 0.6f, 0.0f);
-    m_program->setUniformValue("CoolColor", 0.0f, 0.0f, 0.6f);
+    m_program->setUniformValue("CoolColor", 0.0f, 0.1f, 0.6f);
     m_program->setUniformValue("DiffuseWarm", 0.45f);
-    m_program->setUniformValue("DiffuseCool", 0.45f);
+    m_program->setUniformValue("DiffuseCool", 0.15f);
 
 //    m_world.drawWorld(m_program);
     m_mesh.draw();
+    m_program->release();
 
     // Draw grid
     glColor4f(0, 0, 0, 0.25);
@@ -239,7 +240,6 @@ void Window::renderOpenGL()
 //    glDisableVertexAttribArray(m_posAttr);
 //    glDisableVertexAttribArray(m_texAttr);
 
-    m_program->release();
 
     glDisable(GL_DEPTH_TEST);
     getErrors("rendering END");

@@ -50,13 +50,12 @@ void SmokeEmitter::draw(Obj &obj){
     glDepthMask(GL_FALSE);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    glColor3f(1,1,1);
     for (int i = 0; i < particles.size(); i++){
         particles[i].draw(glm::normalize(dx), glm::normalize(dy), glm::normalize(dz), obj);
     }
 
-    glDepthMask(GL_TRUE);
     glDisable(GL_BLEND);
+    glDepthMask(GL_TRUE);
     glDisable(GL_TEXTURE_2D);
 
     // Vortices
@@ -134,7 +133,7 @@ void SmokeEmitter::addBody(){
     // Actually make particles bigger with time, so there aren't random gaps
     sp.shrink = 0.05f;
     sp.minScale = 0.1f;
-    sp.fade = -0.4f;
+    sp.fade = -0.5f;
     sp.minAlpha = 0.02f;
     particles.append(sp);
 }

@@ -33,11 +33,13 @@ void Vortex::draw(Obj &obj){
     glColor3f(0.8f, 0.8f, 0.5f);
     const dReal* pos = dBodyGetPosition(body);
 
+    glPushMatrix();
+
     glTranslatef(pos[0], pos[1], pos[2]);
     glScalef(range*2, range*2, range*2);
     obj.draw();
-    glScalef(0.5f/range, 0.5f/range, 0.5f/range);
-    glTranslatef(-pos[0], -pos[1], -pos[2]);
+
+    glPopMatrix();
 
     glDisable(GL_BLEND);
 }

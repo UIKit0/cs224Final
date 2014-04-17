@@ -16,10 +16,10 @@
 
 #include <QList>
 
-#include "smokeparticle.h"
+#include "particles/smokeparticle.h"
 #include "assets/obj.h"
 
-#include "perlinnoise.h"
+#include "world/perlinnoise.h"
 
 #include <iostream>
 

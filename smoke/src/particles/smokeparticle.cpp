@@ -18,7 +18,6 @@ SmokeParticle::SmokeParticle(dWorldID world, dSpaceID space, dMass mass, PerlinN
     dBodySetMass(body, &mass);
 
     this->perlin = perlin;
-    type = (int)(dRandReal() * 4);
     time = 0;
     lifetime = 0;
     active = true;
@@ -50,8 +49,6 @@ void SmokeParticle::draw(glm::vec3 u, glm::vec3 v, glm::vec3 z, Obj &obj){
     glRotatef(rotation*180/M_PI, z[0], z[1], z[2]);
 
     glColor4f(1, 1, 1, fmin(1.0f, alpha));
-
-//    obj.draw();
 
     glm::vec3 corner = u + v;
     glm::vec3 corner2 = v - u;
@@ -85,19 +82,15 @@ void SmokeParticle::update(float seconds){
 
     rotation += seconds/M_PI*rotDirection;
 
-    dGeomSphereSetRadius(geom, size*scale);
-
-    // TODO: change the mass without everything blowing up?
-//    dMassSetSphere(&mass, 1/PARTICLE_SIZE, PARTICLE_SIZE*decay);
-//    dBodySetMass(body, &mass);
-
     float timescale = 0.2f;
-    dBodyAddForce(body, 0, dRandReal(), 0);
+    dBodyAddForce(body, wind[0]*dRandReal(), wind[1]*dRandReal(), wind[2]*dRandReal());
+//    dBodyAddForce(body, 0, dRandReal(), 0);
     const dReal *loc = dBodyGetPosition(body);
 
     float noise = perlin->perlin_noise(loc[1], time*timescale, loc[0]*loc[0] + loc[2]*loc[2]);
     float noise2 = perlin->perlin_noise(loc[1] + 1, time*timescale, loc[0]*loc[0] + loc[2]*loc[2]);
-    dBodyAddForce(body, noise*3, 0, noise2*3);
+    float noise3 = perlin->perlin_noise(loc[1] + 2, time*timescale, loc[0]*loc[0] + loc[2]*loc[2]);
+    dBodyAddForce(body, noise, noise2, noise3);
 
     // Drag force
     const dReal* velocity = dBodyGetLinearVel(body);

@@ -48,30 +48,30 @@ SOURCES += \
     window/camera.cpp \
     window/openglwindow.cpp \
     window/window.cpp \
-    window/world.cpp \
-    window/smokeparticle.cpp \
-    window/vortex.cpp \
-    window/vortexshedder.cpp \
-    window/solidobject.cpp \
-    window/smokeemitter.cpp \
+    world/world.cpp \
+    particles/smokeparticle.cpp \
+    interaction/vortex.cpp \
+    interaction/vortexshedder.cpp \
+    interaction/solidobject.cpp \
+    particles/smokeemitter.cpp \
     assets/obj.cpp \
-    window/cloud.cpp \
-    window/perlinnoise.cpp
+    particles/cloud.cpp \
+    world/perlinnoise.cpp \
 
 
 HEADERS += \
     window/camera.h \
     window/openglwindow.h \
     window/window.h \
-    window/world.h \
-    window/smokeparticle.h \
-    window/vortex.h \
-    window/vortexshedder.h \
-    window/solidobject.h \
-    window/smokeemitter.h \
+    world/world.h \
+    particles/smokeparticle.h \
+    interaction/vortex.h \
+    interaction/vortexshedder.h \
+    interaction/solidobject.h \
+    particles/smokeemitter.h \
     assets/obj.h \
-    window/cloud.h \
-    window/perlinnoise.h
+    particles/cloud.h \
+    world/perlinnoise.h
 
 RESOURCES += \
     $${RES}/resources.qrc

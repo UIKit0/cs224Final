@@ -128,8 +128,6 @@ void World::init()
     circlingEmitter->location = glm::vec3(30,0,0);
 
     sphere = SolidObject(m_world_id, space, m);
-
-//    clouds.append(new Cloud(m_world_id, m, perlin));
 }
 
 void World::draw()
@@ -150,15 +148,6 @@ void World::draw()
 
     // Sphere
     sphere.draw(sphereMesh);
-
-//    glPopMatrix();
-
-//    glPushMatrix();
-//    glScalef(2.0f, 2.0f, 2.0f);
-
-    for (int i = 0; i < clouds.size(); i++){
-        clouds[i]->draw(sphereMesh);
-    }
 
     for (int i = 0; i < emitters.size(); i++){
         emitters[i]->draw(sphereMesh);

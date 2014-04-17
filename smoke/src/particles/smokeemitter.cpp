@@ -99,9 +99,6 @@ void SmokeEmitter::update(float seconds){
         addBody();
     }
 
-//    if (dRandReal() < 0.05f)
-//        addVortex();
-
     for (int i = vortices.size() - 1; i >= 0; i--){
         const dReal *pos = dBodyGetPosition(vortices[i]->body);
         if (pos[1] > MAX_HEIGHT){
@@ -130,28 +127,17 @@ void SmokeEmitter::addBody(){
                             dRandReal()*(maxInitialVel[2] - minInitialVel[2]) + minInitialVel[2]);
 
     sp.rotation = dRandReal() - 0.5f;
+    sp.wind = glm::vec3(1,0.5f,0);
     sp.time = time;
     sp.lifetime = dRandReal()*2 - 1.0f;
 
+    // Actually make particles bigger with time, so there aren't random gaps
     sp.shrink = 0.05f;
     sp.minScale = 0.1f;
     sp.fade = -0.4f;
     sp.minAlpha = 0.02f;
     particles.append(sp);
 }
-
-//void SmokeEmitter::addVortex(){
-//    Vortex v = Vortex(world, space, mass, dRandReal()*2 + 0.5f);
-
-//    dBodySetPosition(v.body, dRandReal()*SPAWN_SIZE*2 - SPAWN_SIZE, dRandReal()*2.0f, dRandReal()*SPAWN_SIZE*2 - SPAWN_SIZE);
-
-//    v.axis = glm::normalize(glm::vec3(dRandReal() - 0.5f, dRandReal() - 0.5f, dRandReal() - 0.5f));
-//    v.falloff = 2.0f;
-//    v.force = dRandReal()*0.5f;
-//    v.forcedecay = 0.5f;
-//    v.rangedecay = 0.05f;
-//    vortices.append(v);
-//}
 
 void SmokeEmitter::addVortex(){
     Vortex* v = new Vortex(world, space, mass, dRandReal()*1.5f);

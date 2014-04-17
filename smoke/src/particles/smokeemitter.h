@@ -12,11 +12,11 @@
 #include <QImage>
 #include <QGLContext>
 
-#include "smokeparticle.h"
-#include "vortex.h"
+#include "particles/smokeparticle.h"
+#include "interaction/vortex.h"
 #include "assets/obj.h"
 
-#include "perlinnoise.h"
+#include "world/perlinnoise.h"
 
 #define SPAWN_SIZE 1.5f
 #define MAX_HEIGHT 15

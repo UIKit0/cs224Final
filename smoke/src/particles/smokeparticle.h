@@ -9,7 +9,7 @@
 
 #include "assets/obj.h"
 
-#include "perlinnoise.h"
+#include "world/perlinnoise.h"
 #include <iostream>
 
 #define PARTICLE_CATEGORY_BITS 1
@@ -29,10 +29,15 @@ public:
     dMass mass;
     PerlinNoise *perlin;
 
-    float size;     // Initial size of particle
+    // Initial size of particle
+    float size;
+
+    // Movement parameters
     float rotation;
     float rotDirection;
+    glm::vec3 wind;     // Force to be applied to the particle, use for buoyancy as well
 
+    // Timers for the particle
     float time;
     float lifetime;
 
@@ -45,7 +50,6 @@ public:
     float scale;     // how much to scale the size
     float minScale;  // what scale to make the particle disappear
 
-    int type;
     bool active;
 };
 

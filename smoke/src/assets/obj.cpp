@@ -2,6 +2,7 @@
 #include <qgl.h>
 #include <QFile>
 #include <QTextStream>
+#include <QDebug>
 
 Obj::Obj(const QString &path)
 {

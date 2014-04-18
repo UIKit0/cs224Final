@@ -3,7 +3,7 @@
 
 #include "openglwindow.h"
 #include "camera.h"
-#include "world.h"
+#include "world/world.h"
 
 #include <QtGui/QOpenGLShaderProgram>
 #include <QtGui/QMouseEvent>

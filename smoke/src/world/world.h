@@ -18,12 +18,12 @@
 
 #include <iostream>
 
-#include "smokeparticle.h"
-#include "vortex.h"
-#include "solidobject.h"
-#include "smokeemitter.h"
-#include "cloud.h"
-#include "perlinnoise.h"
+#include "particles/smokeparticle.h"
+#include "interaction/vortex.h"
+#include "interaction/solidobject.h"
+#include "particles/basicsmokeemitter.h"
+#include "particles/smoketrailemitter.h"
+#include "world/perlinnoise.h"
 
 extern QHash<dBodyID, Vortex*> g_vortices;
 
@@ -50,11 +50,9 @@ public:
 
     dJointGroupID contactgroup;
 
-    QList<SmokeEmitter*> emitters;
+    QList<ParticleEmitter*> emitters;
 
-    SmokeEmitter *circlingEmitter;
-
-    QList<Cloud*> clouds;
+    ParticleEmitter *circlingEmitter;
 
     // Sphere that moves left and right through the smoke
     SolidObject sphere;

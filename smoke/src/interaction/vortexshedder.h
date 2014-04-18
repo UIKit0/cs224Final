@@ -10,7 +10,7 @@
 
 #include <QList>
 
-#include <vortex.h>
+#include <interaction/vortex.h>
 #include "assets/obj.h"
 /**
  * Represents interaction between a moving object and smoke.

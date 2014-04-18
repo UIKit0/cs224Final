@@ -11,7 +11,7 @@
 #define SIDE_LENGTH 2.0f
 #define HEIGHT 1.0f
 
-#include "vortexshedder.h"
+#include "interaction/vortexshedder.h"
 
 class SolidObject
 {

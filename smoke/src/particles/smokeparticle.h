@@ -9,7 +9,7 @@
 
 #include "assets/obj.h"
 
-#include "perlinnoise.h"
+#include "world/perlinnoise.h"
 #include <iostream>
 
 #define PARTICLE_CATEGORY_BITS 1
@@ -18,7 +18,7 @@
 class SmokeParticle
 {
 public:
-    SmokeParticle(dWorldID world, dSpaceID space, dMass mass, PerlinNoise *perlin, float radius);
+    SmokeParticle(dWorldID world, dSpaceID space, dMass mass, float radius);
 
     void destroy();
     void update(float time);
@@ -27,12 +27,16 @@ public:
     dBodyID body;
     dGeomID geom;
     dMass mass;
-    PerlinNoise *perlin;
 
-    float size;     // Initial size of particle
+    // Initial size of particle
+    float size;
+
+    // Movement parameters
     float rotation;
-    float rotDirection;
+    float rotationSpeed;
+    glm::vec3 wind;     // Force to be applied to the particle, use for buoyancy as well
 
+    // Timers for the particle
     float time;
     float lifetime;
 
@@ -45,7 +49,6 @@ public:
     float scale;     // how much to scale the size
     float minScale;  // what scale to make the particle disappear
 
-    int type;
     bool active;
 };
 

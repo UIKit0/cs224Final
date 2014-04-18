@@ -119,24 +119,19 @@ void World::init()
 
     glEnable(GL_TEXTURE_2D);
 
-    SmokeEmitter *emitter = new SmokeEmitter(m_world_id, space, m);
+    BasicSmokeEmitter *emitter = new BasicSmokeEmitter(m_world_id, space, m);
     emitter->maxInitialVel = glm::vec3(0.5f, 2.0f, 0.5f);
     emitter->minInitialVel = glm::vec3(-0.5f, 0.5f, -0.5f);
     emitters.append(emitter);
 
-    circlingEmitter = new SmokeEmitter(m_world_id, space, m);
+    circlingEmitter = new SmokeTrailEmitter(m_world_id, space, m);
     circlingEmitter->location = glm::vec3(30,0,0);
 
     sphere = SolidObject(m_world_id, space, m);
-
-//    clouds.append(new Cloud(m_world_id, m, perlin));
 }
 
 void World::draw()
 {
-//    glPushMatrix();
-//    glScalef(0.5f, 0.5f, 0.5f);
-
     // Draw grid
     glColor4f(0, 0, 0, 0.25);
     glBegin(GL_LINES);
@@ -151,23 +146,11 @@ void World::draw()
     // Sphere
     sphere.draw(sphereMesh);
 
-//    glPopMatrix();
-
-//    glPushMatrix();
-//    glScalef(2.0f, 2.0f, 2.0f);
-
-    for (int i = 0; i < clouds.size(); i++){
-        clouds[i]->draw(sphereMesh);
-    }
-
     circlingEmitter->draw(sphereMesh);
 
     for (int i = 0; i < emitters.size(); i++){
         emitters[i]->draw(sphereMesh);
     }
-
-
-//    glPopMatrix();
 }
 
 void World::tick(float seconds){

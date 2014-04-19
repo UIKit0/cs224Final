@@ -27,6 +27,8 @@ void Window::initialize()
 
     // Enable back face culling
     glEnable(GL_CULL_FACE);
+//    glEnable(GL_MULTISAMPLE);
+//    glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 
     // camera
     m_camera.setAspectRatio(width()/height());

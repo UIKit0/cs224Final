@@ -42,6 +42,17 @@ SolidObject::SolidObject(dWorldID w, dSpaceID s, dMass m)
     vs->velThreshold = 0.01f;
     vs->lifetime = 2.0f;
     shedders.append(vs);
+
+    dGeomID geom = dCreateBox(s, 0.5f, HEIGHT/2, SIDE_LENGTH);
+
+    WindVolume* wv = new WindVolume(w, geom);
+    wv->force = glm::vec3(0,1.0f,0);
+    winds.append(wv);
+
+    geom = dCreateBox(s, 0.5f, HEIGHT/2, SIDE_LENGTH);
+    wv = new WindVolume(w, geom);
+    wv->force = glm::vec3(0,-1.0f,0);
+    winds.append(wv);
 }
 
 void SolidObject::stop(){
@@ -94,6 +105,13 @@ void SolidObject::update(float seconds){
     for (int i = 0; i < shedders.size(); i++){
         shedders[i]->update(seconds);
     }
+
+    const dReal* pos = dBodyGetPosition(body);
+    WindVolume *wv = winds[0];
+    dBodySetPosition(wv->body, pos[0] + vel[0]/5, pos[1] + HEIGHT/4, pos[2]);
+
+    wv = winds[1];
+    dBodySetPosition(wv->body, pos[0] + vel[0]/5, pos[1] - HEIGHT/4, pos[2]);
 }
 
 void SolidObject::draw(Obj &obj) {
@@ -109,6 +127,16 @@ void SolidObject::draw(Obj &obj) {
 //    for (int i = 0; i < shedders.size(); i++){
 //        shedders[i]->draw(obj);
 //    }
+
+    glColor3f(1,0,0);
+    for (int i = 0; i < winds.size(); i++){
+        glPushMatrix();
+        const dReal* loc = dBodyGetPosition(winds[i]->body);
+        glTranslatef(loc[0], loc[1], loc[2]);
+        glScalef(0.5f, HEIGHT/2, SIDE_LENGTH);
+        obj.draw();
+        glPopMatrix();
+    }
 }
 
 

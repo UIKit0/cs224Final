@@ -31,14 +31,14 @@ BasicSmokeEmitter::BasicSmokeEmitter(dWorldID w, dSpaceID s, dMass m) : Particle
 }
 
 void BasicSmokeEmitter::updateParticles(){
-    float timescale = 0.2f;
+//    float timescale = 0.2f;
     for (int i = 0; i < particles.size(); i++){
         // TODO: perlin noise
-        const dReal *loc = dBodyGetPosition(particles[i].body);
-        float noise = perlin->perlin_noise(loc[1], time*timescale, loc[0]*loc[0] + loc[2]*loc[2]);
-        float noise2 = perlin->perlin_noise(loc[1] + 1, time*timescale, loc[0]*loc[0] + loc[2]*loc[2]);
-        float noise3 = perlin->perlin_noise(loc[1] + 2, time*timescale, loc[0]*loc[0] + loc[2]*loc[2]);
-        dBodyAddForce(particles[i].body, noise, noise2, noise3);
+//        const dReal *loc = dBodyGetPosition(particles[i].body);
+//        float noise = perlin->perlin_noise(loc[1], time*timescale, loc[0]*loc[0] + loc[2]*loc[2]);
+//        float noise2 = perlin->perlin_noise(loc[1] + 1, time*timescale, loc[0]*loc[0] + loc[2]*loc[2]);
+//        float noise3 = perlin->perlin_noise(loc[1] + 2, time*timescale, loc[0]*loc[0] + loc[2]*loc[2]);
+//        dBodyAddForce(particles[i].body, noise*5, noise2*5, noise3*5);
     }
 }
 
@@ -70,7 +70,7 @@ void BasicSmokeEmitter::spawnParticles(){
         // Actually make particles bigger with time, so there aren't random gaps
         sp.shrink = 0.05f;
         sp.minScale = 0.1f;
-        sp.fade = -0.5f;
+        sp.fade = -0.6f;
         sp.minAlpha = 0.02f;
         particles.append(sp);
     }

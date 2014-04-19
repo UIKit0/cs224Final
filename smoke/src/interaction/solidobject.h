@@ -12,6 +12,7 @@
 #define HEIGHT 1.0f
 
 #include "interaction/vortexshedder.h"
+#include "interaction/windvolume.h"
 
 class SolidObject
 {
@@ -34,6 +35,7 @@ public:
     glm::vec3 left;
 
     QList<VortexShedder*> shedders;
+    QList<WindVolume*> winds;
 };
 
 #endif // SOLIDOBJECT_H

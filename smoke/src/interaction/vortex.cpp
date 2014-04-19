@@ -16,7 +16,7 @@ Vortex::Vortex(dWorldID world, dSpaceID space, dMass mass, float r)
     range = r;
     active = true;
 
-    g_vortices.insert(body, this);
+    dBodySetData(body, this);
 
     time = 0;
 }
@@ -24,7 +24,6 @@ Vortex::Vortex(dWorldID world, dSpaceID space, dMass mass, float r)
 Vortex::~Vortex(){
     dGeomDestroy(geom);
     dBodyDestroy(body);
-    g_vortices.remove(body);
 }
 
 void Vortex::draw(Obj &obj){
@@ -72,4 +71,20 @@ void Vortex::update(float seconds){
         const dReal *vel = dBodyGetLinearVel(body);
         dBodySetLinearVel(body, vel[0]*0.95f, vel[1]*0.95f, vel[2]*0.95f);
     }
+}
+
+void handleVortexCollision(Vortex* v, dBodyID pbody){
+    if (v == NULL)
+        return;
+
+    const dReal* ppos = dBodyGetPosition(pbody);
+    const dReal* vpos = dBodyGetPosition(v->body);
+    glm::vec3 r(ppos[0] - vpos[0], ppos[1] - vpos[1], ppos[2] - vpos[2]);
+    float rlength = glm::length(r);
+    r = glm::normalize(r);
+
+    float force = -v->force*fmin(pow(rlength, -v->falloff), 1.0f);
+    glm::vec3 tangent = glm::cross(v->axis, r);
+    glm::vec3 f = (tangent + glm::cross(tangent, v->axis)*v->centripetal)*force;
+    dBodyAddForce(pbody, f[0], f[1], f[2]);
 }

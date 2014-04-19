@@ -15,75 +15,9 @@ Window::~Window()
 
 // TODO: move shaders to resources
 
-static const char *vertexShaderSource =
-	"#ifdef GL_ES\n"
-	"precision highp float;\n"
-	"precision highp int;\n"
-	"precision lowp sampler2D;\n"
-	"#endif\n"
-	"attribute highp vec3 a_position;\n"
-	""
-	"attribute lowp vec2 a_texcoord;\n"
-	"varying lowp vec2 v_texcoord;\n"
-	""
-	"uniform highp mat4 matrix;\n"
-	""
-	"uniform vec3 LightPosition;\n"
-	"varying float NdotL;\n"
-	"varying vec3  ReflectVec;\n"
-	"varying vec3  ViewVec;\n"
-	""
-	"void main() {\n"
-        ""
-        "vec3 ecPos    = vec3 (gl_ModelViewMatrix * gl_Vertex);\n"
-        "vec3 tnorm    = normalize(gl_NormalMatrix * gl_Normal);\n"
-        "vec3 lightVec = normalize(LightPosition - ecPos);\n"
-        "ReflectVec    = normalize(reflect(-lightVec, tnorm));\n"
-        "ViewVec       = normalize(-ecPos);\n"
-        "NdotL         = (dot (lightVec, tnorm) + 1.0) * 0.5;\n"
-        "gl_Position   = ftransform();\n"
-        ""
-        ""
-	"}\n";
 
 //	"v_texcoord = a_texcoord;\n"
 //	"gl_Position = matrix * vec4(a_position, 1);\n"
-
-static const char *fragmentShaderSource =
-	"#ifdef GL_ES\n"
-	"precision highp float;\n"
-	"precision highp int;\n"
-	"precision lowp sampler2D;\n"
-	"#endif\n"
-	""
-	"uniform lowp sampler2D texture;\n"
-	"varying lowp vec2 v_texcoord;\n"
-	""
-	"uniform highp vec3  SurfaceColor;\n"
-	"uniform highp vec3  WarmColor;\n"
-	"uniform highp vec3  CoolColor;\n"
-	"uniform highp float DiffuseWarm;\n"
-	"uniform highp float DiffuseCool;\n"
-	""
-	"varying highp float NdotL;\n"
-	"varying highp vec3  ReflectVec;\n"
-	"varying highp vec3  ViewVec;\n"
-	""
-	"void main() {\n"
-	""
-	"vec3 kcool    = min (CoolColor + DiffuseCool * SurfaceColor, 1.0);\n"
-	"vec3 kwarm    = min (WarmColor + DiffuseWarm * SurfaceColor, 1.0);\n"
-	"vec3 kfinal   = mix (kcool, kwarm, NdotL);\n"
-	""
-	"vec3 nreflect = normalize (ReflectVec);\n"
-	"vec3 nview    = normalize (ViewVec);\n"
-	""
-	"float spec    = max (dot (nreflect, nview), 0.0);\n"
-	"spec          = pow (spec, 32.0);\n"
-	""
-	"gl_FragColor  = vec4 (min (kfinal + spec, 1.0), 1.0);\n"
-	""
-	"}\n";
 
 GLuint Window::loadShader(GLenum type, const char *source)
 {
@@ -117,9 +51,13 @@ void Window::initialize()
 
     // shaders
 
+    QString coolToWarmVertFile("../shaders/cooltowarm.vert");
+    QString coolToWarmFragFile("../shaders/cooltowarm.frag");
+
     m_program = new QOpenGLShaderProgram(this);
-    m_program->addShaderFromSourceCode(QOpenGLShader::Vertex, vertexShaderSource);
-    m_program->addShaderFromSourceCode(QOpenGLShader::Fragment, fragmentShaderSource);
+    m_program->addShaderFromSourceFile(QOpenGLShader::Vertex, coolToWarmVertFile);
+    m_program->addShaderFromSourceFile(QOpenGLShader::Fragment, coolToWarmFragFile);
+
     m_program->link();
 
     m_posAttr = m_program->attributeLocation("a_position");

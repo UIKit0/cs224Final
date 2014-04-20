@@ -3,6 +3,8 @@
 
 #include <ode/ode.h>
 
+#include <glm/gtc/noise.hpp>
+
 #include "particles/particleemitter.h"
 #include "world/perlinnoise.h"
 

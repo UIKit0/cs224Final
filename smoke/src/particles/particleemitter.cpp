@@ -26,6 +26,16 @@ void ParticleEmitter::draw(Obj &obj){
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, sprites);
 
+    GLfloat dif[4];
+    GLfloat amb[4];
+    glGetLightfv(GL_LIGHT0, GL_DIFFUSE, dif);
+    glGetLightfv(GL_LIGHT0, GL_AMBIENT, amb);
+
+    GLfloat zeros[] = {0.0f, 0.0f, 0.0f, 0.0f};
+    GLfloat halfs[] = {0.5f, 0.5f, 0.5f, 1.0f};
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, zeros);
+    glLightfv(GL_LIGHT0, GL_AMBIENT, halfs);
+
     glEnable(GL_BLEND);
     glDepthMask(GL_FALSE);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -34,8 +44,12 @@ void ParticleEmitter::draw(Obj &obj){
         particles[i].draw(glm::normalize(dx), glm::normalize(dy), glm::normalize(dz), obj);
     }
 
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, dif);
+    glLightfv(GL_LIGHT0, GL_AMBIENT, amb);
+
     glDisable(GL_BLEND);
     glDepthMask(GL_TRUE);
+
     glDisable(GL_TEXTURE_2D);
 
     // Vortices

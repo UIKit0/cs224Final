@@ -17,11 +17,6 @@ public:
 
     void updateParticles();
     void updateVortices();
-    void spawnParticles();
-    void spawnVortices();
-
-    void addParticle();
-    void addVortex();
 
     QList<PerlinNoise*> perlins;
     PerlinNoise* perlin;

@@ -65,10 +65,10 @@ void SolidObject::start(){
 
 void SolidObject::update(float seconds){
     if (moving > 0){
-        dBodySetLinearVel(body, 5.0f, 0, 0);
+        dBodySetLinearVel(body, 4.0f, 0, 0);
     }
     else if (moving < 0){
-        dBodySetLinearVel(body, -5.0f, 0, 0);
+        dBodySetLinearVel(body, -4.0f, 0, 0);
     }
     else{
         dBodySetLinearVel(body, 0, 0, 0);

@@ -57,7 +57,7 @@ void Vortex::update(float seconds){
     range = range/rangefactor;
 
     // Disable the vortex if it's too weak
-    if (force < 0.01f){
+    if (force < 0.001f){
         active = false;
     }
     else{
@@ -69,7 +69,7 @@ void Vortex::update(float seconds){
 //        dGeomSetCategoryBits(geom, VORTEX_CATEGORY_BITS);
 //        dGeomSetCollideBits(geom, VORTEX_COLLIDE_BITS);
         const dReal *vel = dBodyGetLinearVel(body);
-        dBodySetLinearVel(body, vel[0]*0.95f, vel[1]*0.95f, vel[2]*0.95f);
+        dBodySetLinearVel(body, vel[0]*0.995f, vel[1]*0.995f, vel[2]*0.995f);
     }
 }
 

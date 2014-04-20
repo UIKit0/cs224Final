@@ -62,11 +62,9 @@ static void nearCallback(void* data, dGeomID o1, dGeomID o2){
     contact.surface.soft_cfm = 0.001;
     if (dCollide(o1, o2, 1, &contact.geom, sizeof(dContact))){
         if (dGeomGetCategoryBits(o1) == VORTEX_CATEGORY_BITS){
-//            handleVortexCollision(Vortex::lookupVortex(b1), b2);
             handleVortexCollision((Vortex*)dBodyGetData(b1), b2);
         }
         else if (dGeomGetCategoryBits(o2) == VORTEX_CATEGORY_BITS){
-//            handleVortexCollision(Vortex::lookupVortex(b2), b1);
             handleVortexCollision((Vortex*)dBodyGetData(b2), b1);
         }
         else if (dGeomGetCategoryBits(o1) == WIND_VOLUME_CATEGORY_BITS){

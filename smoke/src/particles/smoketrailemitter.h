@@ -10,8 +10,6 @@ public:
 
     void updateParticles();
     void updateVortices();
-    void spawnParticles();
-    void spawnVortices();
 };
 
 #endif // SMOKETRAILEMITTER_H

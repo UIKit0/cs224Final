@@ -80,8 +80,5 @@ void ParticleEmitter::update(float seconds){
             vortices.removeAt(i);
         }
     }
-
-    spawnParticles();
-    spawnVortices();
 }
 

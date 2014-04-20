@@ -26,14 +26,6 @@ SmokeTrailEmitter::SmokeTrailEmitter(dWorldID w, dSpaceID s, dMass m) : Particle
 }
 
 void SmokeTrailEmitter::updateParticles(){
-
-}
-
-void SmokeTrailEmitter::updateVortices(){
-
-}
-
-void SmokeTrailEmitter::spawnParticles(){
     for (int i = 0; i < 1; i++){
         SmokeParticle sp = SmokeParticle(world, space, mass, dRandReal()*0.05f + 0.03f);
 
@@ -52,6 +44,6 @@ void SmokeTrailEmitter::spawnParticles(){
     }
 }
 
-void SmokeTrailEmitter::spawnVortices(){
+void SmokeTrailEmitter::updateVortices(){
     // Do nothing
 }

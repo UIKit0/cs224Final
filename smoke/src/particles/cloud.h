@@ -3,8 +3,9 @@
 
 /**
  * Particles are never created, so we don't need to store the world, and space and mass.
+ * Clouds are also never created, so we don't need this class either.
  *
- * @brief The Cloud class
+ * @brief
  */
 
 #include <QtGui/QOpenGLFunctions>

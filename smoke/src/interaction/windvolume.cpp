@@ -11,9 +11,7 @@ WindVolume::WindVolume(dWorldID w, dGeomID g)
 }
 
 void handleWindVolumeCollision(WindVolume* v, dBodyID pbody){
-//    std::cout<<"dasd"<<std::endl;
     if (v == NULL)
         return;
-//    std::cout<<"dasd2"<<std::endl;
     dBodyAddForce(pbody, v->force[0], v->force[1], v->force[2]);
 }

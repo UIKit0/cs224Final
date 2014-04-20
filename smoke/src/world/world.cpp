@@ -8,8 +8,6 @@ World::World() :
     m_world_id = dWorldCreate();
     dWorldSetGravity(m_world_id, 0, 0, 0);
 
-    perlin = new PerlinNoise(0.2f, 5);
-
     dVector3 center;
     center[0] = 0;
     center[1] = 0;

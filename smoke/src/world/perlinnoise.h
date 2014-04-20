@@ -2,6 +2,10 @@
 #define PERLINNOISE_H
 
 
+/**
+  * This class is no longer used. I didn't realize glm had noise functions!
+  */
+
 #include <math.h>
 
 class PerlinNoise

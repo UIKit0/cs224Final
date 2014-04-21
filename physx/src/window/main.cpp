@@ -1,12 +1,6 @@
-//#include "window.h"
+#include "window.h"
 #include <QtGui/QGuiApplication>
 #include <QDebug>
-
-#include <PxPhysicsAPI.h>
-using namespace physx;
-
-PxDefaultAllocator		gAllocator;
-PxDefaultErrorCallback	gErrorCallback;
 
 int main(int argc, char *argv[])
 {

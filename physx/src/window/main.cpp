@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     Window window;
-//    window.resize(640, 480);
+    window.resize(640, 480);
     window.setTitle("cs224 Final");
 
     window.showFullScreen();

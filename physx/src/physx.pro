@@ -8,8 +8,6 @@ QT += core gui opengl
 
 TEMPLATE = app
 
-message($${CONFIG})
-
 win32:CONFIG += win
 win {
     contains(QMAKE_TARGET.arch, x86_64) {
@@ -18,6 +16,7 @@ win {
         CONFIG += winx32
     }
 }
+
 # PHYSX build types:
 # -CHECKED debug mode + instruments
 # -PROFILE instruments
@@ -42,33 +41,50 @@ CONFIG(release, debug|release) {
     # PHYSX library
     unix:DEFINES += NDEBUG
 
-    !msvc:!clang:LIBS += -Wl,--start-group
-#    LIBS += -lPvdRuntime \
-#            -lSimulationController \
-#            -lSceneQuery \
-#            -lLowLevel \
-#            -lLowLevelCloth \
-#            -lPhysX3 \
-#            -lPhysX3Vehicle \
-#            -lPhysX3Cooking \
-#            -lPhysX3Extensions \
-#            -lPhysX3CharacterKinematic \
-#            -lPhysXProfileSDK \
-#            -lPhysXVisualDebuggerSDK \
-#            -lPxTask \
-#            -lPhysX3Common
-    LIBS += \
-        -lPhysX3CharacterKinematic_x64 \
-        -lPhysX3_x64 \
-        -lPhysX3Common_x64 \
-        -lPhysX3Cooking_x64 \
-        -lPhysX3Extensions \
-        -lPhysX3Vehicle \
-        -lPhysXProfileSDK \
-        -lPhysXVisualDebuggerSDK \
-        -lPxTask
+    gcc:LIBS += -Wl,--start-group
 
-    !msvc:!clang:LIBS += -Wl,--end-group
+    unix {
+        LIBS += \
+            -lPvdRuntime \
+            -lSimulationController \
+            -lSceneQuery \
+            -lLowLevel \
+            -lLowLevelCloth \
+            -lPhysX3 \
+            -lPhysX3Vehicle \
+            -lPhysX3Cooking \
+            -lPhysX3Extensions \
+            -lPhysX3CharacterKinematic \
+            -lPhysXProfileSDK \
+            -lPhysXVisualDebuggerSDK \
+            -lPxTask \
+            -lPhysX3Common
+    }
+
+    win {
+        LIBS += \
+            -lPhysX3CharacterKinematic_x64 \
+            -lPhysX3_x64 \
+            -lPhysX3Common_x64 \
+            -lPhysX3Cooking_x64 \
+            -lPhysX3Extensions \
+            -lPhysX3Vehicle \
+            -lPhysXProfileSDK \
+            -lPhysXVisualDebuggerSDK \
+            -lPxTask
+    }
+
+    gcc:LIBS += -Wl,--end-group
+
+    # THIS IS BAD
+    msvc {
+        QMAKE_LFLAGS += \
+            /NODEFAULTLIB:libc.lib \
+            /NODEFAULTLIB:libcmt.lib \
+            /NODEFAULTLIB:libcd.lib \
+            /NODEFAULTLIB:libcmtd.lib \
+            /NODEFAULTLIB:msvcrtd.lib
+    }
 
 } else {
     # PHYSX library
@@ -79,33 +95,50 @@ CONFIG(release, debug|release) {
         PX_CHECKED \
         PX_SUPPORT_VISUAL_DEBUGGER
 
-    !msvc:!clang:LIBS += -Wl,--start-group
-#    LIBS += -lPvdRuntimeCHECKED \
-#        -lSimulationControllerCHECKED \
-#        -lSceneQueryCHECKED \
-#        -lLowLevelCHECKED \
-#        -lLowLevelClothCHECKED \
-#        -lPhysX3CHECKED \
-#        -lPhysX3VehicleCHECKED \
-#        -lPhysX3CookingCHECKED \
-#        -lPhysX3ExtensionsCHECKED \
-#        -lPhysX3CharacterKinematicCHECKED \
-#        -lPhysXProfileSDKCHECKED \
-#        -lPhysXVisualDebuggerSDKCHECKED \
-#        -lPxTaskCHECKED \
-#        -lPhysX3CommonCHECKED
-    LIBS += \
-        -lPhysX3CharacterKinematicCHECKED_x64 \
-        -lPhysX3CHECKED_x64 \
-        -lPhysX3CommonCHECKED_x64 \
-        -lPhysX3CookingCHECKED_x64 \
-        -lPhysX3ExtensionsCHECKED \
-        -lPhysX3VehicleCHECKED \
-        -lPhysXProfileSDKCHECKED \
-        -lPhysXVisualDebuggerSDKCHECKED \
-        -lPxTaskCHECKED
+    gcc:LIBS += -Wl,--start-group
 
-    !msvc:!clang:LIBS += -Wl,--end-group
+    unix {
+        LIBS += \
+            -lPvdRuntimeCHECKED \
+            -lSimulationControllerCHECKED \
+            -lSceneQueryCHECKED \
+            -lLowLevelCHECKED \
+            -lLowLevelClothCHECKED \
+            -lPhysX3CHECKED \
+            -lPhysX3VehicleCHECKED \
+            -lPhysX3CookingCHECKED \
+            -lPhysX3ExtensionsCHECKED \
+            -lPhysX3CharacterKinematicCHECKED \
+            -lPhysXProfileSDKCHECKED \
+            -lPhysXVisualDebuggerSDKCHECKED \
+            -lPxTaskCHECKED \
+            -lPhysX3CommonCHECKED
+    }
+
+    win {
+        LIBS += \
+            -lPhysX3CharacterKinematicCHECKED_x64 \
+            -lPhysX3CHECKED_x64 \
+            -lPhysX3CommonCHECKED_x64 \
+            -lPhysX3CookingCHECKED_x64 \
+            -lPhysX3ExtensionsCHECKED \
+            -lPhysX3VehicleCHECKED \
+            -lPhysXProfileSDKCHECKED \
+            -lPhysXVisualDebuggerSDKCHECKED \
+            -lPxTaskCHECKED
+    }
+
+    gcc:LIBS += -Wl,--end-group
+
+    # THIS IS BAD
+    msvc {
+        QMAKE_LFLAGS += \
+            /NODEFAULTLIB:libc.lib \
+            /NODEFAULTLIB:libcmt.lib \
+            /NODEFAULTLIB:msvcrt.lib \
+            /NODEFAULTLIB:libcd.lib \
+            /NODEFAULTLIB:libcmtd.lib
+    }
 }
 
 # PHYSX dependencies
@@ -158,13 +191,14 @@ clang {
 
 macx:QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.7
 
-!msvc:QMAKE_CXXFLAGS += -std=c++11
-
-#QMAKE_CXXFLAGS_RELEASE -= -O2
-#QMAKE_CXXFLAGS_RELEASE += -O3 -fno-strict-aliasing
-#QMAKE_CXXFLAGS_WARN_ON -= -Wall
-#QMAKE_CXXFLAGS_WARN_ON += -Waddress -Warray-bounds -Wc++0x-compat -Wchar-subscripts -Wformat\
-#                          -Wmain -Wmissing-braces -Wparentheses -Wreorder -Wreturn-type \
-#                          -Wsequence-point -Wsign-compare -Wstrict-aliasing -Wstrict-overflow=1 -Wswitch \
-#                          -Wtrigraphs -Wuninitialized -Wunused-label -Wunused-variable \
-#                          -Wvolatile-register-var -Wno-extra
+gcc {
+    QMAKE_CXXFLAGS += -std=c++11
+    QMAKE_CXXFLAGS_RELEASE -= -O2
+    QMAKE_CXXFLAGS_RELEASE += -O3 -fno-strict-aliasing
+    QMAKE_CXXFLAGS_WARN_ON -= -Wall
+    QMAKE_CXXFLAGS_WARN_ON += -Waddress -Warray-bounds -Wc++0x-compat -Wchar-subscripts -Wformat\
+                              -Wmain -Wmissing-braces -Wparentheses -Wreorder -Wreturn-type \
+                              -Wsequence-point -Wsign-compare -Wstrict-aliasing -Wstrict-overflow=1 -Wswitch \
+                              -Wtrigraphs -Wuninitialized -Wunused-label -Wunused-variable \
+                              -Wvolatile-register-var -Wno-extra
+}

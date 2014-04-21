@@ -41,7 +41,7 @@ CONFIG(release, debug|release) {
     # PHYSX library
     unix:DEFINES += NDEBUG
 
-    !clang:!clang:gcc:LIBS += -Wl,--start-group
+    !clang:gcc:LIBS += -Wl,--start-group
 
     unix {
         LIBS += \

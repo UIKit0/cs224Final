@@ -164,16 +164,28 @@ SOURCES += \
     window/camera.cpp \
     window/openglwindow.cpp \
     window/window.cpp \
-    window/world.cpp \
-    assets/obj.cpp
+    world/world.cpp \
+    assets/obj.cpp \
+    particles/smokeparticle.cpp \
+    particles/particleemitter.cpp \
+    particles/basicsmokeemitter.cpp \
+    world/mycontactmodification.cpp \
+    interaction/vortex.cpp
 
 
 HEADERS += \
     window/camera.h \
     window/openglwindow.h \
     window/window.h \
-    window/world.h \
-    assets/obj.h
+    world/world.h \
+    assets/obj.h \
+    particles/smokeparticle.h \
+    particles/particleemitter.h \
+    particles/basicsmokeemitter.h \
+    world/mycontactmodification.h \
+    world/collisiongroups.h \
+    interaction/vortex.h
+
 
 RESOURCES += \
     $${RES}/resources.qrc

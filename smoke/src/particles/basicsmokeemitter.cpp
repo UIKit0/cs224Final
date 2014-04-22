@@ -33,10 +33,10 @@ BasicSmokeEmitter::BasicSmokeEmitter(dWorldID w, dSpaceID s, dMass m) : Particle
 void BasicSmokeEmitter::updateParticles(){
     // Spawn more particles
     int toAdd;
-    if (particles.size() > 1500)
+    if (particles.size() > 2500)
         toAdd = 1;
     else
-        toAdd = 2;
+        toAdd = 4;
 
     for (int i = 0; i < toAdd; i++){
         SmokeParticle sp = SmokeParticle(world, space, mass, dRandReal()*0.05f + 0.03f);
@@ -62,7 +62,7 @@ void BasicSmokeEmitter::updateParticles(){
 
     // Apply noise to particles for time-varying effect
     float timescale = 0.1f;
-    float noisescale = 0.5f;
+    float noisescale = 0.0f;
     for (int i = 0; i < particles.size(); i++){
         const dReal *loc = dBodyGetPosition(particles[i].body);
 

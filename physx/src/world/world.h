@@ -1,17 +1,16 @@
 #ifndef WORLD_H
 #define WORLD_H
 
-//#include <glm/vec2.hpp>
-//#include <glm/vec3.hpp>
-//#include <glm/ext.hpp>
-//#include <glm/gtc/noise.hpp>
-
 #include <QHash>
 #include <QtGui/QOpenGLShaderProgram>
 #include <QtGui/QOpenGLFunctions>
 #include <QList>
 
 #include "assets/obj.h"
+
+#include "particles/basicsmokeemitter.h"
+#include "world/mycontactmodification.h"
+#include "world/collisiongroups.h"
 
 #include <iostream>
 
@@ -31,10 +30,9 @@ public:
     void draw();
     void tick(float seconds);
 
-
     PxRigidDynamic *createDynamic(const PxTransform &t, const PxGeometry &geometry, const PxVec3 &velocity = PxVec3(0));
+
 private:
-    void createStack(const PxTransform& t, PxU32 size, PxReal halfExtent);
     void initPhysics(bool interactive);
     void stepPhysics(bool interactive);
     void cleanupPhysics(bool interactive);
@@ -59,6 +57,9 @@ private:
     PxVisualDebuggerConnection* gConnection;
 
     PxReal stackZ;
+
+    BasicSmokeEmitter*  emitter;
+    PxRigidDynamic*     ball;
 };
 
 #endif // WORLD_H

@@ -91,10 +91,11 @@ inline int relativeIndex(int index, int count)
 Obj::Index Obj::getIndex(const QString &str) const
 {
     QStringList parts = str.split('/');
-    int vertex = parts.count() > 0 ? relativeIndex(parts[0].toInt(), vertices.count()) : -1;
-    int coord = parts.count() > 1 ? relativeIndex(parts[1].toInt(), coords.count()) : -1;
-    int normal = parts.count() > 2 ? relativeIndex(parts[2].toInt(), normals.count()) : -1;
-    return Index(vertex, coord, normal);
+    Index index;
+    index.vertex = parts.count() > 0 ? relativeIndex(parts[0].toInt(), vertices.count()) : -1;
+    index.coord = parts.count() > 1 ? relativeIndex(parts[1].toInt(), coords.count()) : -1;
+    index.normal = parts.count() > 2 ? relativeIndex(parts[2].toInt(), normals.count()) : -1;
+    return index;
 }
 
 void Obj::drawIndex(const Index &index) const

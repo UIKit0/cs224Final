@@ -10,5 +10,6 @@
         <file>meshes/pyramid.obj</file>
         <file>textures/smoke.png</file>
         <file>textures/smoke2.png</file>
+        <file>meshes/monkey2.obj</file>
     </qresource>
 </RCC>

@@ -25,8 +25,8 @@ public:
         int coord;
         int normal;
 
-        Index() : vertex(-1), coord(-1), normal(-1) {}
-        Index(int vertex, int coord, int normal) : vertex(vertex), coord(coord), normal(normal) {}
+//        Index() : vertex(-1), coord(-1), normal(-1) {}
+//        Index(int vertex, int coord, int normal) : vertex(vertex), coord(coord), normal(normal) {}
     };
 
     struct Triangle
@@ -34,7 +34,10 @@ public:
         Vertex *v;
         bool visited;
 
-        Index a, b, c;
+        union {
+            struct { Index a, b, c; };
+            Index indices[3];
+        };
 
         Triangle() {}
         Triangle(const Index &a, const Index &b, const Index &c) : a(a), b(b), c(c) {}

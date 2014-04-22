@@ -5,7 +5,7 @@
 World::World()
     : m_screenWidth(500)
     , m_screenHeight(500)
-    , m_mesh("monkey.obj")
+    , m_mesh("monkey2.obj")
 {
 
 }
@@ -30,14 +30,27 @@ void World::initialize(QOpenGLFunctions_4_2_Core *gl)
 
     m_goochFx.compile(GL_VERTEX_SHADER, "contour.vertex");
     m_goochFx.compile(GL_FRAGMENT_SHADER, "contour.fragment");
+//    m_goochFx.compile(GL_GEOMETRY_SHADER, "contour.geometry");
     m_goochFx.link();
 
+    QHash<QPair<int,int>, Adjacent> edgeMap;
+    for(Obj::Triangle tri : m_mesh.triangles) {
+        for (int i = 0; i < 3; ++i) {
+            int ia = tri.indices[i].vertex;
+            int ib = tri.indices[(i + 1) % 3].vertex;
+            QPair<int, int> p(qMin(ia, ib), qMax(ia, ib));
+            if (!edgeMap.contains(p)) {
+//                edgeMap.insert(p, )
+            } else {
+
+            }
+        }
+    }
 
     // TODO: move to a obj / buffer class
-
     GLuint meshSize = m_mesh.triangles.size() * 3;
     QVector<MeshBuffer> data;
-//    data.resize(meshSize);
+    data.reserve(meshSize);
 
     for(Obj::Triangle tri : m_mesh.triangles) {
         data.append(MeshBuffer( m_mesh.vertices[tri.a.vertex], m_mesh.normals[tri.a.normal], glm::vec2()));

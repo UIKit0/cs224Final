@@ -44,6 +44,19 @@ public:
         MeshBuffer(glm::vec3 &pos, glm::vec3 &norm, glm::vec2 &tex) :
             position(pos), normal(norm), texcoord(tex) {}
     };
+
+    struct Adjacent {
+        int face1;
+        int face2;
+        int getFace(int f) {
+            Q_ASSERT_X(f == face1 || f == face2, "adj struct", "bad face request");
+            if (f == face1)
+                return face1;
+            else
+                return face2;
+        }
+    };
+
 private:
     int m_screenWidth;
     int m_screenHeight;

@@ -43,7 +43,6 @@ out V_OUT
 void main(void)
 {
     vec3 ecPos = vec3(mv * vec4(position, 1.0));
-    // TODO: properly normalize the normal
     vec3 tnorm = normalize(mat3(mv) * normal);
     vec3 lightVec = normalize(lightPos - ecPos);
     f_out.reflectVec = normalize(reflect(-lightVec, tnorm));
@@ -86,5 +85,23 @@ void main(void)
     spec = pow(spec, 32.0);
 
     color = vec4(min (kfinal + spec, 1.0), 1.0);
-//    color = vec4(1.0, 0.0, 0.0, 1.0);
+}
+
+-- geometry ------------------------------------------------------
+
+layout(triangles_adjacency) in;
+layout(triangle_strip, max_vertices = 12) out;
+
+void main(void)
+{
+    // get face normal (0,2,4)
+    vec3 faceNormal = normalize(cross(
+        gl_in[2].gl_Position.xyz - gl_in[0].gl_Position.xyz,
+        gl_in[4].gl_Position.xyz - gl_in[0].gl_Position.xyz
+    ));
+
+    vec3 viewDirection = -gl_in[0].gl_Position.xyz;
+    vec3 viewDotN = dot(faceNormal, viewDirection);
+
+    //TODO: once edge structure works add geometry
 }

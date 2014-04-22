@@ -43,8 +43,8 @@ void Camera::mouseRotation(glm::vec2 delta)
 //    if (m_rotation.x < 0) m_rotation.x += 360;
 //    if (m_rotation.x >  360) m_rotation.x += -360;
 
-    if (m_rotation.y < -90) m_rotation.y = -90;
-    if (m_rotation.y >  90) m_rotation.y =  90;
+    if (m_rotation.y < -90) m_rotation.y = -89.9f;
+    if (m_rotation.y >  90) m_rotation.y =  89.9f;
 }
 
 void Camera::update(float seconds)

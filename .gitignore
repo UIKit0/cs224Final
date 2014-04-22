@@ -2,6 +2,7 @@ debug
 release
 
 *.user
+*.user.*
 *.autosave
 
 build-*
@@ -13,3 +14,10 @@ Makefile
 .rcc
 .ui
 .moc
+
+*.swp
+
+*.vcxproj
+*.vcxproj.*
+*.sdf
+GeneratedFiles

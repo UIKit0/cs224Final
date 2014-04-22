@@ -4,13 +4,12 @@
         <file>textures/dirt.png</file>
         <file>textures/grid.png</file>
         <file>textures/grid2.png</file>
-        <file>textures/cube.png</file>
-        <file>textures/cube2.png</file>
         <file>meshes/sphere.obj</file>
         <file>meshes/cube.obj</file>
         <file>meshes/monkey.obj</file>
         <file>meshes/pyramid.obj</file>
         <file>textures/smoke.png</file>
         <file>textures/smoke2.png</file>
+        <file>meshes/monkey2.obj</file>
     </qresource>
 </RCC>

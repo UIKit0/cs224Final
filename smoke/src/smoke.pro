@@ -56,7 +56,8 @@ SOURCES += \
     particles/basicsmokeemitter.cpp \
     particles/particleemitter.cpp \
     particles/smoketrailemitter.cpp \
-    interaction/windvolume.cpp
+    interaction/windvolume.cpp \
+    particles/quad.cpp
 
 
 HEADERS += \
@@ -74,7 +75,8 @@ HEADERS += \
     particles/basicsmokeemitter.h \
     particles/particleemitter.h \
     particles/smoketrailemitter.h \
-    interaction/windvolume.h
+    interaction/windvolume.h \
+    particles/quad.h
 
 RESOURCES += \
     $${RES}/resources.qrc

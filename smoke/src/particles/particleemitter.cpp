@@ -23,8 +23,9 @@ void ParticleEmitter::draw(Obj &obj){
     glm::vec3 dy(m[1], m[5], m[9]); // up-down
     glm::vec3 dz(m[2], m[6], m[10]); // front-back
 
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, sprites);
+    // TODO
+    // Remove lighting info from particle emitter
+    //
 
     GLfloat dif[4];
     GLfloat amb[4];
@@ -40,8 +41,34 @@ void ParticleEmitter::draw(Obj &obj){
     glDepthMask(GL_FALSE);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    for (int i = 0; i < particles.size(); i++){
+    // TODO
+    // Bring in the static shader to bind the textures to their uniform variables
+
+    glActiveTexture(GL_TEXTURE0);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, m_alphaTex);
+
+    glActiveTexture(GL_TEXTURE1);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, m_colorTex);
+
+    glActiveTexture(GL_TEXTURE2);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, m_depthTex);
+
+    glActiveTexture(GL_TEXTURE3);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, m_normalTex);
+
+
+    for (int i = 0; i < particles.size(); i++)
+    {
+        // TODO
+        // Set camera matrix from here
         particles[i].draw(glm::normalize(dx), glm::normalize(dy), glm::normalize(dz), obj);
+
+        // Only have 1 particle to draw!
+        quad->draw();
     }
 
     glLightfv(GL_LIGHT0, GL_DIFFUSE, dif);

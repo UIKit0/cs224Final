@@ -7,6 +7,8 @@ release
 build-*
 Makefile
 
+*~
+
 *.o
 
 .obj

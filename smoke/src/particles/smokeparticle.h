@@ -8,6 +8,7 @@
 #include <glm/ext.hpp>
 
 #include "assets/obj.h"
+#include "quad.h"
 
 #include "world/perlinnoise.h"
 #include <iostream>

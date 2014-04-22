@@ -43,7 +43,14 @@ public:
     float time;
     unsigned int sprites;
 
+    unsigned int m_alphaTex;
+    unsigned int m_colorTex;
+    unsigned int m_depthTex;
+    unsigned int m_normalTex;
+
     glm::vec3 location;
+
+    Quad* quad;
 };
 
 #endif // SMOKEEMITTER_H

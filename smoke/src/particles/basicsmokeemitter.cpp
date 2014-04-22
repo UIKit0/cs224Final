@@ -5,6 +5,8 @@ BasicSmokeEmitter::BasicSmokeEmitter(dWorldID w, dSpaceID s, dMass m) : Particle
     perlins.append(new PerlinNoise(0.2f, 5));
     perlin = new PerlinNoise(0.2f, 5);
 
+    quad = new Quad();
+
     QImage img = QImage(":/textures/smoke2.png");
 
     if (img.isNull()) {
@@ -26,9 +28,105 @@ BasicSmokeEmitter::BasicSmokeEmitter(dWorldID w, dSpaceID s, dMass m) : Particle
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img.width(), img.height(),
                  0, GL_RGBA, GL_UNSIGNED_BYTE, img.bits());
 
+
+
+
+
+
+    // Load the Alpha texture
+    QImage aImg = QImage(":/textures/smoke_alpha.png");
+    if (aImg.isNull()) {
+        qCritical("Unable to load alpha texture!");
+        return;
+    }
+
+    aImg = aImg.convertToFormat(QImage::Format_RGBA8888);
+
+    glGenTextures(1, &m_alphaTex);
+    glBindTexture(GL_TEXTURE_2D, m_alphaTex);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, aImg.width(), aImg.height(),
+                 0, GL_RGBA, GL_UNSIGNED_BYTE, aImg.bits());
+
+
+    // Load the Color texture
+    QImage cImg = QImage(":/textures/smoke_color.png");
+    if (cImg.isNull()) {
+        qCritical("Unable to load color texture!");
+        return;
+    }
+
+    cImg = cImg.convertToFormat(QImage::Format_RGBA8888);
+
+    glGenTextures(1, &m_colorTex);
+    glBindTexture(GL_TEXTURE_2D, m_colorTex);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, cImg.width(), cImg.height(),
+                 0, GL_RGBA, GL_UNSIGNED_BYTE, cImg.bits());
+
+
+
+    // Load the Depth texture
+    QImage dImg = QImage(":/textures/smoke_depth.png");
+    if (dImg.isNull()) {
+        qCritical("Unable to load depth texture!");
+        return;
+    }
+
+    dImg = dImg.convertToFormat(QImage::Format_RGBA8888);
+
+    glGenTextures(1, &m_depthTex);
+    glBindTexture(GL_TEXTURE_2D, m_depthTex);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, dImg.width(), dImg.height(),
+                 0, GL_RGBA, GL_UNSIGNED_BYTE, dImg.bits());
+
+
+    // Load the Normal texture
+    QImage nImg = QImage(":/textures/smoke_normal.png");
+    if (nImg.isNull()) {
+        qCritical("Unable to load normal texture!");
+        return;
+    }
+
+    nImg = nImg.convertToFormat(QImage::Format_RGBA8888);
+
+    glGenTextures(1, &m_normalTex);
+    glBindTexture(GL_TEXTURE_2D, m_normalTex);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, nImg.width(), nImg.height(),
+                 0, GL_RGBA, GL_UNSIGNED_BYTE, nImg.bits());
+
+
     maxInitialVel = glm::vec3(0,0,0);
     minInitialVel = glm::vec3(0,0,0);
 }
+
+
 
 void BasicSmokeEmitter::updateParticles(){
     // Spawn more particles

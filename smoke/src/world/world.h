@@ -41,6 +41,10 @@ public:
     void toggleDrawVortices();
     void toggleMovingSphere();
 
+
+    void setShader(QOpenGLShaderProgram *s);
+
+
     // ODE stuff that is only created once per world
     dWorldID m_world_id;
     dSpaceID space;
@@ -55,8 +59,12 @@ public:
     SolidObject sphere;
     Obj sphereMesh;
 
+    static QOpenGLShaderProgram* m_shader;
+
     bool moveSphere;
     bool moveWing;
+
+
 };
 
 #endif // WORLD_H

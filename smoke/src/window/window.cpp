@@ -33,6 +33,15 @@ void Window::initialize()
     // camera
     m_camera.setAspectRatio(width()/height());
 
+    QString smokeVertFile("../../shaders/smoke.vert");
+    QString smokeFragFile("../../shaders/smoke.frag");
+
+    m_program = new QOpenGLShaderProgram(this);
+    m_program->addShaderFromSourceFile(QOpenGLShader::Vertex, smokeVertFile);
+    m_program->addShaderFromSourceFile(QOpenGLShader::Fragment, smokeFragFile);
+
+    m_world.setShader(m_program);
+
     // world
     m_world.init();
 

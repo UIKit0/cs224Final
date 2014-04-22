@@ -13,8 +13,6 @@ Window::~Window()
 
 }
 
-// TODO: move shaders to resources
-
 
 //	"v_texcoord = a_texcoord;\n"
 //	"gl_Position = matrix * vec4(a_position, 1);\n"

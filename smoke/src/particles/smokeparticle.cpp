@@ -37,15 +37,25 @@ void SmokeParticle::destroy(){
 void SmokeParticle::draw(glm::vec3 u, glm::vec3 v, glm::vec3 z, Obj &obj){
     const dReal* pos = dBodyGetPosition(body);
 
+
+
     glPushMatrix();
+    // TODO
+    // Set Model matrix
+    //
+    //----------------------------------------------------------------
     glTranslatef(pos[0], pos[1], pos[2]);
 
     glScalef(scale, scale, scale);
 
     glRotatef(rotation*180/M_PI, z[0], z[1], z[2]);
-
+    //----------------------------------------------------------------
     glColor4f(1, 1, 1, fmin(1.0f, alpha));
 
+    // TODO
+    // Do this viewplane transformation in the shader
+    //
+    //----------------------------------------------------------------
     glm::vec3 corner = u + v;
     glm::vec3 corner2 = v - u;
     glBegin(GL_QUADS);
@@ -58,8 +68,17 @@ void SmokeParticle::draw(glm::vec3 u, glm::vec3 v, glm::vec3 z, Obj &obj){
     glTexCoord2f(1, 0);
     glVertex3f(-corner2[0], -corner2[1], -corner2[2]);
     glEnd();
+    //----------------------------------------------------------------
 
     glPopMatrix();
+
+    // Shader version
+//    glm::mat4 model = glm::mat4(1.0f);
+//    model = glm::translate(model, glm::vec3(pos[0],pos[1],pos[3]));
+//    model = glm::scale(model, glm::vec3(scale));
+//    model = glm::rotate(glm::mat4(1.0f), (float)(rotation*180.0f/M_PI), z);
+
+//    quad.draw();
 }
 
 void SmokeParticle::update(float seconds){

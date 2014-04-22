@@ -26,6 +26,8 @@ public:
     void initialize();
     virtual void renderOpenGL();
 
+
+
 private:
 
     // Camera
@@ -33,6 +35,8 @@ private:
 
     // World
     World m_world;
+
+    QOpenGLShaderProgram *m_program;
 
     inline void getErrors(QString location);
 

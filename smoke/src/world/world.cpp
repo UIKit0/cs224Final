@@ -28,6 +28,8 @@ World::World() :
     moveWing = false;
 }
 
+QOpenGLShaderProgram* World::m_shader = 0;
+
 World::~World(){
     emitters.clear();
     dJointGroupDestroy(contactgroup);
@@ -154,3 +156,7 @@ void World::tick(float seconds){
     dJointGroupEmpty(contactgroup);
 }
 
+void World::setShader(QOpenGLShaderProgram *s)
+{
+    m_shader = s;
+}

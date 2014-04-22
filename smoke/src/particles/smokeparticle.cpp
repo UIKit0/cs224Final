@@ -74,8 +74,6 @@ void SmokeParticle::update(float seconds){
 
     rotation += seconds*rotationSpeed;
 
-    // TODO: change the geom size
-
     dBodyAddForce(body, wind[0]*dRandReal(), wind[1]*dRandReal(), wind[2]*dRandReal());
 
     // Drag force

@@ -23,8 +23,9 @@
 #include "interaction/solidobject.h"
 #include "particles/basicsmokeemitter.h"
 #include "particles/smoketrailemitter.h"
-#include "world/perlinnoise.h"
 
+extern void handleVortexCollision(Vortex *v, dBodyID pbody);
+extern void handleWindVolumeCollision(WindVolume *v, dBodyID pbody);
 extern QHash<dBodyID, Vortex*> g_vortices;
 
 class World : protected QOpenGLFunctions
@@ -39,15 +40,11 @@ public:
 
     void toggleDrawVortices();
     void toggleMovingSphere();
-    Vortex* lookupVortex(dBodyID v);
 
-    // Values that are only created once per world
+    // ODE stuff that is only created once per world
     dWorldID m_world_id;
     dSpaceID space;
     dMass m;
-
-    PerlinNoise *perlin;
-
     dJointGroupID contactgroup;
 
     QList<ParticleEmitter*> emitters;

@@ -43,6 +43,6 @@ public:
     float time;
 };
 
-extern QHash<dBodyID, Vortex*> g_vortices;
+extern void handleVortexCollision(Vortex* v, dBodyID pbody);
 
 #endif // VORTEX_H

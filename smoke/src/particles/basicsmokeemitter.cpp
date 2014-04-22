@@ -31,22 +31,7 @@ BasicSmokeEmitter::BasicSmokeEmitter(dWorldID w, dSpaceID s, dMass m) : Particle
 }
 
 void BasicSmokeEmitter::updateParticles(){
-    float timescale = 0.2f;
-    for (int i = 0; i < particles.size(); i++){
-        // TODO: perlin noise
-        const dReal *loc = dBodyGetPosition(particles[i].body);
-        float noise = perlin->perlin_noise(loc[1], time*timescale, loc[0]*loc[0] + loc[2]*loc[2]);
-        float noise2 = perlin->perlin_noise(loc[1] + 1, time*timescale, loc[0]*loc[0] + loc[2]*loc[2]);
-        float noise3 = perlin->perlin_noise(loc[1] + 2, time*timescale, loc[0]*loc[0] + loc[2]*loc[2]);
-        dBodyAddForce(particles[i].body, noise, noise2, noise3);
-    }
-}
-
-void BasicSmokeEmitter::updateVortices(){
-    // Do nothing
-}
-
-void BasicSmokeEmitter::spawnParticles(){
+    // Spawn more particles
     int toAdd;
     if (particles.size() > 1500)
         toAdd = 1;
@@ -70,28 +55,40 @@ void BasicSmokeEmitter::spawnParticles(){
         // Actually make particles bigger with time, so there aren't random gaps
         sp.shrink = 0.05f;
         sp.minScale = 0.1f;
-        sp.fade = -0.5f;
+        sp.fade = -0.4f;
         sp.minAlpha = 0.02f;
         particles.append(sp);
     }
+
+    // Apply noise to particles for time-varying effect
+    float timescale = 0.1f;
+    float noisescale = 0.5f;
+    for (int i = 0; i < particles.size(); i++){
+        const dReal *loc = dBodyGetPosition(particles[i].body);
+
+        float noise0 = glm::perlin(glm::vec3(loc[0], loc[1], time*timescale));
+        float noise2 = glm::perlin(glm::vec3(loc[2], loc[1], time*timescale));
+        dBodyAddForce(particles[i].body, noise0*noisescale, 0.0f, noise2*noisescale);
+    }
 }
 
-void BasicSmokeEmitter::spawnVortices(){
-    // Do nothing
-}
+void BasicSmokeEmitter::updateVortices(){
+    if (vortices.size() < 10 && dRandReal() < 0.01f){
+        Vortex* v = new Vortex(world, space, mass, dRandReal()*1.0f + 0.5f);
 
-void BasicSmokeEmitter::addVortex(){
-    Vortex* v = new Vortex(world, space, mass, dRandReal()*1.5f);
+        // Spawn in a circle around the center
+        float theta = dRandReal()*M_PI*2;
+        // TODO: change so not at origin
+        dBodySetPosition(v->body, SPAWN_SIZE*cos(theta), dRandReal()*1.0f, SPAWN_SIZE*sin(theta));
+        dBodySetLinearVel(v->body, dRandReal()*0.1f - 0.05f, dRandReal()*3 + 2, dRandReal()*0.1f - 0.05f);
 
-    // Spawn in a circle around the center
-    float theta = dRandReal()*M_PI*2;
-    dBodySetPosition(v->body, SPAWN_SIZE*cos(theta), dRandReal()*1.0f, SPAWN_SIZE*sin(theta));
-
-    v->axis = glm::normalize(glm::vec3(-sin(theta), 0, cos(theta)));
-    v->falloff = 3.0f;
-    v->force = dRandReal()*0.007f;
-    v->centripetal = 0.2f;
-    v->forcedecay = 0.4f;
-    v->rangedecay = 0.1f;
-    vortices.append(v);
+        v->axis = glm::normalize(glm::vec3(-sin(theta), 0, cos(theta)));
+        v->falloff = 3.0f;
+        v->force = dRandReal()*1.0f;
+        v->centripetal = 1.0f;
+        v->forcedecay = 1.0f;
+        v->rangedecay = 0.1f;
+        v->lifetime = 5.0f;
+        vortices.append(v);
+    }
 }

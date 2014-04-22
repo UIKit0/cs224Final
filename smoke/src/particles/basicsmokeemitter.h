@@ -3,6 +3,8 @@
 
 #include <ode/ode.h>
 
+#include <glm/gtc/noise.hpp>
+
 #include "particles/particleemitter.h"
 #include "world/perlinnoise.h"
 
@@ -15,11 +17,6 @@ public:
 
     void updateParticles();
     void updateVortices();
-    void spawnParticles();
-    void spawnVortices();
-
-    void addParticle();
-    void addVortex();
 
     QList<PerlinNoise*> perlins;
     PerlinNoise* perlin;

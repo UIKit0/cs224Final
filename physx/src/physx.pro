@@ -41,7 +41,7 @@ CONFIG(release, debug|release) {
     # PHYSX library
     unix:DEFINES += NDEBUG
 
-    gcc:LIBS += -Wl,--start-group
+    !clang:gcc:LIBS += -Wl,--start-group
 
     unix {
         LIBS += \
@@ -74,7 +74,7 @@ CONFIG(release, debug|release) {
             -lPxTask
     }
 
-    gcc:LIBS += -Wl,--end-group
+    !clang:gcc:LIBS += -Wl,--end-group
 
     # THIS IS BAD
     msvc {
@@ -95,7 +95,7 @@ CONFIG(release, debug|release) {
         PX_CHECKED \
         PX_SUPPORT_VISUAL_DEBUGGER
 
-    gcc:LIBS += -Wl,--start-group
+    !clang:gcc:LIBS += -Wl,--start-group
 
     unix {
         LIBS += \
@@ -128,7 +128,7 @@ CONFIG(release, debug|release) {
             -lPxTaskCHECKED
     }
 
-    gcc:LIBS += -Wl,--end-group
+    !clang:gcc:LIBS += -Wl,--end-group
 
     # THIS IS BAD
     msvc {
@@ -191,7 +191,7 @@ clang {
 
 macx:QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.7
 
-gcc {
+!clang:gcc {
     QMAKE_CXXFLAGS += -std=c++11
     QMAKE_CXXFLAGS_RELEASE -= -O2
     QMAKE_CXXFLAGS_RELEASE += -O3 -fno-strict-aliasing

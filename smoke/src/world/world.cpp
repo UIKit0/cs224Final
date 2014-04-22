@@ -8,8 +8,6 @@ World::World() :
     m_world_id = dWorldCreate();
     dWorldSetGravity(m_world_id, 0, 0, 0);
 
-    perlin = new PerlinNoise(0.2f, 5);
-
     dVector3 center;
     center[0] = 0;
     center[1] = 0;
@@ -51,30 +49,6 @@ void World::toggleMovingSphere(){
         sphere.start();
 }
 
-// TODO: make this runtime not horrendous
-Vortex* World::lookupVortex(dBodyID v){
-    if (g_vortices.contains(v))
-        return g_vortices.value(v);
-    std::cout<<"no"<<std::endl;
-    return NULL;
-}
-
-static void handleVortexCollision(Vortex* v, dBodyID pbody){
-    if (v == NULL)
-        return;
-
-    const dReal* ppos = dBodyGetPosition(pbody);
-    const dReal* vpos = dBodyGetPosition(v->body);
-    glm::vec3 r(ppos[0] - vpos[0], ppos[1] - vpos[1], ppos[2] - vpos[2]);
-    float rlength = glm::length(r);
-    r = glm::normalize(r);
-
-    float force = -v->force*fmin(pow(rlength, -v->falloff), 1.0f);
-    glm::vec3 tangent = glm::cross(v->axis, r);
-    glm::vec3 f = (tangent + glm::cross(tangent, v->axis)*v->centripetal)*force;
-    dBodyAddForce(pbody, f[0], f[1], f[2]);
-}
-
 static void nearCallback(void* data, dGeomID o1, dGeomID o2){
     World* world = (World*) data;
     dBodyID b1 = dGeomGetBody(o1);
@@ -88,10 +62,16 @@ static void nearCallback(void* data, dGeomID o1, dGeomID o2){
     contact.surface.soft_cfm = 0.001;
     if (dCollide(o1, o2, 1, &contact.geom, sizeof(dContact))){
         if (dGeomGetCategoryBits(o1) == VORTEX_CATEGORY_BITS){
-            handleVortexCollision(world->lookupVortex(b1), b2);
+            handleVortexCollision((Vortex*)dBodyGetData(b1), b2);
         }
         else if (dGeomGetCategoryBits(o2) == VORTEX_CATEGORY_BITS){
-            handleVortexCollision(world->lookupVortex(b2), b1);
+            handleVortexCollision((Vortex*)dBodyGetData(b2), b1);
+        }
+        else if (dGeomGetCategoryBits(o1) == WIND_VOLUME_CATEGORY_BITS){
+            handleWindVolumeCollision((WindVolume*)dBodyGetData(b1), b2);
+        }
+        else if (dGeomGetCategoryBits(o2) == WIND_VOLUME_CATEGORY_BITS){
+            handleWindVolumeCollision((WindVolume*)dBodyGetData(b2), b1);
         }
         else{
             dJointID c = dJointCreateContact(world->m_world_id, world->contactgroup, &contact);
@@ -154,6 +134,8 @@ void World::draw()
 }
 
 void World::tick(float seconds){
+    if (1/seconds < 40)
+        std::cout<<"fps: "<<(1/seconds)<<std::endl;
     // Upwards force
     dSpaceCollide(space, this, nearCallback);
     sphere.update(seconds);

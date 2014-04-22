@@ -29,8 +29,6 @@ public:
 
     virtual void updateParticles() = 0;
     virtual void updateVortices() = 0;
-    virtual void spawnParticles() = 0;
-    virtual void spawnVortices() = 0;
 
     dWorldID world;
     dSpaceID space;

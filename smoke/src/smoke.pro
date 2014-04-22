@@ -19,9 +19,6 @@ isEmpty(ODE) {
     ODE = /contrib/projects/ODE/0.13
 }
 
-# GLU library
-#LIBS += -lGLU
-
 # ODE library
 LIBS += -L$${ODE}/lib \
         -lode \
@@ -58,7 +55,8 @@ SOURCES += \
     world/perlinnoise.cpp \
     particles/basicsmokeemitter.cpp \
     particles/particleemitter.cpp \
-    particles/smoketrailemitter.cpp
+    particles/smoketrailemitter.cpp \
+    interaction/windvolume.cpp
 
 
 HEADERS += \
@@ -75,7 +73,8 @@ HEADERS += \
     world/perlinnoise.h \
     particles/basicsmokeemitter.h \
     particles/particleemitter.h \
-    particles/smoketrailemitter.h
+    particles/smoketrailemitter.h \
+    interaction/windvolume.h
 
 RESOURCES += \
     $${RES}/resources.qrc

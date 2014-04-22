@@ -3,26 +3,29 @@
 
 #include <QtCore/QCoreApplication>
 #include <QtGui/QWindow>
-#include <QtGui/QOpenGLFunctions>
-#include <QtGui/QOpenGLContext>
 
+#include <QOpenGLFunctions_4_2_Core>
+#include <QtGui/QOpenGLContext>
+#include <QtGui/QOpenGLDebugLogger>
+
+#ifndef ENABLE_CORE_PROFILE
 #include <QtGui/QOpenGLPaintDevice>
 #include <QtGui/QPainter>
+#endif
 
 #include <QElapsedTimer>
 
 #include <glm/ext.hpp>
+#include <QDebug>
 
-class OpenGLWindow : public QWindow, protected QOpenGLFunctions
+#include "graphics/debug.h"
+
+class OpenGLWindow : public QWindow
 {
     Q_OBJECT
 public:
     explicit OpenGLWindow(QWindow *parent = 0);
     ~OpenGLWindow();
-
-    virtual void renderOpenGL() =0;
-
-    virtual void initialize() =0;
 
     void setAnimating(bool animating);
 
@@ -31,20 +34,32 @@ public slots:
     void renderNow();
 
 protected:
-//    virtual void render(QPainter *painter);
-    virtual void render();
-    virtual void onTick(const float seconds) =0;
+    virtual void initialize() =0;
+    virtual void render() =0;
+    virtual void render(QPainter *painter) =0;
+    virtual void update(float seconds) =0;
 
     bool event(QEvent *event);
     void exposeEvent(QExposeEvent *event);
+
+    void setGlobalGLAttributes(const QVector<GLenum> &attribs);
+
+    QOpenGLFunctions_4_2_Core *m_gl;
+    QOpenGLContext *m_context;
+
+private slots:
+    void handleLogMessage(const QOpenGLDebugMessage &debugMessage);
 
 private:
     bool m_update_pending;
     bool m_animating;
 
-    QOpenGLContext *m_context;
+#ifndef ENABLE_CORE_PROFILE
     QOpenGLPaintDevice *m_device;
     QPainter *m_painter;
+#endif
+
+    QOpenGLDebugLogger *m_logger;
 
     QElapsedTimer m_tickTimer;
     QElapsedTimer m_fpsTimer;
@@ -52,6 +67,7 @@ private:
     int m_fps;
     int m_frames;
 
+    QSet<GLenum> m_glAttributes;
 };
 
 #endif // OPENGLWINDOW_H

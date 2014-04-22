@@ -1,7 +1,5 @@
 #include "obj.h"
-#include <qgl.h>
-#include <QFile>
-#include <QTextStream>
+
 
 Obj::Obj(const QString &path)
 {

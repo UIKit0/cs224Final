@@ -53,19 +53,23 @@ void World::initialize(QOpenGLFunctions_4_1_Core *gl)
     data.reserve(meshSize);
 
     for(Obj::Triangle tri : m_mesh.triangles) {
-        MeshBuffer a;
-        a.position = m_mesh.vertices[tri.a.vertex];
-        a.normal = m_mesh.normals[tri.a.normal];
-        MeshBuffer b;
-        a.position = m_mesh.vertices[tri.b.vertex];
-        a.normal = m_mesh.normals[tri.b.normal];
-        MeshBuffer c;
-        a.position = m_mesh.vertices[tri.c.vertex];
-        a.normal = m_mesh.normals[tri.c.normal];
 
-        data.append(a);
-        data.append(b);
-        data.append(c);
+        data.append(MeshBuffer( m_mesh.vertices[tri.a.vertex], m_mesh.normals[tri.a.normal], glm::vec2()));
+        data.append(MeshBuffer( m_mesh.vertices[tri.b.vertex], m_mesh.normals[tri.b.normal], glm::vec2()));
+        data.append(MeshBuffer( m_mesh.vertices[tri.c.vertex], m_mesh.normals[tri.c.normal], glm::vec2()));
+//        MeshBuffer a;
+//        a.position = m_mesh.vertices[tri.a.vertex];
+//        a.normal = m_mesh.normals[tri.a.normal];
+//        MeshBuffer b;
+//        a.position = m_mesh.vertices[tri.b.vertex];
+//        a.normal = m_mesh.normals[tri.b.normal];
+//        MeshBuffer c;
+//        a.position = m_mesh.vertices[tri.c.vertex];
+//        a.normal = m_mesh.normals[tri.c.normal];
+
+//        data.append(a);
+//        data.append(b);
+//        data.append(c);
     }
 
     gl->glGenVertexArrays(1, &m_vao);

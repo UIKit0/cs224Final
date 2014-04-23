@@ -15,8 +15,7 @@ OpenGLWindow::OpenGLWindow(QWindow *parent)
     format.setSamples(16); // multi-sampling
     format.setRenderableType(QSurfaceFormat::OpenGL); // change to opengles on mobile
 #ifdef ENABLE_CORE_PROFILE
-//    format.setProfile(QSurfaceFormat::CoreProfile);
-    format.setProfile(QSurfaceFormat::CompatibilityProfile);
+    format.setProfile(QSurfaceFormat::CoreProfile);
 #else
     format.setProfile(QSurfaceFormat::CompatibilityProfile);
 #endif

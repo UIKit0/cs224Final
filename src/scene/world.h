@@ -22,8 +22,8 @@ class World
 {
 public:
     World();
-    void initialize(QOpenGLFunctions_4_2_Core *gl);
-    void render(QOpenGLFunctions_4_2_Core *gl);
+    void initialize(QOpenGLFunctions_4_1_Core *gl);
+    void render(QOpenGLFunctions_4_1_Core *gl);
     void update(float seconds);
 
     void setScreenSize(int width, int height);

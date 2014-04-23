@@ -75,7 +75,7 @@ void World::initialize(QOpenGLFunctions_4_2_Core *gl)
 
     gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
 
-    gl->glBufferData(GL_ARRAY_BUFFER, sizeof(MeshBuffer) * data.size(), data.data(), GL_STATIC_DRAW);
+    gl->glBufferData(GL_ARRAY_BUFFER, sizeof(World::MeshBuffer) * data.size(), data.data(), GL_STATIC_DRAW);
 
     quintptr offset = 0;
 

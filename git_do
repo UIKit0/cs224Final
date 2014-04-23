@@ -1,0 +1,10 @@
+echo $#
+if [ $# -ne "1" ]
+then
+    echo "Usage: $0 <commit message>"
+    exit
+fi
+
+git commit -am "$1"
+git pull
+git push

@@ -1,24 +1,22 @@
 #include "program.h"
 
-static const char *SHADER_ES_PRECISION = ""
-    "#ifdef GL_ES\n"
-    "precision highp float;\n"
-    "precision highp int;\n"
-    "precision lowp sampler2D;\n"
-    "#endif\n"
-;
+const QRegExp Program::rxUniform = QRegExp(
+    "\\s*uniform\\s+"
+    "(?:lowp|medp|highp\\s+)?"
+    "\\w+\\s+"
+    "(\\w+)"
+);
 
-static const QRegExp rxUniform("\\s*uniform\\s+"
-                               "(?:lowp|medp|highp\\s+)?"
-                               "\\w+\\s+"
-                               "(\\w+)");
-static const QRegExp rxAttributes("\\s*in\\s+"
-                                  "(?:lowp|medp|highp\\s+)?"
-                                  "\\w+\\s+"
-                                  "(\\w+)");
+const QRegExp Program::rxAttributes = QRegExp(
+    "\\s*in\\s+"
+    "(?:lowp|medp|highp\\s+)?"
+    "\\w+\\s+"
+    "(\\w+)"
+);
+
 Program::Program()
     : m_gl(0)
-    , m_program(-1)
+    , m_program(INVALID_VAR)
 {
 }
 
@@ -37,7 +35,6 @@ void Program::initialize(QOpenGLFunctions_4_2_Core *gl, const char *path)
     // TODO: create a directives method
 
     glswAddDirectiveToken("", "#version 420 core");
-//     glswAddDirectiveToken("", SHADER_ES_PRECISION);
 }
 
 bool Program::compile(GLenum shaderType, const char *name)
@@ -85,7 +82,7 @@ bool Program::compile(GLenum shaderType, const char *name)
 
 void Program::link()
 {
-    Q_ASSERT(m_program == -1);
+    Q_ASSERT(m_program == INVALID_VAR);
 
     // create program
     m_program = m_gl->glCreateProgram();
@@ -135,32 +132,32 @@ void Program::parseVariables(const QString &source,
                              QHash<QByteArray, GLint> &values)
 {
     int pos = 0;
-    while ((pos = search.indexIn(source, pos)) != -1) {
-        values.insert(search.cap(1).toLocal8Bit(), -1);
+    while ((pos = search.indexIn(source, pos)) != INVALID_VAR) {
+        values.insert(search.cap(1).toLocal8Bit(), INVALID_VAR);
         pos += search.matchedLength();
     }
 }
 
 void Program::use()
 {
-    Q_ASSERT(m_program != -1);
+    Q_ASSERT(m_program != INVALID_VAR);
     m_gl->glUseProgram(m_program);
 }
 
 GLuint Program::program() const
 {
-    Q_ASSERT(m_program != -1);
+    Q_ASSERT(m_program != INVALID_VAR);
     return m_program;
 }
 
 GLint Program::attrib(const char *name)
 {
-    Q_ASSERT(m_attributes[name] != -1);
+    Q_ASSERT(m_attributes[name] != INVALID_VAR);
     return m_attributes[name];
 }
 
 GLint Program::uniform(const char *name)
 {
-    Q_ASSERT(m_uniforms[name] != -1);
+    Q_ASSERT(m_uniforms[name] != INVALID_VAR);
     return m_uniforms[name];
 }

@@ -222,5 +222,3 @@ void OpenGLWindow::setGlobalGLState(const QVector<GLenum> &attribsList)
     for (GLenum attrib : attribsList)
         m_glStates << attrib;
 }
-
-

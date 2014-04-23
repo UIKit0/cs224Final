@@ -105,3 +105,13 @@ void main(void)
 
     //TODO: once edge structure works add geometry
 }
+
+-- directives.gles ------------------------------------------------
+
+// TODO: directives should be in a separate file
+
+"#ifdef GL_ES\n"
+"precision highp float;\n"
+"precision highp int;\n"
+"precision lowp sampler2D;\n"
+"#endif\n"

@@ -41,6 +41,10 @@ private:
     QHash<QByteArray,GLint> m_attributes;
     void parseVariables(const QString &source, const QRegExp &search, QHash<QByteArray, GLint> &values);
     void setLocations(QHash<QByteArray, GLint> &values, bool unif);
+
+    static const QRegExp rxUniform;
+    static const QRegExp rxAttributes;
+    static const GLuint INVALID_VAR = -1;
 };
 
 #endif // PROGRAM_H

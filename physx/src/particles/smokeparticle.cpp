@@ -32,7 +32,7 @@ void SmokeParticle::draw(glm::vec3 u, glm::vec3 v, glm::vec3 z, Obj &obj){
 
     glRotatef(rotation*180/glm::pi<float>(), z[0], z[1], z[2]);
 
-    glColor4f(1, 1, 1, std::min(1.0f, alpha));
+    glColor4f(1, 1, 1, glm::min(1.0f, alpha));
 
     glm::vec3 corner = u + v;
     glm::vec3 corner2 = v - u;

@@ -24,7 +24,7 @@ void Window::initialize()
     QVector<GLenum> attribs;
     attribs << GL_DEPTH_TEST
             << GL_CULL_FACE;
-    setGlobalGLAttributes(attribs);
+    setGlobalGLState(attribs);
 
     // world
     m_world.setScreenSize(width(), height());

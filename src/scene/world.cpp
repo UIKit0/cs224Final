@@ -94,6 +94,9 @@ void World::render(QOpenGLFunctions_4_2_Core *gl)
 
     gl->glUseProgram(m_goochFx.program());
 
+    // normal matrix
+    glm::inverseTranspose(m_camera.vMatrix);
+
     gl->glUniformMatrix4fv(m_goochFx.uniform("proj"), 1, GL_FALSE, glm::value_ptr(m_camera.pMatrix));
     gl->glUniformMatrix4fv(m_goochFx.uniform("mv"), 1, GL_FALSE, glm::value_ptr(m_camera.vMatrix));
 

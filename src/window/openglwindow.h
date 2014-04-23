@@ -42,7 +42,7 @@ protected:
     bool event(QEvent *event);
     void exposeEvent(QExposeEvent *event);
 
-    void setGlobalGLAttributes(const QVector<GLenum> &attribs);
+    void setGlobalGLState(const QVector<GLenum> &attribs);
 
     QOpenGLFunctions_4_2_Core *m_gl;
     QOpenGLContext *m_context;
@@ -67,7 +67,7 @@ private:
     int m_fps;
     int m_frames;
 
-    QSet<GLenum> m_glAttributes;
+    QSet<GLenum> m_glStates;
 };
 
 #endif // OPENGLWINDOW_H

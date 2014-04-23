@@ -15,7 +15,7 @@ SmokeParticle::SmokeParticle(float radius, PxVec3 pos, PxPhysics *phys, PxScene*
     active = true;
 
     // Random rotation
-    rotation = glm::linearRand(0.0,2*M_PI);
+    rotation = glm::linearRand<float>(0.0,2*glm::pi<float>());
 
     // Start
     scale = 1.0f;
@@ -30,9 +30,9 @@ void SmokeParticle::draw(glm::vec3 u, glm::vec3 v, glm::vec3 z, Obj &obj){
 
     glScalef(scale, scale, scale);
 
-    glRotatef(rotation*180/M_PI, z[0], z[1], z[2]);
+    glRotatef(rotation*180/glm::pi<float>(), z[0], z[1], z[2]);
 
-    glColor4f(1, 1, 1, fmin(1.0f, alpha));
+    glColor4f(1, 1, 1, std::min(1.0f, alpha));
 
     glm::vec3 corner = u + v;
     glm::vec3 corner2 = v - u;

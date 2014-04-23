@@ -30,7 +30,7 @@ OpenGLWindow::OpenGLWindow(QWindow *parent)
     // Hide the cursor since this is a fullscreen app
     setCursor(Qt::BlankCursor);
 
-    m_glAttributes << GL_MULTISAMPLE;
+    m_glStates << GL_MULTISAMPLE;
 
 #ifndef ENABLE_CORE_PROFILE
     m_device = 0;
@@ -167,11 +167,11 @@ void OpenGLWindow::renderNow()
     update(seconds);
 
 #ifdef ENABLE_CORE_PROFILE
-    for (GLenum attrib : m_glAttributes)
+    for (GLenum attrib : m_glStates)
         m_gl->glEnable(attrib);
     // render opengl
     render();
-    for (GLenum attrib : m_glAttributes)
+    for (GLenum attrib : m_glStates)
         m_gl->glDisable(attrib);
 #else
     m_painter->beginNativePainting();
@@ -217,10 +217,10 @@ void OpenGLWindow::setAnimating(bool animating)
         renderLater();
 }
 
-void OpenGLWindow::setGlobalGLAttributes(const QVector<GLenum> &attribsList)
+void OpenGLWindow::setGlobalGLState(const QVector<GLenum> &attribsList)
 {
     for (GLenum attrib : attribsList)
-        m_glAttributes << attrib;
+        m_glStates << attrib;
 }
 
 

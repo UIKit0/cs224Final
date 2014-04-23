@@ -5,12 +5,12 @@
 #include <glm/vec3.hpp>
 #include <glm/ext.hpp>
 #include <glm/gtc/random.hpp>
+#include <glm/gtc/constants.hpp>
 
 #include "assets/obj.h"
 
 #include <PxPhysicsAPI.h>
 #include <iostream>
-
 #include "world/collisiongroups.h"
 
 #define DAMPING_FACTOR 0.05f

@@ -11,7 +11,7 @@ World::World()
 }
 
 
-void World::initialize(QOpenGLFunctions_4_2_Core *gl)
+void World::initialize(QOpenGLFunctions_4_1_Core *gl)
 {
     // camera
     m_camera.setAspectRatio((float)m_screenWidth/m_screenHeight);
@@ -85,7 +85,7 @@ void World::initialize(QOpenGLFunctions_4_2_Core *gl)
 #endif
 }
 
-void World::render(QOpenGLFunctions_4_2_Core *gl)
+void World::render(QOpenGLFunctions_4_1_Core *gl)
 {
 #ifdef DEBUG_TEST_TRIANGLE
     gl->glUseProgram(m_goochFx.program());

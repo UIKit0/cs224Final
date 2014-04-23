@@ -22,12 +22,12 @@ Program::Program()
 {
 }
 
-Program::Program(QOpenGLFunctions_4_2_Core *gl, const char *path)
+Program::Program(QOpenGLFunctions_4_1_Core *gl, const char *path)
 {
     initialize(gl, path);
 }
 
-void Program::initialize(QOpenGLFunctions_4_2_Core *gl, const char *path)
+void Program::initialize(QOpenGLFunctions_4_1_Core *gl, const char *path)
 {
     m_gl = gl;
     glswInit();
@@ -36,7 +36,7 @@ void Program::initialize(QOpenGLFunctions_4_2_Core *gl, const char *path)
     // TODO: don't hardcode the directives
     // TODO: create a directives method
 
-    glswAddDirectiveToken("", "#version 420 core");
+    glswAddDirectiveToken("", "#version 410 core");
 //     glswAddDirectiveToken("", SHADER_ES_PRECISION);
 }
 

@@ -23,7 +23,7 @@ OpenGLWindow::OpenGLWindow(QWindow *parent)
     format.setOption(QSurfaceFormat::DebugContext);
 #endif
     format.setMajorVersion(4);
-    format.setMinorVersion(2);
+    format.setMinorVersion(1);
     format.setDepthBufferSize(24);
     setFormat(format);
 
@@ -100,7 +100,7 @@ void OpenGLWindow::renderNow()
         m_context->setFormat(requestedFormat());
 
         if (m_context->create()) {
-            m_gl = m_context->versionFunctions<QOpenGLFunctions_4_2_Core>();
+            m_gl = m_context->versionFunctions<QOpenGLFunctions_4_1_Core>();
             if (!m_gl) {
                 qCritical("Critical: Unable to initialize OpenGL 4.2 Functions");
                 exit(EXIT_FAILURE);

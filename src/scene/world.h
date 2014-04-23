@@ -40,9 +40,9 @@ public:
         glm::vec3 normal;
         glm::vec2 texcoord;
 
-        MeshBuffer() {}
-        MeshBuffer(glm::vec3 &pos, glm::vec3 &norm, glm::vec2 &tex) :
-            position(pos), normal(norm), texcoord(tex) {}
+//        MeshBuffer() {}
+//        MeshBuffer(glm::vec3 &pos, glm::vec3 &norm, glm::vec2 &tex) :
+//            position(pos), normal(norm), texcoord(tex) {}
     };
 
     struct Adjacent {

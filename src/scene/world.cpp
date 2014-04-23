@@ -49,13 +49,13 @@ void World::initialize(QOpenGLFunctions_4_2_Core *gl)
 
     // TODO: move to a obj / buffer class
     GLuint meshSize = m_mesh.triangles.size() * 3;
-    QVector<MeshBuffer> data;
+    QVector<World::MeshBuffer> data;
     data.reserve(meshSize);
 
     for(Obj::Triangle tri : m_mesh.triangles) {
-        data.append(MeshBuffer( m_mesh.vertices[tri.a.vertex], m_mesh.normals[tri.a.normal], glm::vec2()));
-        data.append(MeshBuffer( m_mesh.vertices[tri.b.vertex], m_mesh.normals[tri.b.normal], glm::vec2()));
-        data.append(MeshBuffer( m_mesh.vertices[tri.c.vertex], m_mesh.normals[tri.c.normal], glm::vec2()));
+        data.append(MeshBuffer( m_mesh.vertices[tri.a.vertex], m_mesh.normals[tri.a.normal], glm::vec2(0,0)));
+        data.append(MeshBuffer( m_mesh.vertices[tri.b.vertex], m_mesh.normals[tri.b.normal], glm::vec2(0,0)));
+        data.append(MeshBuffer( m_mesh.vertices[tri.c.vertex], m_mesh.normals[tri.c.normal], glm::vec2(0,0)));
     }
 
     gl->glGenVertexArrays(1, &m_vao);
@@ -65,7 +65,7 @@ void World::initialize(QOpenGLFunctions_4_2_Core *gl)
 
     gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
 
-    gl->glBufferData(GL_ARRAY_BUFFER, sizeof(MeshBuffer) * data.size(), data.data(), GL_STATIC_DRAW);
+    gl->glBufferData(GL_ARRAY_BUFFER, sizeof(World::MeshBuffer) * data.size(), data.data(), GL_STATIC_DRAW);
 
     quintptr offset = 0;
 

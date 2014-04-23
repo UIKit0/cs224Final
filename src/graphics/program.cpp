@@ -116,7 +116,7 @@ void Program::link()
 void Program::setLocations(QHash<QByteArray,GLint> &values, bool unif)
 {
     GLint loc;
-    QList<QByteArray> &names = values.keys();
+    const QList<QByteArray> &names = values.keys();
 
     for(QByteArray name : names) {
         if (unif)

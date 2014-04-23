@@ -73,3 +73,4 @@ void Vortex::update(float seconds){
 //    glm::vec3 f = (tangent + glm::cross(tangent, v->axis)*v->centripetal)*force;
 //    dBodyAddForce(pbody, f[0], f[1], f[2]);
 //}
+\

@@ -40,7 +40,8 @@ GLSW = $${LIB}/glsw-2010
 # TODO: compile to outside lib
 SOURCES += \
     $${GLSW}/glsw/bstrlib.c \
-    $${GLSW}/glsw/glsw.c
+    $${GLSW}/glsw/glsw.c \
+    matrixstack.cpp
 
 # glm library
 GLM = $${LIB}/glm-0.9.5.1
@@ -64,7 +65,8 @@ SOURCES += \
     interaction/windvolume.cpp \
     interaction/vortex.cpp \
     interaction/vortexshedder.cpp \
-    interaction/solidobject.cpp
+    interaction/solidobject.cpp \
+    scene/matrixstack.cpp
 
 HEADERS += \
     scene/camera.h \
@@ -81,7 +83,9 @@ HEADERS += \
     interaction/windvolume.h \
     interaction/vortex.h \
     interaction/vortexshedder.h \
-    interaction/solidobject.h
+    interaction/solidobject.h \
+    matrixstack.h \
+    scene/matrixstack.h
 
 RESOURCES += \
     $${RES}/resources.qrc

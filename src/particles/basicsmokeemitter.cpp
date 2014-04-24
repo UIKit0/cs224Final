@@ -70,22 +70,22 @@ void BasicSmokeEmitter::updateParticles(){
 }
 
 void BasicSmokeEmitter::updateVortices(){
-//    if (vortices.size() < 10 && dRandReal() < 0.01f){
-//        Vortex* v = new Vortex(world, space, mass, dRandReal()*1.0f + 0.5f);
+    if (vortices.size() < 10 && dRandReal() < 0.01f){
+        Vortex* v = new Vortex(world, space, mass, dRandReal()*1.0f + 0.5f);
 
-//        // Spawn in a circle around the center
-//        float theta = dRandReal()*M_PI*2;
-//        // TODO: change so not at origin
-//        dBodySetPosition(v->body, SPAWN_SIZE*cos(theta), dRandReal()*1.0f, SPAWN_SIZE*sin(theta));
-//        dBodySetLinearVel(v->body, dRandReal()*0.1f - 0.05f, dRandReal()*3 + 2, dRandReal()*0.1f - 0.05f);
+        // Spawn in a circle around the center
+        float theta = dRandReal()*M_PI*2;
+        // TODO: change so not at origin
+        dBodySetPosition(v->body, SPAWN_SIZE*cos(theta), dRandReal()*1.0f, SPAWN_SIZE*sin(theta));
+        dBodySetLinearVel(v->body, dRandReal()*0.1f - 0.05f, dRandReal()*3 + 2, dRandReal()*0.1f - 0.05f);
 
-//        v->axis = glm::normalize(glm::vec3(-sin(theta), 0, cos(theta)));
-//        v->falloff = 3.0f;
-//        v->force = dRandReal()*1.0f;
-//        v->centripetal = 1.0f;
-//        v->forcedecay = 1.0f;
-//        v->rangedecay = 0.1f;
-//        v->lifetime = 5.0f;
-//        vortices.append(v);
-//    }
+        v->axis = glm::normalize(glm::vec3(-sin(theta), 0, cos(theta)));
+        v->falloff = 3.0f;
+        v->force = dRandReal()*1.0f;
+        v->centripetal = 1.0f;
+        v->forcedecay = 1.0f;
+        v->rangedecay = 0.1f;
+        v->lifetime = 5.0f;
+        vortices.append(v);
+    }
 }

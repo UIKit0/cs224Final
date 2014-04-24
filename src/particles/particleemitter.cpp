@@ -53,11 +53,11 @@ void ParticleEmitter::draw(Obj &obj){
     glDisable(GL_TEXTURE_2D);
 
     // Vortices
-//    if (drawVortices){
-//        for (int i = 0; i < vortices.size(); i++){
-//              vortices[i]->draw(obj);
-//        }
-//    }
+    if (drawVortices){
+        for (int i = 0; i < vortices.size(); i++){
+              vortices[i]->draw(obj);
+        }
+    }
 }
 
 void ParticleEmitter::update(float seconds){
@@ -73,12 +73,12 @@ void ParticleEmitter::update(float seconds){
         }
     }
 
-//    for (int i = vortices.size() - 1; i >= 0; i--){
-//        vortices[i]->update(seconds);
-//        if (!vortices[i]->active){
-//            delete vortices[i];
-//            vortices.removeAt(i);
-//        }
-//    }
+    for (int i = vortices.size() - 1; i >= 0; i--){
+        vortices[i]->update(seconds);
+        if (!vortices[i]->active){
+            delete vortices[i];
+            vortices.removeAt(i);
+        }
+    }
 }
 

@@ -12,7 +12,7 @@
 #include <QGLContext>
 
 #include "particles/smokeparticle.h"
-//#include "interaction/vortex.h"
+#include "interaction/vortex.h"
 #include "assets/obj.h"
 
 class ParticleEmitter
@@ -33,7 +33,7 @@ public:
 
     QList<SmokeParticle> particles;
 
-//    QList<Vortex*> vortices;
+    QList<Vortex*> vortices;
 
     bool drawVortices;
 

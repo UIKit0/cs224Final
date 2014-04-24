@@ -228,8 +228,6 @@ void World::update(float seconds)
 
     // PARTICLES
 
-    if (1/seconds < 40)
-        std::cout<<"fps: "<<(1/seconds)<<std::endl;
     // Upwards force
     dSpaceCollide(space, this, nearCallback);
     sphere.update(seconds);

@@ -7,6 +7,7 @@ World::World()
     : m_screenWidth(500)
     , m_screenHeight(500)
     , m_mesh("monkey2.obj")
+    , sphereMesh("cube.obj")
 {
     // Initialize ODE stuff
     dInitODE();

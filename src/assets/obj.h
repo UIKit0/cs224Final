@@ -8,7 +8,7 @@
 #include <QOpenGLFunctions_4_1_Core>
 #include <QFile>
 #include <QTextStream>
-
+#include <QDebug>
 #include <QVector>
 
 struct Vertex;

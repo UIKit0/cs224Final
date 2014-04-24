@@ -69,25 +69,7 @@ public:
         }
     };
 
-private:
-    int m_screenWidth;
-    int m_screenHeight;
-
-    Obj m_mesh;
-    GLuint m_buffer;
-    GLuint m_vao;
-//    GLuint m_vboIds[2];
-
-    Program m_goochFx;
-
-    GLuint m_posAttr;
-    GLuint m_texAttr;
-    GLuint m_matrixUniform;
-    GLuint m_textureUniform;
-    GLuint m_texture;
-
-    // Camera
-    Camera m_camera;
+public:
 
     // PARTICLES
     void toggleDrawVortices();
@@ -109,6 +91,27 @@ private:
 
     bool moveSphere;
     bool moveWing;
+
+private:
+    int m_screenWidth;
+    int m_screenHeight;
+
+    Obj m_mesh;
+    GLuint m_buffer;
+    GLuint m_vao;
+//    GLuint m_vboIds[2];
+
+    Program m_goochFx;
+
+    GLuint m_posAttr;
+    GLuint m_texAttr;
+    GLuint m_matrixUniform;
+    GLuint m_textureUniform;
+    GLuint m_texture;
+
+    // Camera
+    Camera m_camera;
+
 
 
 };

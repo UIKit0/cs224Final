@@ -91,8 +91,8 @@ void World::initialize(QOpenGLFunctions_4_1_Core *gl)
     // camera
     m_camera.setAspectRatio((float)m_screenWidth/m_screenHeight);
 
-//    m_goochFx.initialize(gl, "../../../../res/shaders/");
-    m_goochFx.initialize(gl, "../res/shaders/");
+    m_goochFx.initialize(gl, "../../../../res/shaders/");
+//    m_goochFx.initialize(gl, "../res/shaders/");
 
 #ifdef DEBUG_TEST_TRIANGLE
     m_goochFx.compile(GL_VERTEX_SHADER, "contour.vertex.debug");

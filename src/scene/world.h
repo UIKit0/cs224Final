@@ -111,9 +111,6 @@ private:
 
     // Camera
     Camera m_camera;
-
-
-
 };
 
 #endif // WORLD_H

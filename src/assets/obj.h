@@ -10,6 +10,7 @@
 #include <QTextStream>
 #include <QDebug>
 #include <QVector>
+#include <QDebug>
 
 struct Vertex;
 

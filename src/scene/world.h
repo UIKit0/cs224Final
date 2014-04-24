@@ -109,8 +109,6 @@ private:
 
     bool moveSphere;
     bool moveWing;
-
-
 };
 
 #endif // WORLD_H

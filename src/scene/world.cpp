@@ -169,6 +169,7 @@ void World::initialize(QOpenGLFunctions_4_1_Core *gl)
 //    gl->glEnableVertexAttribArray(m_goochFx.attrib("texcoord"));
 #endif
 
+
     BasicSmokeEmitter *emitter = new BasicSmokeEmitter(m_world_id, space, m);
     emitter->maxInitialVel = glm::vec3(0.5f, 2.0f, 0.5f);
     emitter->minInitialVel = glm::vec3(-0.5f, 0.5f, -0.5f);
@@ -207,7 +208,12 @@ void World::render(QOpenGLFunctions_4_1_Core *gl)
     gl->glDrawArrays(GL_TRIANGLES, 0, m_mesh.triangles.size() * 3);
 #endif
 
-
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glLoadMatrixf(glm::value_ptr(m_camera.pMatrix));
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glLoadMatrixf(glm::value_ptr(m_camera.vMatrix));
     // RENDER PARTICLES
 
     // Sphere
@@ -276,6 +282,10 @@ void World::keyPressEvent(QKeyEvent *event)
         m_camera.pressingRight = true;
         break;
     }
+
+    if (event->key() == Qt::Key_V) toggleDrawVortices();
+
+    if (event->key() == Qt::Key_B) toggleMovingSphere();
 
     if (event->key() == Qt::Key_Space) m_camera.pressingJump = true;
 }

@@ -11,5 +11,6 @@ void MatrixStack::pushMatrix(){
 
 void MatrixStack::popMatrix(){
     Q_ASSERT(!stack.isEmpty());
-    matrix = stack.removeLast();
+    matrix = stack.last();
+    stack.pop_back();
 }

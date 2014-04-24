@@ -55,7 +55,7 @@ void main(void)
 
 -- fragment ------------------------------------------------------
 
-uniform sampler2D texture;
+uniform sampler2D texture2D;
 uniform vec3 surfaceColor;
 uniform vec3 warmColor;
 uniform vec3 coolColor;

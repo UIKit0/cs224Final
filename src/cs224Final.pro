@@ -17,6 +17,21 @@ CONFIG(release, debug|release) {
     DEFINES += DEBUG_OPENGL
 }
 
+ODE = $$(ODE_PATH)
+
+isEmpty(ODE) {
+    # default sunlab path
+    ODE = /contrib/projects/ODE/0.13
+}
+
+# ODE library
+LIBS += -L$${ODE}/lib \
+        -lode \
+        -lm \
+        -lpthread
+
+INCLUDEPATH += $${ODE}/include
+
 LIB = ../lib
 RES = ../res
 
@@ -41,7 +56,15 @@ SOURCES += \
     window/window.cpp \
     scene/world.cpp \
     assets/obj.cpp \
-    graphics/program.cpp
+    graphics/program.cpp \
+    particles/smokeparticle.cpp \
+    particles/particleemitter.cpp \
+    particles/basicsmokeemitter.cpp \
+    particles/smoketrailemitter.cpp \
+    interaction/windvolume.cpp \
+    interaction/vortex.cpp \
+    interaction/vortexshedder.cpp \
+    interaction/solidobject.cpp
 
 HEADERS += \
     scene/camera.h \
@@ -50,7 +73,15 @@ HEADERS += \
     scene/world.h \
     assets/obj.h \
     graphics/debug.h \
-    graphics/program.h
+    graphics/program.h \
+    particles/smokeparticle.h \
+    particles/particleemitter.h \
+    particles/basicsmokeemitter.h \
+    particles/smoketrailemitter.h \
+    interaction/windvolume.h \
+    interaction/vortex.h \
+    interaction/vortexshedder.h \
+    interaction/solidobject.h
 
 RESOURCES += \
     $${RES}/resources.qrc

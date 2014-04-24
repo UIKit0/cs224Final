@@ -44,7 +44,7 @@ void SmokeParticle::draw(glm::vec3 u, glm::vec3 v, glm::vec3 z, Obj &obj){
 
     glRotatef(rotation*180/M_PI, z[0], z[1], z[2]);
 
-    glColor4f(1, 1, 1, fmin(1.0f, alpha));
+    glColor4f(0.2,0.2, 0.2, fmin(1.0f, alpha));
 
     glm::vec3 corner = u + v;
     glm::vec3 corner2 = v - u;

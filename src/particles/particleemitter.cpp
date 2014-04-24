@@ -23,7 +23,7 @@ void ParticleEmitter::draw(Obj &obj){
     glm::vec3 dy(m[1], m[5], m[9]); // up-down
     glm::vec3 dz(m[2], m[6], m[10]); // front-back
 
-//    glEnable(GL_TEXTURE_2D);
+    glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, sprites);
 
     glEnable(GL_BLEND);

@@ -86,7 +86,7 @@ static void nearCallback(void* data, dGeomID o1, dGeomID o2){
     }
 }
 
-void World::initialize(QOpenGLFunctions_2_0 *gl)
+void World::initialize(GLFunctions *gl)
 {
     // camera
     g_camera.setAspectRatio((float)m_screenWidth/m_screenHeight);
@@ -183,7 +183,7 @@ void World::initialize(QOpenGLFunctions_2_0 *gl)
 #endif
 }
 
-void World::render(QOpenGLFunctions_2_0 *gl)
+void World::render(GLFunctions *gl)
 {
 #ifdef DEBUG_TEST_TRIANGLE
     gl->glUseProgram(m_goochFx.program());

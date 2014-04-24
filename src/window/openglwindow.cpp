@@ -16,9 +16,8 @@ OpenGLWindow::OpenGLWindow(QWindow *parent)
     format.setRenderableType(QSurfaceFormat::OpenGL); // change to opengles on mobile
 #ifdef ENABLE_CORE_PROFILE
     format.setProfile(QSurfaceFormat::CoreProfile);
-//        format.setProfile(QSurfaceFormat::CompatibilityProfile);
 #else
-//    format.setProfile(QSurfaceFormat::CompatibilityProfile);
+    format.setProfile(QSurfaceFormat::CompatibilityProfile);
 #endif
 #ifdef DEBUG_OPENGL
     format.setOption(QSurfaceFormat::DebugContext);
@@ -101,7 +100,7 @@ void OpenGLWindow::renderNow()
         m_context->setFormat(requestedFormat());
 
         if (m_context->create()) {
-            m_gl = m_context->versionFunctions<QOpenGLFunctions_2_0>();
+            m_gl = m_context->versionFunctions<GLFunctions>();
             if (!m_gl) {
                 qCritical("Critical: Unable to initialize OpenGL 4.1 Functions");
                 exit(EXIT_FAILURE);

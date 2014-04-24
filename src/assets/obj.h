@@ -5,7 +5,7 @@
 #include <glm/vec2.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <QOpenGLFunctions_2_0>
+#include "scene/global.h"
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>

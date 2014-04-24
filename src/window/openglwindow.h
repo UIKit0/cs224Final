@@ -3,8 +3,7 @@
 
 #include <QtCore/QCoreApplication>
 #include <QtGui/QWindow>
-
-#include <QOpenGLFunctions_2_0>
+#include "scene/global.h"
 #include <QtGui/QOpenGLContext>
 #include <QtGui/QOpenGLDebugLogger>
 
@@ -44,7 +43,7 @@ protected:
 
     void setGlobalGLState(const QVector<GLenum> &attribs);
 
-    QOpenGLFunctions_2_0 *m_gl;
+    GLFunctions *m_gl;
     QOpenGLContext *m_context;
 
 private slots:

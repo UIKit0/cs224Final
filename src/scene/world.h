@@ -35,8 +35,8 @@ public:
     World();
     virtual ~World();
 
-    void initialize(QOpenGLFunctions_2_0 *gl);
-    void render(QOpenGLFunctions_2_0 *gl);
+    void initialize(GLFunctions *gl);
+    void render(GLFunctions *gl);
     void update(float seconds);
 
     void setScreenSize(int width, int height);

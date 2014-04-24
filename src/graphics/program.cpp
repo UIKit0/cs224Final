@@ -20,12 +20,12 @@ Program::Program()
 {
 }
 
-Program::Program(QOpenGLFunctions_2_0 *gl, const char *path)
+Program::Program(GLFunctions *gl, const char *path)
 {
     initialize(gl, path);
 }
 
-void Program::initialize(QOpenGLFunctions_2_0 *gl, const char *path)
+void Program::initialize(GLFunctions *gl, const char *path)
 {
     m_gl = gl;
     glswInit();

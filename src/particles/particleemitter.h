@@ -15,6 +15,8 @@
 #include "interaction/vortex.h"
 #include "assets/obj.h"
 
+#include "scene/global.h"
+
 class ParticleEmitter
 {
 public:

@@ -16,6 +16,7 @@
 
 #include "assets/obj.h"
 #include "scene/camera.h"
+#include "scene/global.h"
 #include "graphics/program.h"
 
 #include "interaction/vortex.h"
@@ -34,8 +35,8 @@ public:
     World();
     virtual ~World();
 
-    void initialize(QOpenGLFunctions_4_1_Core *gl);
-    void render(QOpenGLFunctions_4_1_Core *gl);
+    void initialize(QOpenGLFunctions_2_0 *gl);
+    void render(QOpenGLFunctions_2_0 *gl);
     void update(float seconds);
 
     void setScreenSize(int width, int height);
@@ -110,7 +111,7 @@ private:
     GLuint m_texture;
 
     // Camera
-    Camera m_camera;
+//    Camera m_camera;
 };
 
 #endif // WORLD_H

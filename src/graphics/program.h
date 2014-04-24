@@ -1,7 +1,7 @@
 #ifndef PROGRAM_H
 #define PROGRAM_H
 
-#include <QOpenGLFunctions_4_1_Core>
+#include <QOpenGLFunctions_2_0>
 #include <QVector>
 #include "glsw/glsw.h"
 #include <QHash>
@@ -19,9 +19,9 @@ class Program
 {
 public:
     Program();
-    Program(QOpenGLFunctions_4_1_Core *gl, const char *path = "shaders");
+    Program(QOpenGLFunctions_2_0 *gl, const char *path = "shaders");
 
-    void initialize(QOpenGLFunctions_4_1_Core *gl, const char *path = "shaders");
+    void initialize(QOpenGLFunctions_2_0 *gl, const char *path = "shaders");
     bool compile(GLenum shaderType, const char *name);
     void link();
     void use();
@@ -33,7 +33,7 @@ public:
 private:
     typedef GLint (*funLocator)(GLuint,const GLchar*);
 
-    QOpenGLFunctions_4_1_Core *m_gl;
+    QOpenGLFunctions_2_0 *m_gl;
     GLuint m_program;
     QVector<GLuint> m_shaders;
 

@@ -13,6 +13,8 @@
 #define PARTICLE_CATEGORY_BITS 1
 #define DAMPING_FACTOR 0.05f
 
+#include "scene/global.h"
+
 class SmokeParticle
 {
 public:

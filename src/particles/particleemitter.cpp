@@ -17,8 +17,7 @@ void ParticleEmitter::draw(Obj &obj){
     }
 
     // Particles
-    float m[16];
-    glGetFloatv(GL_MODELVIEW_MATRIX, m);
+    float *m = glm::value_ptr(g_camera.vMatrix);
     glm::vec3 dx(m[0], m[4], m[8]); // left-right
     glm::vec3 dy(m[1], m[5], m[9]); // up-down
     glm::vec3 dz(m[2], m[6], m[10]); // front-back

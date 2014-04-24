@@ -38,13 +38,16 @@ void SmokeParticle::draw(glm::vec3 u, glm::vec3 v, glm::vec3 z, Obj &obj){
     const dReal* pos = dBodyGetPosition(body);
 
     glPushMatrix();
-    glTranslatef(pos[0], pos[1], pos[2]);
 
-    glScalef(scale, scale, scale);
+    g_model.pushMatrix();
 
-    glRotatef(rotation*180/M_PI, z[0], z[1], z[2]);
+    g_model.matrix = glm::translate(g_model.matrix, glm::vec3(pos[0], pos[1], pos[2]));
+    g_model.matrix = glm::scale(g_model.matrix, glm::vec3(scale, scale, scale));
+    g_model.matrix = glm::rotate(g_model.matrix, (float)(rotation), glm::vec3(z[0], z[1], z[2]));
 
-    glColor4f(0.2,0.2, 0.2, fmin(1.0f, alpha));
+    glColor4f(0.5,0.5,0.5, fmin(1.0f, alpha));
+
+    glMultMatrixf(glm::value_ptr(g_model.matrix));
 
     glm::vec3 corner = u + v;
     glm::vec3 corner2 = v - u;
@@ -60,6 +63,7 @@ void SmokeParticle::draw(glm::vec3 u, glm::vec3 v, glm::vec3 z, Obj &obj){
     glEnd();
 
     glPopMatrix();
+    g_model.popMatrix();
 }
 
 void SmokeParticle::update(float seconds){

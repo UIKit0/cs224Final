@@ -15,16 +15,16 @@ OpenGLWindow::OpenGLWindow(QWindow *parent)
     format.setSamples(16); // multi-sampling
     format.setRenderableType(QSurfaceFormat::OpenGL); // change to opengles on mobile
 #ifdef ENABLE_CORE_PROFILE
-//    format.setProfile(QSurfaceFormat::CoreProfile);
-        format.setProfile(QSurfaceFormat::CompatibilityProfile);
+    format.setProfile(QSurfaceFormat::CoreProfile);
+//        format.setProfile(QSurfaceFormat::CompatibilityProfile);
 #else
-    format.setProfile(QSurfaceFormat::CompatibilityProfile);
+//    format.setProfile(QSurfaceFormat::CompatibilityProfile);
 #endif
 #ifdef DEBUG_OPENGL
     format.setOption(QSurfaceFormat::DebugContext);
 #endif
-    format.setMajorVersion(4);
-    format.setMinorVersion(1);
+    format.setMajorVersion(2);
+    format.setMinorVersion(0);
     format.setDepthBufferSize(24);
     setFormat(format);
 
@@ -101,7 +101,7 @@ void OpenGLWindow::renderNow()
         m_context->setFormat(requestedFormat());
 
         if (m_context->create()) {
-            m_gl = m_context->versionFunctions<QOpenGLFunctions_4_1_Core>();
+            m_gl = m_context->versionFunctions<QOpenGLFunctions_2_0>();
             if (!m_gl) {
                 qCritical("Critical: Unable to initialize OpenGL 4.1 Functions");
                 exit(EXIT_FAILURE);

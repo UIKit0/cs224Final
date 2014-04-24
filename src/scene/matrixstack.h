@@ -15,6 +15,7 @@ public:
 
     void pushMatrix();
     void popMatrix();
+    void reset();
 
     glm::mat4 matrix;
     QList<glm::mat4> stack;

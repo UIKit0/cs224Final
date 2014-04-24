@@ -14,3 +14,8 @@ void MatrixStack::popMatrix(){
     matrix = stack.last();
     stack.pop_back();
 }
+
+void MatrixStack::reset(){
+    matrix = glm::mat4(1.0f);
+    stack.clear();
+}

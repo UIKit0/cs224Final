@@ -86,10 +86,10 @@ static void nearCallback(void* data, dGeomID o1, dGeomID o2){
     }
 }
 
-void World::initialize(QOpenGLFunctions_4_1_Core *gl)
+void World::initialize(QOpenGLFunctions_2_0 *gl)
 {
     // camera
-    m_camera.setAspectRatio((float)m_screenWidth/m_screenHeight);
+    g_camera.setAspectRatio((float)m_screenWidth/m_screenHeight);
 
     m_goochFx.initialize(gl, "../../../../res/shaders/");
 //    m_goochFx.initialize(gl, "../res/shaders/");
@@ -183,7 +183,7 @@ void World::initialize(QOpenGLFunctions_4_1_Core *gl)
 #endif
 }
 
-void World::render(QOpenGLFunctions_4_1_Core *gl)
+void World::render(QOpenGLFunctions_2_0 *gl)
 {
 #ifdef DEBUG_TEST_TRIANGLE
     gl->glUseProgram(m_goochFx.program());
@@ -208,19 +208,21 @@ void World::render(QOpenGLFunctions_4_1_Core *gl)
     gl->glDrawArrays(GL_TRIANGLES, 0, m_mesh.triangles.size() * 3);
 #endif
 
+    g_model.reset();
+
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glLoadMatrixf(glm::value_ptr(m_camera.pMatrix));
+    glLoadMatrixf(glm::value_ptr(g_camera.pMatrix));
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    glLoadMatrixf(glm::value_ptr(m_camera.vMatrix));
+    glLoadMatrixf(glm::value_ptr(g_camera.vMatrix));
 
     // RENDER PARTICLES
 
     // Sphere
-    sphere.draw(sphereMesh);
+//    sphere.draw(sphereMesh);
 
-    circlingEmitter->draw(sphereMesh);
+//    circlingEmitter->draw(sphereMesh);
 
     for (int i = 0; i < emitters.size(); i++){
         emitters[i]->draw(sphereMesh);
@@ -231,7 +233,7 @@ void World::render(QOpenGLFunctions_4_1_Core *gl)
 
 void World::update(float seconds)
 {
-    m_camera.update(seconds);
+    g_camera.update(seconds);
 
     // PARTICLES
 
@@ -261,7 +263,7 @@ void World::setScreenSize(int width, int height)
 
 void World::mouseMoveDelta(float deltaX, float deltaY)
 {
-    m_camera.mouseRotation(glm::vec2(deltaX, deltaY));
+    g_camera.mouseRotation(glm::vec2(deltaX, deltaY));
 }
 
 void World::keyPressEvent(QKeyEvent *event)
@@ -269,16 +271,16 @@ void World::keyPressEvent(QKeyEvent *event)
 
     switch(event->key()) {
     case Qt::Key_W:
-        m_camera.pressingForward = true;
+        g_camera.pressingForward = true;
         break;
     case Qt::Key_S:
-        m_camera.pressingBackward = true;
+        g_camera.pressingBackward = true;
         break;
     case Qt::Key_A:
-        m_camera.pressingLeft = true;
+        g_camera.pressingLeft = true;
         break;
     case Qt::Key_D:
-        m_camera.pressingRight = true;
+        g_camera.pressingRight = true;
         break;
     }
 
@@ -286,27 +288,27 @@ void World::keyPressEvent(QKeyEvent *event)
 
     if (event->key() == Qt::Key_B) toggleMovingSphere();
 
-    if (event->key() == Qt::Key_Space) m_camera.pressingJump = true;
+    if (event->key() == Qt::Key_Space) g_camera.pressingJump = true;
 }
 
 void World::keyReleaseEvent(QKeyEvent *event)
 {
     switch(event->key()) {
     case Qt::Key_W:
-        m_camera.pressingForward = false;
+        g_camera.pressingForward = false;
         break;
     case Qt::Key_S:
-        m_camera.pressingBackward = false;
+        g_camera.pressingBackward = false;
         break;
     case Qt::Key_A:
-        m_camera.pressingLeft = false;
+        g_camera.pressingLeft = false;
         break;
     case Qt::Key_D:
-        m_camera.pressingRight = false;
+        g_camera.pressingRight = false;
         break;
     }
 
-    if (event->key() == Qt::Key_Space) m_camera.pressingJump = false;
+    if (event->key() == Qt::Key_Space) g_camera.pressingJump = false;
 }
 
 void World::mousePressEvent(QMouseEvent *event)

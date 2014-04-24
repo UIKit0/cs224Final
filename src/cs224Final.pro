@@ -40,7 +40,8 @@ GLSW = $${LIB}/glsw-2010
 # TODO: compile to outside lib
 SOURCES += \
     $${GLSW}/glsw/bstrlib.c \
-    $${GLSW}/glsw/glsw.c
+    $${GLSW}/glsw/glsw.c \
+    scene/global.cpp
 
 # glm library
 GLM = $${LIB}/glm-0.9.5.1

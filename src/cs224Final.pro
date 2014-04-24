@@ -85,7 +85,8 @@ HEADERS += \
     interaction/vortexshedder.h \
     interaction/solidobject.h \
     matrixstack.h \
-    scene/matrixstack.h
+    scene/matrixstack.h \
+    scene/global.h
 
 RESOURCES += \
     $${RES}/resources.qrc

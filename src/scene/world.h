@@ -18,10 +18,20 @@
 #include "scene/camera.h"
 #include "graphics/program.h"
 
+#include "particles/smokeparticle.h"
+#include "particles/basicsmokeemitter.h"
+#include "particles/smoketrailemitter.h"
+
+extern void handleVortexCollision(Vortex *v, dBodyID pbody);
+extern void handleWindVolumeCollision(WindVolume *v, dBodyID pbody);
+extern QHash<dBodyID, Vortex*> g_vortices;
+
 class World
 {
 public:
     World();
+    virtual ~World();
+
     void initialize(QOpenGLFunctions_4_1_Core *gl);
     void render(QOpenGLFunctions_4_1_Core *gl);
     void update(float seconds);
@@ -76,6 +86,28 @@ private:
 
     // Camera
     Camera m_camera;
+
+    // PARTICLES
+    void toggleDrawVortices();
+    void toggleMovingSphere();
+
+    // ODE stuff that is only created once per world
+    dWorldID m_world_id;
+    dSpaceID space;
+    dMass m;
+    dJointGroupID contactgroup;
+
+    QList<ParticleEmitter*> emitters;
+
+    ParticleEmitter *circlingEmitter;
+
+    // Sphere that moves left and right through the smoke
+    SolidObject sphere;
+    Obj sphereMesh;
+
+    bool moveSphere;
+    bool moveWing;
+
 
 };
 

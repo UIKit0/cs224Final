@@ -84,18 +84,18 @@ void World::init()
 {
     initializeOpenGLFunctions();
 
-    GLfloat LightAmbient[]=  { 0.1f, 0.1f, 0.1f, 1.0f };
-    GLfloat LightDiffuse[]=  { 0.5f, 0.5f, 0.5f, 1.0f };
-    GLfloat LightPosition[]= { 0.0f, 0.0f, 2.0f, 1.0f };
+//    GLfloat LightAmbient[]=  { 0.1f, 0.1f, 0.1f, 1.0f };
+//    GLfloat LightDiffuse[]=  { 0.5f, 0.5f, 0.5f, 1.0f };
+//    GLfloat LightPosition[]= { 0.0f, 0.0f, 2.0f, 1.0f };
 
-    glEnable(GL_COLOR_MATERIAL);
-    glEnable(GL_NORMALIZE);
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
+//    glEnable(GL_COLOR_MATERIAL);
+//    glEnable(GL_NORMALIZE);
+//    glEnable(GL_LIGHTING);
+//    glEnable(GL_LIGHT0);
 
-    glLightfv(GL_LIGHT0, GL_AMBIENT, LightAmbient);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, LightDiffuse);
-    glLightfv(GL_LIGHT0, GL_POSITION, LightPosition);
+//    glLightfv(GL_LIGHT0, GL_AMBIENT, LightAmbient);
+//    glLightfv(GL_LIGHT0, GL_DIFFUSE, LightDiffuse);
+//    glLightfv(GL_LIGHT0, GL_POSITION, LightPosition);
 
     glEnable(GL_TEXTURE_2D);
 

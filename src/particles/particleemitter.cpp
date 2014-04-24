@@ -24,7 +24,7 @@ void ParticleEmitter::draw(Obj &obj){
     glm::vec3 dz(m[2], m[6], m[10]); // front-back
 
 //    glEnable(GL_TEXTURE_2D);
-//    glBindTexture(GL_TEXTURE_2D, sprites);
+    glBindTexture(GL_TEXTURE_2D, sprites);
 
     glEnable(GL_BLEND);
     glDepthMask(GL_FALSE);
@@ -36,7 +36,7 @@ void ParticleEmitter::draw(Obj &obj){
 
     glDepthMask(GL_TRUE);
 
-//    glDisable(GL_TEXTURE_2D);
+    glDisable(GL_TEXTURE_2D);
 
 //      // Vortices
 //    if (drawVortices){

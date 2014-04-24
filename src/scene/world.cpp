@@ -207,7 +207,6 @@ void World::render(QOpenGLFunctions_4_1_Core *gl)
     gl->glDrawArrays(GL_TRIANGLES, 0, m_mesh.triangles.size() * 3);
 #endif
 
-
     // RENDER PARTICLES
 
     // Sphere

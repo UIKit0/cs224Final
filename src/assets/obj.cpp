@@ -3,7 +3,8 @@
 
 Obj::Obj(const QString &path)
 {
-    read(path);
+    if (!read(path))
+        qCritical() << "Unable to load OBJ: " << path;
 }
 
 void Obj::draw() const

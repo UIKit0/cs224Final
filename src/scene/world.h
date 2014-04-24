@@ -18,6 +18,8 @@
 #include "scene/camera.h"
 #include "graphics/program.h"
 
+#include "interaction/vortex.h"
+#include "interaction/solidobject.h"
 #include "particles/smokeparticle.h"
 #include "particles/basicsmokeemitter.h"
 #include "particles/smoketrailemitter.h"

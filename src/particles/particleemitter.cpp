@@ -38,7 +38,7 @@ void ParticleEmitter::draw(Obj &obj){
 
 //    glDisable(GL_TEXTURE_2D);
 
-    // Vortices
+//      // Vortices
 //    if (drawVortices){
 //        for (int i = 0; i < vortices.size(); i++){
 //              vortices[i]->draw(obj);

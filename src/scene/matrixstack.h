@@ -17,7 +17,7 @@ public:
     void popMatrix();
     void reset();
 
-    glm::mat4 matrix;
+    glm::mat4 mMatrix;
     QList<glm::mat4> stack;
 };
 

@@ -67,9 +67,7 @@ void ParticleEmitter::update(float seconds){
 
     //update buffer
     for (int i = 0; i < particles.size(); ++i){
-        const dReal* pos = dBodyGetPosition(particles[i].body);
-        glm::vec3 position(pos[0], pos[1], pos[3]);
-        Particles::setBufferValue(i, position, particles[i].scale);
+        Particles::setBufferValue(i, particles[i].getPosition(), particles[i].scale);
     }
 }
 

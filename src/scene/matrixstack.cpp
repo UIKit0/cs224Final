@@ -2,20 +2,20 @@
 
 MatrixStack::MatrixStack()
 {
-    matrix = glm::mat4(1.0f);
+    mMatrix = glm::mat4(1.0f);
 }
 
 void MatrixStack::pushMatrix(){
-    stack.append(matrix);
+    stack.append(mMatrix);
 }
 
 void MatrixStack::popMatrix(){
     Q_ASSERT(!stack.isEmpty());
-    matrix = stack.last();
+    mMatrix = stack.last();
     stack.pop_back();
 }
 
 void MatrixStack::reset(){
-    matrix = glm::mat4(1.0f);
+    mMatrix = glm::mat4(1.0f);
     stack.clear();
 }

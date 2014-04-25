@@ -34,6 +34,11 @@ void SmokeParticle::destroy(){
     dBodyDestroy(body);
 }
 
+glm::vec3 SmokeParticle::getPosition(){
+    const dReal* pos = dBodyGetPosition(body);
+    return glm::vec3(pos[0], pos[1], pos[3]);
+}
+
 //void SmokeParticle::draw(glm::vec3 u, glm::vec3 v, glm::vec3 z, Obj &obj){
 //    const dReal* pos = dBodyGetPosition(body);
 

@@ -50,6 +50,7 @@ public:
     float minScale;  // what scale to make the particle disappear
 
     bool active;
+    glm::vec3 getPosition();
 };
 
 #endif // SMOKEPARTICLE_H

@@ -18,7 +18,7 @@ public:
     Particles();
     Particles(GLFunctions *gl, int maxParticles = 1000);
     void initialize(GLFunctions *gl, int maxParticles = 1000);
-    void setBufferValue(int index, glm::vec3 &position, float size);
+    void setBufferValue(int index, glm::vec3 position, float size);
     void setBufferSize(int size);
     virtual void draw();
 

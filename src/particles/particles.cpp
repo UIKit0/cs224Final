@@ -30,10 +30,10 @@ void Particles::initialize(GLFunctions *gl, int maxParticles)
 
     m_gl->glGenBuffers(1, &m_buffer);
 
-//    data.reserve(maxParticles);
+    data.reserve(maxParticles);
 
     m_gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
-    m_gl->glBufferData(GL_ARRAY_BUFFER, sizeof(ParticleBuffer) * maxParticles, NULL, GL_DYNAMIC_DRAW);
+    m_gl->glBufferData(GL_ARRAY_BUFFER, sizeof(ParticleBuffer) * maxParticles, data.data(), GL_DYNAMIC_DRAW);
 }
 
 void Particles::setBufferSize(int size)
@@ -41,8 +41,10 @@ void Particles::setBufferSize(int size)
     data.resize(size);
 }
 
-void Particles::setBufferValue(int index, glm::vec3 &position, float size)
+void Particles::setBufferValue(int index, glm::vec3 position, float size)
 {
+    Q_ASSERT(index < data.size());
+
     ParticleBuffer &particle = data[index];
     particle.position = position;
     particle.size = size;
@@ -60,7 +62,7 @@ void Particles::draw()
 
     m_gl->glUseProgram(m_smokeFx.program());
     m_gl->glUniformMatrix4fv(m_projUniform, 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix));
-    m_gl->glUniformMatrix4fv(m_mvUniform, 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix * g_model.matrix));
+    m_gl->glUniformMatrix4fv(m_mvUniform, 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix * g_model.mMatrix));
 
     quintptr offset = 0;
 
@@ -70,7 +72,7 @@ void Particles::draw()
     offset += sizeof(glm::vec3);
 
     m_gl->glEnableVertexAttribArray(m_sizeAttrib);
-    m_gl->glVertexAttribPointer(m_sizeAttrib, 3, GL_FLOAT, GL_FALSE, sizeof(ParticleBuffer), (const void *) offset);
+    m_gl->glVertexAttribPointer(m_sizeAttrib, 1, GL_FLOAT, GL_FALSE, sizeof(ParticleBuffer), (const void *) offset);
 
     glDrawArrays(GL_POINTS, 0, data.size());
 }

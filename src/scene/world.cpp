@@ -91,9 +91,8 @@ void World::initialize(GLFunctions *gl)
     // camera
     g_camera.setAspectRatio((float)m_screenWidth/m_screenHeight);
 
-    m_goochFx.initialize(gl, "../../../../res/shaders/");
-//    m_goochFx.initialize(gl, "../res/shaders/");
-    m_smokeFx.initialize(gl, "../../../../res/shaders/");
+//    m_smokeFx.initialize(gl, "../../../../res/shaders/");
+    m_smokeFx.initialize(gl, "../res/shaders/");
 
     BasicSmokeEmitter *emitter = new BasicSmokeEmitter(m_world_id, space, m);
     emitter->maxInitialVel = glm::vec3(0.5f, 2.0f, 0.5f);
@@ -104,13 +103,14 @@ void World::initialize(GLFunctions *gl)
     circlingEmitter->location = glm::vec3(30,0,0);
 
     sphere = SolidObject(m_world_id, space, m);
-    m_goochFx.compile(GL_VERTEX_SHADER, "contour.vertex.debug");
-    m_goochFx.compile(GL_FRAGMENT_SHADER, "contour.fragment.debug");
-    m_goochFx.link();
-
+    m_smokeFx.compile(GL_VERTEX_SHADER, "smoke.vertex.debug");
+    m_smokeFx.compile(GL_FRAGMENT_SHADER, "smoke.fragment.debug");
+    m_smokeFx.link();
 
 
 #ifdef DEBUG_TEST_TRIANGLE
+    //    m_goochFx.initialize(gl, "../../../../res/shaders/");
+        m_goochFx.initialize(gl, "../res/shaders/");
     m_goochFx.compile(GL_VERTEX_SHADER, "contour.vertex.debug");
     m_goochFx.compile(GL_FRAGMENT_SHADER, "contour.fragment.debug");
     m_goochFx.link();
@@ -219,8 +219,8 @@ void World::render(GLFunctions *gl)
     // normal matrix
     glm::inverseTranspose(m_camera.vMatrix);
 
-    gl->glUniformMatrix4fv(m_goochFx.uniform("proj"), 1, GL_FALSE, glm::value_ptr(m_camera.pMatrix));
-    gl->glUniformMatrix4fv(m_goochFx.uniform("mv"), 1, GL_FALSE, glm::value_ptr(m_camera.vMatrix));
+    gl->glUniformMatrix4fv(m_goochFx.uniform("projM"), 1, GL_FALSE, glm::value_ptr(m_camera.pMatrix));
+    gl->glUniformMatrix4fv(m_goochFx.uniform("mvM"), 1, GL_FALSE, glm::value_ptr(m_camera.vMatrix));
 
     gl->glUniform3f(m_goochFx.uniform("lightPos"), 0.0f, 10.0f, 4.0f);
     gl->glUniform3f(m_goochFx.uniform("surfaceColor"), 0.4f, 0.75f, 0.75f);

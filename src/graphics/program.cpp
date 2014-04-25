@@ -82,7 +82,7 @@ bool Program::compile(GLenum shaderType, const char *name)
 
 void Program::link()
 {
-    Q_ASSERT(m_program == INVALID_PROGRAM);
+    Q_ASSERT(m_program != INVALID_PROGRAM);
 
     // create program
     m_program = m_gl->glCreateProgram();

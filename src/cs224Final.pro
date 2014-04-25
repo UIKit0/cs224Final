@@ -41,7 +41,8 @@ GLSW = $${LIB}/glsw-2010
 SOURCES += \
     $${GLSW}/glsw/bstrlib.c \
     $${GLSW}/glsw/glsw.c \
-    scene/global.cpp
+    scene/global.cpp \
+    scene/terrain.cpp
 
 # glm library
 GLM = $${LIB}/glm-0.9.5.1
@@ -85,7 +86,8 @@ HEADERS += \
     interaction/vortexshedder.h \
     interaction/solidobject.h \
     scene/matrixstack.h \
-    scene/global.h
+    scene/global.h \
+    scene/terrain.h
 
 RESOURCES += \
     $${RES}/resources.qrc

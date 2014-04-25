@@ -24,6 +24,7 @@
 #include "particles/smokeparticle.h"
 #include "particles/basicsmokeemitter.h"
 #include "particles/smoketrailemitter.h"
+#include "scene/terrain.h"
 
 extern void handleVortexCollision(Vortex *v, dBodyID pbody);
 extern void handleWindVolumeCollision(WindVolume *v, dBodyID pbody);
@@ -92,6 +93,8 @@ public:
 
     bool moveSphere;
     bool moveWing;
+
+    Terrain terrain;
 
 private:
     int m_screenWidth;

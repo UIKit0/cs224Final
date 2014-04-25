@@ -217,6 +217,8 @@ void World::render(GLFunctions *gl)
     glLoadIdentity();
     glLoadMatrixf(glm::value_ptr(g_camera.vMatrix));
 
+    terrain.draw();
+
     // RENDER PARTICLES
 
     // Sphere

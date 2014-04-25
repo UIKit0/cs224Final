@@ -42,6 +42,7 @@ SOURCES += \
     $${GLSW}/glsw/bstrlib.c \
     $${GLSW}/glsw/glsw.c \
 
+
 # glm library
 GLM = $${LIB}/glm-0.9.5.1
 DEFINES += GLM_FORCE_RADIANS
@@ -67,7 +68,8 @@ SOURCES += \
     interaction/solidobject.cpp \
     scene/matrixstack.cpp \
     scene/global.cpp \
-    scene/terrain.cpp
+    scene/terrain.cpp \
+    particles/particles.cpp
 
 HEADERS += \
     scene/camera.h \
@@ -87,7 +89,8 @@ HEADERS += \
     interaction/solidobject.h \
     scene/matrixstack.h \
     scene/global.h \
-    scene/terrain.h
+    scene/terrain.h \
+    particles/particles.h
 
 RESOURCES += \
     $${RES}/resources.qrc

@@ -44,7 +44,9 @@ private:
 
     static const QRegExp rxUniform;
     static const QRegExp rxAttributes;
-    static const GLuint INVALID_VAR = -1;
+
+    const GLuint INVALID_PROGRAM = UINT_MAX;
+    const GLint INVALID_VAR = -1;
 };
 
 #endif // PROGRAM_H

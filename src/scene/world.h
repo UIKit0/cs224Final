@@ -94,15 +94,17 @@ public:
     bool moveWing;
 
 private:
+    Obj m_mesh;
+
     int m_screenWidth;
     int m_screenHeight;
 
-    Obj m_mesh;
     GLuint m_buffer;
     GLuint m_vao;
 //    GLuint m_vboIds[2];
 
     Program m_goochFx;
+    Program m_smokeFx;
 
     GLuint m_posAttr;
     GLuint m_texAttr;

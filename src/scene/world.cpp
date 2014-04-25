@@ -4,10 +4,10 @@
 #define PARTICLES
 
 World::World()
-    : m_screenWidth(500)
-    , m_screenHeight(500)
+    : sphereMesh("cube.obj")
     , m_mesh("monkey2.obj")
-    , sphereMesh("cube.obj")
+    , m_screenWidth(500)
+    , m_screenHeight(500)
 {
     // Initialize ODE stuff
     dInitODE();
@@ -93,6 +93,22 @@ void World::initialize(GLFunctions *gl)
 
     m_goochFx.initialize(gl, "../../../../res/shaders/");
 //    m_goochFx.initialize(gl, "../res/shaders/");
+    m_smokeFx.initialize(gl, "../../../../res/shaders/");
+
+    BasicSmokeEmitter *emitter = new BasicSmokeEmitter(m_world_id, space, m);
+    emitter->maxInitialVel = glm::vec3(0.5f, 2.0f, 0.5f);
+    emitter->minInitialVel = glm::vec3(-0.5f, 0.5f, -0.5f);
+    emitters.append(emitter);
+
+    circlingEmitter = new SmokeTrailEmitter(m_world_id, space, m);
+    circlingEmitter->location = glm::vec3(30,0,0);
+
+    sphere = SolidObject(m_world_id, space, m);
+    m_goochFx.compile(GL_VERTEX_SHADER, "contour.vertex.debug");
+    m_goochFx.compile(GL_FRAGMENT_SHADER, "contour.fragment.debug");
+    m_goochFx.link();
+
+
 
 #ifdef DEBUG_TEST_TRIANGLE
     m_goochFx.compile(GL_VERTEX_SHADER, "contour.vertex.debug");
@@ -168,23 +184,31 @@ void World::initialize(GLFunctions *gl)
 //    gl->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(MeshBuffer), (void *)offsetof(MeshBuffer, texcoord));
 //    gl->glEnableVertexAttribArray(m_goochFx.attrib("texcoord"));
 #endif
-
-
-    BasicSmokeEmitter *emitter = new BasicSmokeEmitter(m_world_id, space, m);
-    emitter->maxInitialVel = glm::vec3(0.5f, 2.0f, 0.5f);
-    emitter->minInitialVel = glm::vec3(-0.5f, 0.5f, -0.5f);
-    emitters.append(emitter);
-
-    circlingEmitter = new SmokeTrailEmitter(m_world_id, space, m);
-    circlingEmitter->location = glm::vec3(30,0,0);
-
-    sphere = SolidObject(m_world_id, space, m);
-
 #endif
 }
 
 void World::render(GLFunctions *gl)
 {
+    g_model.reset();
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glLoadMatrixf(glm::value_ptr(g_camera.pMatrix));
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glLoadMatrixf(glm::value_ptr(g_camera.vMatrix));
+
+    // RENDER PARTICLES
+
+    // Sphere
+//    sphere.draw(sphereMesh);
+
+//    circlingEmitter->draw(sphereMesh);
+
+    for (int i = 0; i < emitters.size(); i++){
+        emitters[i]->draw(sphereMesh);
+    }
+
 #ifdef DEBUG_TEST_TRIANGLE
     gl->glUseProgram(m_goochFx.program());
     gl->glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -207,27 +231,6 @@ void World::render(GLFunctions *gl)
 
     gl->glDrawArrays(GL_TRIANGLES, 0, m_mesh.triangles.size() * 3);
 #endif
-
-    g_model.reset();
-
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glLoadMatrixf(glm::value_ptr(g_camera.pMatrix));
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glLoadMatrixf(glm::value_ptr(g_camera.vMatrix));
-
-    // RENDER PARTICLES
-
-    // Sphere
-//    sphere.draw(sphereMesh);
-
-//    circlingEmitter->draw(sphereMesh);
-
-    for (int i = 0; i < emitters.size(); i++){
-        emitters[i]->draw(sphereMesh);
-    }
-
 #endif
 }
 

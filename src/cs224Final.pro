@@ -40,8 +40,7 @@ GLSW = $${LIB}/glsw-2010
 # TODO: compile to outside lib
 SOURCES += \
     $${GLSW}/glsw/bstrlib.c \
-    $${GLSW}/glsw/glsw.c \
-    scene/global.cpp
+    $${GLSW}/glsw/glsw.c
 
 # glm library
 GLM = $${LIB}/glm-0.9.5.1
@@ -66,7 +65,8 @@ SOURCES += \
     interaction/vortex.cpp \
     interaction/vortexshedder.cpp \
     interaction/solidobject.cpp \
-    scene/matrixstack.cpp
+    scene/matrixstack.cpp \
+    scene/global.cpp
 
 HEADERS += \
     scene/camera.h \
@@ -91,10 +91,12 @@ RESOURCES += \
     $${RES}/resources.qrc
 
 OTHER_FILES += \
-    $${RES}/shaders/contour.glsl
+    $${RES}/shaders/contour.glsl \
+    $${RES}/shaders/smoke.glsl
 
-# install shaders (todo: replace wrangler loading)
-extra.path += $${RES}/shaders
+# install shaders (todo: replace wrangler loading from rcc)
+extra.path += $${OUT_PWD}/shaders
+extra.file += $${OTHER_FILES}
 INSTALLS += extra
 
 #  hide object files and misc

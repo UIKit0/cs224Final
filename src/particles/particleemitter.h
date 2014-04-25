@@ -1,7 +1,8 @@
 #ifndef SMOKEEMITTER_H
 #define SMOKEEMITTER_H
 
-#include <QtGui/QOpenGLFunctions>
+#include "scene/global.h"
+
 #include <ode/ode.h>
 
 #include <glm/vec3.hpp>
@@ -9,7 +10,6 @@
 
 #include <QList>
 #include <QImage>
-#include <QGLContext>
 
 #include "particles/smokeparticle.h"
 #include "interaction/vortex.h"
@@ -40,7 +40,8 @@ public:
     bool drawVortices;
 
     float time;
-    unsigned int sprites;
+    GLuint sprites;
+
 
     glm::vec3 location;
 };

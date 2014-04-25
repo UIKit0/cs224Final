@@ -11,6 +11,6 @@ Members:
 
 
 TODO:
-mjm9 - shadows and shadding for smoke
-ayidi - contour / shaders
-jw19 - smoke and game
+- mjm9 - shadows and shadding for smoke
+- ayidi - contour / shaders
+- jw19 - smoke and game

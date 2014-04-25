@@ -34,7 +34,8 @@ World::World()
     moveWing = false;
 }
 
-World::~World(){
+World::~World()
+{
     emitters.clear();
     dJointGroupDestroy(contactgroup);
     dSpaceDestroy(space);
@@ -42,20 +43,24 @@ World::~World(){
     dCloseODE();
 }
 
-void World::toggleDrawVortices(){
-    for (int i = 0; i < emitters.size(); i++){
+void World::toggleDrawVortices()
+{
+    for (int i = 0; i < emitters.size(); i++)
+    {
         emitters[i]->drawVortices = !emitters[i]->drawVortices;
     }
 }
 
-void World::toggleMovingSphere(){
+void World::toggleMovingSphere()
+{
     if (sphere.moving != 0)
         sphere.stop();
     else
         sphere.start();
 }
 
-static void nearCallback(void* data, dGeomID o1, dGeomID o2){
+static void nearCallback(void* data, dGeomID o1, dGeomID o2)
+{
     World* world = (World*) data;
     dBodyID b1 = dGeomGetBody(o1);
     dBodyID b2 = dGeomGetBody(o2);
@@ -103,14 +108,18 @@ void World::initialize(GLFunctions *gl)
     circlingEmitter->location = glm::vec3(30,0,0);
 
     sphere = SolidObject(m_world_id, space, m);
+
     m_smokeFx.compile(GL_VERTEX_SHADER, "smoke.vertex.debug");
     m_smokeFx.compile(GL_FRAGMENT_SHADER, "smoke.fragment.debug");
     m_smokeFx.link();
 
+    GLuint vertexArray;
+    gl->glGenVertexArrays(1, &vertexArray);
+    gl->glBindVertexArray(vertexArray);
 
 #ifdef DEBUG_TEST_TRIANGLE
     //    m_goochFx.initialize(gl, "../../../../res/shaders/");
-        m_goochFx.initialize(gl, "../res/shaders/");
+    m_goochFx.initialize(gl, "../res/shaders/");
     m_goochFx.compile(GL_VERTEX_SHADER, "contour.vertex.debug");
     m_goochFx.compile(GL_FRAGMENT_SHADER, "contour.fragment.debug");
     m_goochFx.link();
@@ -189,18 +198,22 @@ void World::initialize(GLFunctions *gl)
 
 void World::render(GLFunctions *gl)
 {
-    g_model.reset();
+//    g_model.reset();
 
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glLoadMatrixf(glm::value_ptr(g_camera.pMatrix));
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glLoadMatrixf(glm::value_ptr(g_camera.vMatrix));
+    gl->glUseProgram(m_smokeFx.program());
+    gl->glUniformMatrix4fv(m_smokeFx.uniform("proj_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix));
+    gl->glUniformMatrix4fv(m_smokeFx.uniform("mv_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix));
+
+//    glMatrixMode(GL_PROJECTION);
+//    glLoadIdentity();
+//    glLoadMatrixf(glm::value_ptr(g_camera.pMatrix));
+//    glMatrixMode(GL_MODELVIEW);
+//    glLoadIdentity();
+//    glLoadMatrixf(glm::value_ptr(g_camera.vMatrix));
 
     // RENDER TERRAIN
 
-        terrain.draw();
+//        terrain.draw();
 
     // RENDER PARTICLES
 
@@ -209,9 +222,9 @@ void World::render(GLFunctions *gl)
 
 //    circlingEmitter->draw(sphereMesh);
 
-    for (int i = 0; i < emitters.size(); i++){
-        emitters[i]->draw(sphereMesh);
-    }
+//    for (int i = 0; i < emitters.size(); i++){
+//        emitters[i]->draw(sphereMesh);
+//    }
 
 #ifdef DEBUG_TEST_TRIANGLE
     gl->glUseProgram(m_goochFx.program());
@@ -223,8 +236,8 @@ void World::render(GLFunctions *gl)
     // normal matrix
     glm::inverseTranspose(m_camera.vMatrix);
 
-    gl->glUniformMatrix4fv(m_goochFx.uniform("projM"), 1, GL_FALSE, glm::value_ptr(m_camera.pMatrix));
-    gl->glUniformMatrix4fv(m_goochFx.uniform("mvM"), 1, GL_FALSE, glm::value_ptr(m_camera.vMatrix));
+    gl->glUniformMatrix4fv(m_goochFx.uniform("proj_matrix"), 1, GL_FALSE, glm::value_ptr(m_camera.pMatrix));
+    gl->glUniformMatrix4fv(m_goochFx.uniform("mv_matrix"), 1, GL_FALSE, glm::value_ptr(m_camera.vMatrix));
 
     gl->glUniform3f(m_goochFx.uniform("lightPos"), 0.0f, 10.0f, 4.0f);
     gl->glUniform3f(m_goochFx.uniform("surfaceColor"), 0.4f, 0.75f, 0.75f);

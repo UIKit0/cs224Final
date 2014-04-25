@@ -63,7 +63,7 @@ bool Program::compile(GLenum shaderType, const char *name)
 #ifdef DEBUG_OPENGL
     qDebug() << "--- Shader:" << name << "---";
 //    qDebug() << "uniforms:" << list;
-//    qDebug() << shaderSource;
+    qDebug() << shaderSource;
 
     GLint log_length;
     m_gl->glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &log_length);
@@ -152,12 +152,12 @@ GLuint Program::program() const
 
 GLint Program::attrib(const char *name)
 {
-    Q_ASSERT(m_attributes[name] != INVALID_VAR);
+    Q_ASSERT_X(m_attributes.contains(name) && m_attributes[name] != INVALID_VAR, "invalid attribute request" , name);
     return m_attributes[name];
 }
 
 GLint Program::uniform(const char *name)
 {
-    Q_ASSERT(m_uniforms[name] != INVALID_VAR);
+    Q_ASSERT_X(m_uniforms.contains(name) && m_uniforms[name] != INVALID_VAR, "invalid uniform request", name);
     return m_uniforms[name];
 }

@@ -18,14 +18,15 @@ SmokeTrailEmitter::SmokeTrailEmitter(dWorldID w, dSpaceID s, dMass m) : Particle
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
+//    glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img.width(), img.height(),
                  0, GL_RGBA, GL_UNSIGNED_BYTE, img.bits());
 
 }
 
-void SmokeTrailEmitter::updateParticles(){
+void SmokeTrailEmitter::updateParticles()
+{
     for (int i = 0; i < 1; i++){
         SmokeParticle sp = SmokeParticle(world, space, mass, dRandReal()*0.05f + 0.03f);
 
@@ -44,6 +45,7 @@ void SmokeTrailEmitter::updateParticles(){
     }
 }
 
-void SmokeTrailEmitter::updateVortices(){
+void SmokeTrailEmitter::updateVortices()
+{
     // Do nothing
 }

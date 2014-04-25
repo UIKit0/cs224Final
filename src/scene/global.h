@@ -1,12 +1,13 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
-
-#include <QOpenGLFunctions_2_0>
-//#include <QOpenGLFunctions_4_1_Core>
 //TODO: move this graphics
-typedef QOpenGLFunctions_2_0 GLFunctions;
-//typedef QOpenGLFunctions_4_1_Core GLFunctions;
+
+//#include <QOpenGLFunctions_2_0>
+//typedef QOpenGLFunctions_2_0 GLFunctions;
+
+#include <QOpenGLFunctions_4_1_Core>
+typedef QOpenGLFunctions_4_1_Core GLFunctions;
 
 #include "matrixstack.h"
 #include "camera.h"

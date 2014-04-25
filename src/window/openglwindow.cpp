@@ -21,8 +21,8 @@ OpenGLWindow::OpenGLWindow(QWindow *parent)
 #ifdef DEBUG_OPENGL
     format.setOption(QSurfaceFormat::DebugContext);
 #endif
-    format.setMajorVersion(2);
-    format.setMinorVersion(0);
+    format.setMajorVersion(4);
+    format.setMinorVersion(1);
     format.setDepthBufferSize(24);
     setFormat(format);
 

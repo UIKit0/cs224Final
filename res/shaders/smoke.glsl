@@ -22,7 +22,7 @@ void main(void)
 
 -- fragment.debug ---------------------------------------
 
-uniform sampler2D texture2D;
+uniform sampler2D tex_color;
 
 in V_OUT
 {
@@ -33,7 +33,7 @@ out vec4 color;
 
 void main(void)
 {
-//    color = texture(v_in.texcoord);
+//    color = texture(tex_color, v_in.texcoord);
     color = vec4(1.0, 0, 0, 1.0);
 }
 

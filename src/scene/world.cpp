@@ -198,6 +198,10 @@ void World::render(GLFunctions *gl)
     glLoadIdentity();
     glLoadMatrixf(glm::value_ptr(g_camera.vMatrix));
 
+    // RENDER TERRAIN
+
+        terrain.draw();
+
     // RENDER PARTICLES
 
     // Sphere
@@ -231,28 +235,7 @@ void World::render(GLFunctions *gl)
 
     gl->glDrawArrays(GL_TRIANGLES, 0, m_mesh.triangles.size() * 3);
 #endif
-
-    g_model.reset();
-
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glLoadMatrixf(glm::value_ptr(g_camera.pMatrix));
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glLoadMatrixf(glm::value_ptr(g_camera.vMatrix));
-
-    terrain.draw();
-
-    // RENDER PARTICLES
-
-    // Sphere
-//    sphere.draw(sphereMesh);
-
-//    circlingEmitter->draw(sphereMesh);
-
-    for (int i = 0; i < emitters.size(); i++){
-        emitters[i]->draw(sphereMesh);
-    }
+#endif
 }
 
 void World::update(float seconds)

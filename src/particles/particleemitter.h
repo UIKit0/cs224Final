@@ -16,15 +16,16 @@
 #include "assets/obj.h"
 
 #include "scene/global.h"
+#include "particles.h"
 
-class ParticleEmitter
+class ParticleEmitter : public Particles
 {
 public:
     ParticleEmitter(dWorldID w, dSpaceID s, dMass m);
 
     void destroy();
     void update(float seconds);
-    void draw(Obj &obj);
+    virtual void draw();
 
     virtual void updateParticles() = 0;
     virtual void updateVortices() = 0;
@@ -41,7 +42,6 @@ public:
 
     float time;
     GLuint sprites;
-
 
     glm::vec3 location;
 };

@@ -9,7 +9,7 @@ QT += core gui opengl
 TEMPLATE = app
 
 # qpainter doesn't support core profile
-#DEFINES += ENABLE_CORE_PROFILE
+DEFINES += ENABLE_CORE_PROFILE
 
 CONFIG(release, debug|release) {
     DEFINES += QT_NO_DEBUG_OUTPUT QT_NO_WARNING_OUTPUT

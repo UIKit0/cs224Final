@@ -97,9 +97,10 @@ void World::initialize(GLFunctions *gl)
     g_camera.setAspectRatio((float)m_screenWidth/m_screenHeight);
 
 //    m_smokeFx.initialize(gl, "../../../../res/shaders/");
-    m_smokeFx.initialize(gl, "../res/shaders/");
+
 
     BasicSmokeEmitter *emitter = new BasicSmokeEmitter(m_world_id, space, m);
+    emitter->initialize(gl);
     emitter->maxInitialVel = glm::vec3(0.5f, 2.0f, 0.5f);
     emitter->minInitialVel = glm::vec3(-0.5f, 0.5f, -0.5f);
     emitters.append(emitter);
@@ -107,11 +108,9 @@ void World::initialize(GLFunctions *gl)
     circlingEmitter = new SmokeTrailEmitter(m_world_id, space, m);
     circlingEmitter->location = glm::vec3(30,0,0);
 
-    sphere = SolidObject(m_world_id, space, m);
+//    sphere = SolidObject(m_world_id, space, m);
 
-    m_smokeFx.compile(GL_VERTEX_SHADER, "smoke.vertex.debug");
-    m_smokeFx.compile(GL_FRAGMENT_SHADER, "smoke.fragment.debug");
-    m_smokeFx.link();
+
 
 #ifdef DEBUG_TEST_TRIANGLE
     //    m_goochFx.initialize(gl, "../../../../res/shaders/");
@@ -194,11 +193,7 @@ void World::initialize(GLFunctions *gl)
 
 void World::render(GLFunctions *gl)
 {
-//    g_model.reset();
-
-    gl->glUseProgram(m_smokeFx.program());
-    gl->glUniformMatrix4fv(m_smokeFx.uniform("proj_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix));
-    gl->glUniformMatrix4fv(m_smokeFx.uniform("mv_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix));
+    g_model.reset();
 
 //    glMatrixMode(GL_PROJECTION);
 //    glLoadIdentity();
@@ -219,9 +214,9 @@ void World::render(GLFunctions *gl)
 
 //    circlingEmitter->draw(sphereMesh);
 
-//    for (int i = 0; i < emitters.size(); i++){
-//        emitters[i]->draw(sphereMesh);
-//    }
+    for (int i = 0; i < emitters.size(); i++){
+        emitters[i]->draw();
+    }
 
 #ifdef DEBUG_TEST_TRIANGLE
     gl->glUseProgram(m_goochFx.program());

@@ -107,7 +107,7 @@ private:
 //    GLuint m_vboIds[2];
 
     Program m_goochFx;
-    Program m_smokeFx;
+
 
     GLuint m_posAttr;
     GLuint m_texAttr;

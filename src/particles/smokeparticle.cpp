@@ -34,37 +34,40 @@ void SmokeParticle::destroy(){
     dBodyDestroy(body);
 }
 
-void SmokeParticle::draw(glm::vec3 u, glm::vec3 v, glm::vec3 z, Obj &obj){
-    const dReal* pos = dBodyGetPosition(body);
+//void SmokeParticle::draw(glm::vec3 u, glm::vec3 v, glm::vec3 z, Obj &obj){
+//    const dReal* pos = dBodyGetPosition(body);
 
-    glPushMatrix();
+//    glPushMatrix();
 
-    g_model.pushMatrix();
+//    g_model.pushMatrix();
 
-    g_model.matrix = glm::translate(g_model.matrix, glm::vec3(pos[0], pos[1], pos[2]));
-    g_model.matrix = glm::scale(g_model.matrix, glm::vec3(scale, scale, scale));
-    g_model.matrix = glm::rotate(g_model.matrix, (float)(rotation), glm::vec3(z[0], z[1], z[2]));
+//    g_model.matrix = glm::translate(g_model.matrix, glm::vec3(pos[0], pos[1], pos[2]));
 
-    glColor4f(0.5,0.5,0.5, fmin(1.0f, alpha));
+//    g_model.popMatrix();
 
-    glMultMatrixf(glm::value_ptr(g_model.matrix));
+//    g_model.matrix = glm::scale(g_model.matrix, glm::vec3(scale, scale, scale));
+//    g_model.matrix = glm::rotate(g_model.matrix, (float)(rotation), glm::vec3(z[0], z[1], z[2]));
 
-    glm::vec3 corner = u + v;
-    glm::vec3 corner2 = v - u;
-    glBegin(GL_QUADS);
-    glTexCoord2f(0, 0);
-    glVertex3f(corner[0], corner[1], corner[2]);
-    glTexCoord2f(0, 1);
-    glVertex3f(corner2[0], corner2[1], corner2[2]);
-    glTexCoord2f(1, 1);
-    glVertex3f(-corner[0], -corner[1], -corner[2]);
-    glTexCoord2f(1, 0);
-    glVertex3f(-corner2[0], -corner2[1], -corner2[2]);
-    glEnd();
+//    glColor4f(0.5,0.5,0.5, fmin(1.0f, alpha));
 
-    glPopMatrix();
-    g_model.popMatrix();
-}
+//    glMultMatrixf(glm::value_ptr(g_model.matrix));
+
+
+//    glm::vec3 corner = u + v;
+//    glm::vec3 corner2 = v - u;
+//    glBegin(GL_QUADS);
+//    glTexCoord2f(0, 0);
+//    glVertex3f(corner[0], corner[1], corner[2]);
+//    glTexCoord2f(0, 1);
+//    glVertex3f(corner2[0], corner2[1], corner2[2]);
+//    glTexCoord2f(1, 1);
+//    glVertex3f(-corner[0], -corner[1], -corner[2]);
+//    glTexCoord2f(1, 0);
+//    glVertex3f(-corner2[0], -corner2[1], -corner2[2]);
+//    glEnd();
+
+//    glPopMatrix();
+//}
 
 void SmokeParticle::update(float seconds){
     time += seconds;

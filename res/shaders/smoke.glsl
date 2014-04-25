@@ -12,11 +12,11 @@ in vec2 texcoord;
 out V_OUT
 {
     vec2 texcoord;
-} f_out;
+} v_out;
 
 void main(void)
 {
-    f_out.texcoord = texcoord;
+    v_out.texcoord = texcoord;
     gl_Position = proj_matrix * mv_matrix * vec4(position, 1.0);
 }
 
@@ -27,14 +27,52 @@ uniform sampler2D tex_color;
 in V_OUT
 {
     vec2 texcoord;
-} v_in;
+} f_in;
 
 out vec4 color;
 
 void main(void)
 {
-//    color = texture(tex_color, v_in.texcoord);
+//    color = texture(tex_color, f_in.texcoord);
     color = vec4(1.0, 0, 0, 1.0);
+}
+
+-- vertex.point ---------------------------------------
+
+uniform mat4 proj_matrix;
+uniform mat4 mv_matrix;
+
+in vec3 position;
+in float size;
+
+//out V_OUT
+//{
+
+//} v_out;
+
+void main(void)
+{
+    gl_Position = proj_matrix * mv_matrix * vec4(position, 1.0);
+    gl_PointSize = size;
+}
+
+-- fragment.point ---------------------------------------
+
+uniform sampler2D tex_color;
+uniform sampler2D tex_depth;
+uniform sampler2D tex_norm;
+
+//in V_OUT
+//{
+
+//} f_in;
+
+out vec4 color;
+
+void main(void)
+{
+    color = vec4(1.0, 0, 0, 1.0);
+//    color = texture(tex_color, gl_PointCoord);
 }
 
 -- fragment.depth ---------------------------------------

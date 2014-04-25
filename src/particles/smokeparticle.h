@@ -22,7 +22,7 @@ public:
 
     void destroy();
     void update(float time);
-    void draw(glm::vec3 u, glm::vec3 v, glm::vec3 z, Obj &obj);
+//    void draw(glm::vec3 u, glm::vec3 v, glm::vec3 z, Obj &obj);
 
     dBodyID body;
     dGeomID geom;

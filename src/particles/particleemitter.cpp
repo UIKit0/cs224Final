@@ -1,6 +1,7 @@
 #include "particleemitter.h"
 
 ParticleEmitter::ParticleEmitter(dWorldID w, dSpaceID s, dMass m)
+    : Particles()
 {
     world = w;
     space = s;
@@ -10,29 +11,28 @@ ParticleEmitter::ParticleEmitter(dWorldID w, dSpaceID s, dMass m)
     time = 0;
 }
 
-void ParticleEmitter::draw(Obj &obj){
+void ParticleEmitter::draw(){
     Q_ASSERT_X(sprites != UINT_MAX, "particle emitter", "no sprites loaded");
 
     // Particles
-    float *m = glm::value_ptr(g_camera.vMatrix);
-    glm::vec3 dx(m[0], m[4], m[8]); // left-right
-    glm::vec3 dy(m[1], m[5], m[9]); // up-down
-    glm::vec3 dz(m[2], m[6], m[10]); // front-back
+//    float *m = glm::value_ptr(g_camera.vMatrix);
+//    glm::vec3 dx(m[0], m[4], m[8]); // left-right
+//    glm::vec3 dy(m[1], m[5], m[9]); // up-down
+//    glm::vec3 dz(m[2], m[6], m[10]); // front-back
 
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, sprites);
+//    glEnable(GL_TEXTURE_2D);
+//    glBindTexture(GL_TEXTURE_2D, sprites);
+
+    glDepthMask(GL_FALSE);
 
     glEnable(GL_BLEND);
-    glDepthMask(GL_FALSE);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    for (int i = 0; i < particles.size(); i++){
-        particles[i].draw(glm::normalize(dx), glm::normalize(dy), glm::normalize(dz), obj);
-    }
+    Particles::draw();
 
     glDepthMask(GL_TRUE);
 
-    glDisable(GL_TEXTURE_2D);
+//    glDisable(GL_TEXTURE_2D);
 
 //      // Vortices
 //    if (drawVortices){
@@ -61,6 +61,15 @@ void ParticleEmitter::update(float seconds){
             delete vortices[i];
             vortices.removeAt(i);
         }
+    }
+
+    Particles::setBufferSize(particles.size());
+
+    //update buffer
+    for (int i = 0; i < particles.size(); ++i){
+        const dReal* pos = dBodyGetPosition(particles[i].body);
+        glm::vec3 position(pos[0], pos[1], pos[3]);
+        Particles::setBufferValue(i, position, particles[i].scale);
     }
 }
 

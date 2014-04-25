@@ -6,15 +6,12 @@ ParticleEmitter::ParticleEmitter(dWorldID w, dSpaceID s, dMass m)
     space = s;
     mass = m;
     drawVortices = false;
-
+    sprites = UINT_MAX;
     time = 0;
 }
 
 void ParticleEmitter::draw(Obj &obj){
-    if (sprites == -1){
-        std::cout<<"ERROR: no sprites loaded for particle emitter"<<std::endl;
-        return;
-    }
+    Q_ASSERT_X(sprites != -1, "particle emitter", "no sprites loaded");
 
     // Particles
     float *m = glm::value_ptr(g_camera.vMatrix);

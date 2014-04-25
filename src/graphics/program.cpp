@@ -82,7 +82,7 @@ bool Program::compile(GLenum shaderType, const char *name)
 
 void Program::link()
 {
-    Q_ASSERT(m_program == INVALID_VAR);
+    Q_ASSERT(m_program == INVALID_PROGRAM);
 
     // create program
     m_program = m_gl->glCreateProgram();
@@ -140,13 +140,13 @@ void Program::parseVariables(const QString &source,
 
 void Program::use()
 {
-    Q_ASSERT(m_program != INVALID_VAR);
+    Q_ASSERT(m_program != INVALID_PROGRAM);
     m_gl->glUseProgram(m_program);
 }
 
 GLuint Program::program() const
 {
-    Q_ASSERT(m_program != INVALID_VAR);
+    Q_ASSERT(m_program != INVALID_PROGRAM);
     return m_program;
 }
 

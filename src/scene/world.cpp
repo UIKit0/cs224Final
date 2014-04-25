@@ -250,20 +250,21 @@ void World::update(float seconds)
     // PARTICLES
 
     // Upwards force
-    dSpaceCollide(space, this, nearCallback);
-    sphere.update(seconds);
+//    dSpaceCollide(space, this, nearCallback);
+//    sphere.update(seconds);
 
-    terrain.update(seconds, g_camera.m_position);
+//    terrain.update(seconds, g_camera.m_position);
 
     for (int i = 0; i < emitters.size(); i++){
         emitters[i]->update(seconds);
     }
-    float angle = atan2(circlingEmitter->location[2], circlingEmitter->location[0]);
-    if (angle < 0)
-        angle = M_PI*2 + angle;
 
-    circlingEmitter->location = glm::vec3(30*cos(angle + 0.02f), 0, 30*sin(angle + 0.02f));
-    circlingEmitter->update(seconds);
+//    float angle = atan2(circlingEmitter->location[2], circlingEmitter->location[0]);
+//    if (angle < 0)
+//        angle = M_PI*2 + angle;
+
+//    circlingEmitter->location = glm::vec3(30*cos(angle + 0.02f), 0, 30*sin(angle + 0.02f));
+//    circlingEmitter->update(seconds);
 
     dWorldQuickStep(m_world_id, 1/30.0f);
     dJointGroupEmpty(contactgroup);

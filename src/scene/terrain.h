@@ -4,16 +4,23 @@
 #include "glm/vec3.hpp"
 #include "glm/gtc/noise.hpp"
 #include <QHash>
+#include <iostream>
 
 #include <QOpenGLFunctions>
 
-#define GRID_SIZE 5
-#define TILE_SIZE 20
+#define GRID_SIZE 7
+#define UPDATE_RADIUS 2
+#define TILE_SIZE 10
 #define NOISE_COORDINATE_RATIO 0.1f
 
 struct Update{
     int ix;
     int iy;
+
+    Update(int x, int y){
+        ix = x;
+        iy = y;
+    }
 };
 
 struct Tile{
@@ -31,13 +38,17 @@ class Terrain
 {
 public:
     Terrain();
+    virtual ~Terrain();
 
     void update(float seconds, glm::vec3 playerLocation);
     void updateVBO();
 
     void draw();
 
-    Tile tiles[GRID_SIZE][GRID_SIZE];
+private:
+    void shiftTiles(int x, int y);
+
+    Tile *tiles[GRID_SIZE][GRID_SIZE];
 
     // Location of the origin, used to maintain perlin noise consistency
     glm::vec3 originLocation;

@@ -31,8 +31,8 @@ public:
     void mouseRotation(glm::vec2 delta);
     void update(float seconds);
 
-private:
     glm::vec3 m_position;
+private:
     glm::vec3 m_lookAt;
     glm::vec3 m_up;
 

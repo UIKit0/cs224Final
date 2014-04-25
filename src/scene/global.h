@@ -3,11 +3,13 @@
 
 //TODO: move this graphics
 
-//#include <QOpenGLFunctions_2_0>
-//typedef QOpenGLFunctions_2_0 GLFunctions;
-
+#ifdef ENABLE_CORE_PROFILE
 #include <QOpenGLFunctions_4_1_Core>
 typedef QOpenGLFunctions_4_1_Core GLFunctions;
+#else
+#include <QOpenGLFunctions_2_0>
+typedef QOpenGLFunctions_2_0 GLFunctions;
+#endif
 
 #include "matrixstack.h"
 #include "camera.h"

@@ -14,15 +14,17 @@ OpenGLWindow::OpenGLWindow(QWindow *parent)
     format.setSamples(16); // multi-sampling
     format.setRenderableType(QSurfaceFormat::OpenGL); // change to opengles on mobile
 #ifdef ENABLE_CORE_PROFILE
+    format.setMajorVersion(4);
+    format.setMinorVersion(1);
     format.setProfile(QSurfaceFormat::CoreProfile);
 #else
+    format.setMajorVersion(2);
+    format.setMinorVersion(0);
     format.setProfile(QSurfaceFormat::CompatibilityProfile);
 #endif
 #ifdef DEBUG_OPENGL
     format.setOption(QSurfaceFormat::DebugContext);
 #endif
-    format.setMajorVersion(4);
-    format.setMinorVersion(1);
     format.setDepthBufferSize(24);
     setFormat(format);
 
@@ -174,13 +176,13 @@ void OpenGLWindow::renderNow()
         m_gl->glDisable(attrib);
 #else
     m_painter->beginNativePainting();
-    for (GLenum attrib : m_glAttributes)
+    for (GLenum attrib : m_glStates)
         m_gl->glEnable(attrib);
 
     // render opengl
     render();
 
-    for (GLenum attrib : m_glAttributes)
+    for (GLenum attrib : m_glStates)
         m_gl->glDisable(attrib);
     m_painter->endNativePainting();
 

@@ -113,10 +113,6 @@ void World::initialize(GLFunctions *gl)
     m_smokeFx.compile(GL_FRAGMENT_SHADER, "smoke.fragment.debug");
     m_smokeFx.link();
 
-    GLuint vertexArray;
-    gl->glGenVertexArrays(1, &vertexArray);
-    gl->glBindVertexArray(vertexArray);
-
 #ifdef DEBUG_TEST_TRIANGLE
     //    m_goochFx.initialize(gl, "../../../../res/shaders/");
     m_goochFx.initialize(gl, "../res/shaders/");
@@ -212,8 +208,9 @@ void World::render(GLFunctions *gl)
 //    glLoadMatrixf(glm::value_ptr(g_camera.vMatrix));
 
     // RENDER TERRAIN
-
-//        terrain.draw();
+#ifndef ENABLE_CORE_PROFILE
+    terrain.draw();
+#endif
 
     // RENDER PARTICLES
 
@@ -260,6 +257,8 @@ void World::update(float seconds)
     // Upwards force
     dSpaceCollide(space, this, nearCallback);
     sphere.update(seconds);
+
+    terrain.update(seconds, g_camera.m_position);
 
     for (int i = 0; i < emitters.size(); i++){
         emitters[i]->update(seconds);

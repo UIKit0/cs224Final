@@ -104,11 +104,9 @@ void World::initialize(GLFunctions *gl)
     circlingEmitter->location = glm::vec3(30,0,0);
 
     sphere = SolidObject(m_world_id, space, m);
-    m_goochFx.compile(GL_VERTEX_SHADER, "contour.vertex.debug");
-    m_goochFx.compile(GL_FRAGMENT_SHADER, "contour.fragment.debug");
-    m_goochFx.link();
-
-
+//    m_goochFx.compile(GL_VERTEX_SHADER, "contour.vertex.debug");
+//    m_goochFx.compile(GL_FRAGMENT_SHADER, "contour.fragment.debug");
+//    m_goochFx.link();
 
 #ifdef DEBUG_TEST_TRIANGLE
     m_goochFx.compile(GL_VERTEX_SHADER, "contour.vertex.debug");
@@ -198,6 +196,8 @@ void World::render(GLFunctions *gl)
     glLoadIdentity();
     glLoadMatrixf(glm::value_ptr(g_camera.vMatrix));
 
+    terrain.draw();
+
     // RENDER PARTICLES
 
     // Sphere
@@ -232,27 +232,29 @@ void World::render(GLFunctions *gl)
     gl->glDrawArrays(GL_TRIANGLES, 0, m_mesh.triangles.size() * 3);
 #endif
 
-    g_model.reset();
+//    g_model.reset();
 
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glLoadMatrixf(glm::value_ptr(g_camera.pMatrix));
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glLoadMatrixf(glm::value_ptr(g_camera.vMatrix));
+//    glMatrixMode(GL_PROJECTION);
+//    glLoadIdentity();
+//    glLoadMatrixf(glm::value_ptr(g_camera.pMatrix));
+//    glMatrixMode(GL_MODELVIEW);
+//    glLoadIdentity();
+//    glLoadMatrixf(glm::value_ptr(g_camera.vMatrix));
 
-    terrain.draw();
+//    terrain.draw();
 
-    // RENDER PARTICLES
+//    // RENDER PARTICLES
 
-    // Sphere
-//    sphere.draw(sphereMesh);
+//    // Sphere
+////    sphere.draw(sphereMesh);
 
-//    circlingEmitter->draw(sphereMesh);
+////    circlingEmitter->draw(sphereMesh);
 
-    for (int i = 0; i < emitters.size(); i++){
-        emitters[i]->draw(sphereMesh);
-    }
+//    for (int i = 0; i < emitters.size(); i++){
+//        emitters[i]->draw(sphereMesh);
+//    }
+
+#endif
 }
 
 void World::update(float seconds)
@@ -264,6 +266,8 @@ void World::update(float seconds)
     // Upwards force
     dSpaceCollide(space, this, nearCallback);
     sphere.update(seconds);
+
+    terrain.update(seconds, g_camera.m_position);
 
     for (int i = 0; i < emitters.size(); i++){
         emitters[i]->update(seconds);

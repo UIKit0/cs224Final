@@ -10,3 +10,7 @@ Members:
 - Arthur Yidi (ayidi)
 
 
+TODO:
+mjm9 - shadows and shadding for smoke
+ayidi - contour / shaders
+jw19 - smoke and game

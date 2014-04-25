@@ -23,8 +23,8 @@ void main(void)
 
 -- vertex ----------------------------------------------------------
 
-uniform mat4 mv;
-uniform mat4 proj;
+uniform mat4 proj_matrix;
+uniform mat4 mv_matrix;
 
 uniform vec3 lightPos;
 
@@ -34,28 +34,30 @@ in vec2 texcoord;
 
 out V_OUT
 {
-    vec2 texcoord;
-    float lightdotn;
+    vec2 uv;
+    float lightDotN;
     vec3 reflectVec;
     vec3 viewVec;
 } f_out;
 
 void main(void)
 {
-    vec3 ecPos = vec3(mv * vec4(position, 1.0));
-    vec3 tnorm = normalize(mat3(mv) * normal);
+    vec3 ecPos = vec3(mv_matrix * vec4(position, 1.0));
+    // TODO: properly compute normal passing inversetranspose
+    vec3 tnorm = normalize(mat3(mv_matrix) * normal);
     vec3 lightVec = normalize(lightPos - ecPos);
     f_out.reflectVec = normalize(reflect(-lightVec, tnorm));
     f_out.viewVec = normalize(-ecPos);
-    f_out.lightdotn = (dot (lightVec, tnorm) + 1.0) * 0.5;
+    f_out.lightDotN = (dot (lightVec, tnorm) + 1.0) * 0.5;
     f_out.texcoord = texcoord;
 
-    gl_Position = proj * mv * vec4(position, 1.0);
+    gl_Position = proj_matrix * mv_matrix * vec4(position, 1.0);
 }
 
 -- fragment ------------------------------------------------------
 
-uniform sampler2D texture2D;
+uniform sampler2D tex_color;
+
 uniform vec3 surfaceColor;
 uniform vec3 warmColor;
 uniform vec3 coolColor;
@@ -65,7 +67,7 @@ uniform float diffuseCool;
 in V_OUT
 {
     vec2 texcoord;
-    float lightdotn;
+    float lightDotN;
     vec3 reflectVec;
     vec3 viewVec;
 } v_in;
@@ -76,7 +78,7 @@ void main(void)
 {
     vec3 kcool = min(coolColor + diffuseCool * surfaceColor, 1.0);
     vec3 kwarm = min(warmColor + diffuseWarm * surfaceColor, 1.0);
-    vec3 kfinal = mix(kcool, kwarm, v_in.lightdotn);
+    vec3 kfinal = mix(kcool, kwarm, v_in.lightDotN);
 
     vec3 nreflect = normalize(v_in.reflectVec);
     vec3 nview = normalize(v_in.viewVec);
@@ -95,13 +97,13 @@ layout(triangle_strip, max_vertices = 12) out;
 void main(void)
 {
     // get face normal (0,2,4)
-    vec3 faceNormal = normalize(cross(
+    vec3 nface = normalize(cross(
         gl_in[2].gl_Position.xyz - gl_in[0].gl_Position.xyz,
         gl_in[4].gl_Position.xyz - gl_in[0].gl_Position.xyz
     ));
 
-    vec3 viewDirection = -gl_in[0].gl_Position.xyz;
-    vec3 viewDotN = dot(faceNormal, viewDirection);
+    vec3 viewVec = -gl_in[0].gl_Position.xyz;
+    vec3 viewDotN = dot(nface, viewVec);
 
     //TODO: once edge structure works add geometry
 }

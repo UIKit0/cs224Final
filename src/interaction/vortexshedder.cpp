@@ -19,7 +19,7 @@ void VortexShedder::update(float seconds){
     float vlength = glm::length(vel);
     if (vlength > velThreshold && time > range*2/vlength){
         time = 0;
-        float scale = exp(velScale*(vlength - velThreshold));
+//        float scale = exp(velScale*(vlength - velThreshold));
         Vortex* newVortex = new Vortex(world, space, mass, range);
 
         newVortex->axis = axis;

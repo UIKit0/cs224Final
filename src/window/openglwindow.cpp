@@ -1,11 +1,10 @@
 #include "openglwindow.h"
 
-
 OpenGLWindow::OpenGLWindow(QWindow *parent)
     : QWindow(parent)
+    , m_context(0)
     , m_update_pending(false)
     , m_animating(false)
-    , m_context(0)
     , m_fps(0)
     , m_frames(0)
 {

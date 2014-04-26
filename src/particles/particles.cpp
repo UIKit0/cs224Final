@@ -95,8 +95,8 @@ void Particles::draw()
     m_gl->glBindVertexArray(m_vao);
     m_gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
     m_gl->glBindTexture(GL_TEXTURE_2D,texHandles[0]);
-    m_gl->glBindTexture(GL_TEXTURE_2D,texHandles[1]);
-    m_gl->glBindTexture(GL_TEXTURE_2D,texHandles[2]);
+//    m_gl->glBindTexture(GL_TEXTURE_2D,texHandles[1]);
+//    m_gl->glBindTexture(GL_TEXTURE_2D,texHandles[2]);
 
     // update buffer
     m_gl->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(ParticleBuffer) * data.size(), data.data());

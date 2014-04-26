@@ -39,7 +39,7 @@ void main(void)
 
 -- vertex.point ---------------------------------------
 
-float SCALE = 10.0;
+float SCALE = 100.0;
 float distance;
 
 uniform mat4 proj_matrix;
@@ -73,6 +73,8 @@ uniform sampler2D tex_color;
 uniform sampler2D tex_depth;
 uniform sampler2D tex_norm;
 
+vec4 lightPos;
+
 //in V_OUT
 //{
 
@@ -82,6 +84,7 @@ out vec4 color;
 
 void main(void)
 {
+
     color = texture(tex_color, gl_PointCoord);
 //    color = vec4(1.0,0,0,1.0);
 }
@@ -144,7 +147,6 @@ void main()
     specLight = vec3(0);
 
     FragColor = vec4(ambLight + difLight + specLight, alpha);
-    FragColor.b = 10000;
 
     // Modify the depth according the texture values
     gl_FragDepth = gl_FragCoord.z + depth;

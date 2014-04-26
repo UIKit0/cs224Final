@@ -39,33 +39,33 @@ void Particles::initialize(GLFunctions *gl, int maxParticles)
     m_gl->glBufferData(GL_ARRAY_BUFFER, sizeof(ParticleBuffer) * maxParticles, data.data(), GL_DYNAMIC_DRAW);
 
     // Load textures
-    int texNum = 4;
-    QImage textures[texNum];
-    textures[0] = QImage("../res/smoke_alpha.png");
-    textures[1] = QImage("../res/smoke_color.png");
-    textures[2] = QImage("../res/smoke_depth.png");
-    textures[3] = QImage("../res/smoke_normal.png");
+//    int texNum = 4;
+//    QImage textures[texNum];
+//    textures[0] = QImage("../res/smoke_alpha.png");
+//    textures[1] = QImage("../res/smoke_color.png");
+//    textures[2] = QImage("../res/smoke_depth.png");
+//    textures[3] = QImage("../res/smoke_normal.png");
 
-    for(int i = 0; i < texNum; i++)
-    {
-        if (textures[i].isNull())
-        {
-            qCritical("Unable to load texture!");
-            return;
-        }
-        textures[i].convertToFormat(QImage::Format_RGBA8888);
-        m_gl->glGenTextures(1, &texHandles[i]);
-        m_gl->glBindTexture(GL_TEXTURE_2D, texHandles[i]);
+//    for(int i = 0; i < texNum; i++)
+//    {
+//        if (textures[i].isNull())
+//        {
+//            qCritical("Unable to load texture!");
+//            return;
+//        }
+//        textures[i].convertToFormat(QImage::Format_RGBA8888);
+//        m_gl->glGenTextures(1, &texHandles[i]);
+//        m_gl->glBindTexture(GL_TEXTURE_2D, texHandles[i]);
 
-        m_gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        m_gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        m_gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        m_gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+//        m_gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+//        m_gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+//        m_gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+//        m_gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 
-        m_gl->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textures[i].width(), textures[i].height(),
-                     0, GL_RGBA, GL_UNSIGNED_BYTE, textures[i].bits());
+//        m_gl->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textures[i].width(), textures[i].height(),
+//                     0, GL_RGBA, GL_UNSIGNED_BYTE, textures[i].bits());
 
-    }
+//    }
 }
 
 void Particles::setBufferSize(int size)
@@ -106,17 +106,17 @@ void Particles::draw()
     m_gl->glEnableVertexAttribArray(m_sizeAttrib);
     m_gl->glVertexAttribPointer(m_sizeAttrib, 1, GL_FLOAT, GL_FALSE, sizeof(ParticleBuffer), (const void *) offset);
 
-    m_gl->glActiveTexture(GL_TEXTURE0);
-    m_gl->glBindTexture(GL_TEXTURE_2D,texHandles[0]);
+//    m_gl->glActiveTexture(GL_TEXTURE0);
+//    m_gl->glBindTexture(GL_TEXTURE_2D,texHandles[0]);
 
-    m_gl->glActiveTexture(GL_TEXTURE1);
-    m_gl->glBindTexture(GL_TEXTURE_2D,texHandles[1]);
+//    m_gl->glActiveTexture(GL_TEXTURE1);
+//    m_gl->glBindTexture(GL_TEXTURE_2D,texHandles[1]);
 
-    m_gl->glActiveTexture(GL_TEXTURE2);
-    m_gl->glBindTexture(GL_TEXTURE_2D,texHandles[2]);
+//    m_gl->glActiveTexture(GL_TEXTURE2);
+//    m_gl->glBindTexture(GL_TEXTURE_2D,texHandles[2]);
 
-    m_gl->glActiveTexture(GL_TEXTURE3);
-    m_gl->glBindTexture(GL_TEXTURE_2D,texHandles[3]);
+//    m_gl->glActiveTexture(GL_TEXTURE3);
+//    m_gl->glBindTexture(GL_TEXTURE_2D,texHandles[3]);
 
     glDrawArrays(GL_POINTS, 0, data.size());
 }

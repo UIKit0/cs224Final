@@ -62,33 +62,16 @@ uniform sampler2D tex_color;
 uniform sampler2D tex_depth;
 uniform sampler2D tex_norm;
 
-uniform mat4 V_Matrix;
-
-
 //in V_OUT
 //{
 
 //} f_in;
 
-uniform vec3 Ld = vec3(1.0,1.0,1.0);
-uniform vec3 LightPosition = vec3(0.0f, 0.0f, 2.0f);
-
-vec3 ambLight;
-vec3 difLight;
-vec3 specLight;
-
-float granularity = 3.0;
-float invGranularity = 1.0/granularity;
-float depth;
-
-vec4 lightPos;
-
 out vec4 color;
 
 void main(void)
 {
-    color = vec4(1,0,1.0,1.0);
-
+    color = vec4(1.0,0,0,1.0);
 }
 
 -- fragment.depth ---------------------------------------

@@ -209,9 +209,9 @@ void World::render(GLFunctions *gl)
 
     gl->glDrawArrays(GL_TRIANGLES, 0, m_mesh.triangles.size() * 3);
 
-//    for (int i = 0; i < emitters.size(); i++){
-//        emitters[i]->draw();
-//    }
+    for (int i = 0; i < emitters.size(); i++){
+        emitters[i]->draw();
+    }
 
 #ifdef DEBUG_TEST_TRIANGLE
     gl->glUseProgram(m_goochFx.program());

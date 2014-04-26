@@ -216,11 +216,6 @@ void World::render(GLFunctions *gl)
         emitters[i]->draw();
     }
 
-#ifdef DEBUG_TEST_TRIANGLE
-    gl->glUseProgram(m_goochFx.program());
-    gl->glDrawArrays(GL_TRIANGLES, 0, 3);
-#else
-#ifndef PARTICLES
     gl->glBindVertexArray(m_vao);
     gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
 
@@ -237,8 +232,14 @@ void World::render(GLFunctions *gl)
     gl->glUniform1f(m_goochFx.uniform("diffuseCool"), 0.15f);
 
     gl->glDrawArrays(GL_TRIANGLES, 0, m_mesh.triangles.size() * 3);
+
+
+#ifdef DEBUG_TEST_TRIANGLE
+    gl->glUseProgram(m_goochFx.program());
+    gl->glDrawArrays(GL_TRIANGLES, 0, 3);
 #endif
-#endif
+
+
 }
 
 void World::update(float seconds)

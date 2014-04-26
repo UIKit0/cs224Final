@@ -32,7 +32,7 @@ in vec2 texcoord;
 
 out V_OUT
 {
-    vec2 uv;
+    vec2 texcoord;
     float lightDotN;
     vec3 reflectVec;
     vec3 viewVec;

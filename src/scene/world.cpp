@@ -1,7 +1,7 @@
 #include "world.h"
 
 //#define DEBUG_TEST_TRIANGLE
-#define PARTICLES
+//#define PARTICLES
 
 World::World()
     : sphereMesh("cube.obj")
@@ -121,6 +121,7 @@ void World::initialize(GLFunctions *gl)
     gl->glBindVertexArray(vertexArray);
 #else
 #ifndef PARTICLES
+    m_goochFx.initialize(gl, "../res/shaders/");
     m_goochFx.compile(GL_VERTEX_SHADER, "contour.vertex");
     m_goochFx.compile(GL_FRAGMENT_SHADER, "contour.fragment");
 //    m_goochFx.compile(GL_GEOMETRY_SHADER, "contour.geometry");
@@ -220,13 +221,13 @@ void World::render(GLFunctions *gl)
     gl->glDrawArrays(GL_TRIANGLES, 0, 3);
 #else
 #ifndef PARTICLES
-    gl->glUseProgram(m_goochFx.program());
-//        qDebug() << particles[i].scale;
-    // normal matrix
-    glm::inverseTranspose(m_camera.vMatrix);
+    gl->glBindVertexArray(m_vao);
+    gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
 
-    gl->glUniformMatrix4fv(m_goochFx.uniform("proj_matrix"), 1, GL_FALSE, glm::value_ptr(m_camera.pMatrix));
-    gl->glUniformMatrix4fv(m_goochFx.uniform("mv_matrix"), 1, GL_FALSE, glm::value_ptr(m_camera.vMatrix));
+    gl->glUseProgram(m_goochFx.program());
+
+    gl->glUniformMatrix4fv(m_goochFx.uniform("proj_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix));
+    gl->glUniformMatrix4fv(m_goochFx.uniform("mv_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix));
 
     gl->glUniform3f(m_goochFx.uniform("lightPos"), 0.0f, 10.0f, 4.0f);
     gl->glUniform3f(m_goochFx.uniform("surfaceColor"), 0.4f, 0.75f, 0.75f);

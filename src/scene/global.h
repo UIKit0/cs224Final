@@ -11,9 +11,11 @@ typedef QOpenGLFunctions_4_1_Core GLFunctions;
 typedef QOpenGLFunctions_2_0 GLFunctions;
 #endif
 
-#define SMOKE_DISABLE
 #define PARTICLES
-#define OLD_GL
+#define CONTOUR
+//#define TERRAIN
+
+#define DEBUG_TRIANGLE
 
 #include "matrixstack.h"
 #include "camera.h"

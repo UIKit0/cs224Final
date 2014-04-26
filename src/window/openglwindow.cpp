@@ -195,7 +195,6 @@ void OpenGLWindow::renderNow()
 
     m_painter->end();
 #endif
-
     m_context->swapBuffers(this);
 
     if (m_animating)

@@ -1,8 +1,5 @@
 #include "world.h"
 
-//#define DEBUG_TEST_TRIANGLE
-//#define PARTICLES
-
 World::World()
     : sphereMesh("cube.obj")
     , m_mesh("monkey2.obj")
@@ -96,9 +93,11 @@ void World::initialize(GLFunctions *gl)
     // camera
     g_camera.setAspectRatio((float)m_screenWidth/m_screenHeight);
 
+#ifdef TERRAIN
     terrain.initialize(gl);
+#endif
 
-#ifndef SMOKE_DISABLE
+#ifdef PARTICLES
     BasicSmokeEmitter *emitter = new BasicSmokeEmitter(m_world_id, space, m);
     emitter->initialize(gl, 2000);
     emitter->maxInitialVel = glm::vec3(0.5f, 2.0f, 0.5f);
@@ -106,7 +105,7 @@ void World::initialize(GLFunctions *gl)
     emitters.append(emitter);
 #endif
 
-#ifdef DEBUG_TEST_TRIANGLE
+#ifdef DEBUG_TRIANGLE
     //    m_goochFx.initialize(gl, "../../../../res/shaders/");
     m_goochFx.initialize(gl, "../res/shaders/");
     m_goochFx.compile(GL_VERTEX_SHADER, "contour.vertex.debug");
@@ -116,27 +115,28 @@ void World::initialize(GLFunctions *gl)
     GLuint vertexArray;
     gl->glGenVertexArrays(1, &vertexArray);
     gl->glBindVertexArray(vertexArray);
-#else
-#ifndef PARTICLES
+#endif
+
+#ifdef CONTOUR
     m_goochFx.initialize(gl, "../res/shaders/");
     m_goochFx.compile(GL_VERTEX_SHADER, "contour.vertex");
     m_goochFx.compile(GL_FRAGMENT_SHADER, "contour.fragment");
 //    m_goochFx.compile(GL_GEOMETRY_SHADER, "contour.geometry");
     m_goochFx.link();
 
-    QHash<QPair<int,int>, Adjacent> edgeMap;
-    for(Obj::Triangle tri : m_mesh.triangles) {
-        for (int i = 0; i < 3; ++i) {
-            int ia = tri.indices[i].vertex;
-            int ib = tri.indices[(i + 1) % 3].vertex;
-            QPair<int, int> p(qMin(ia, ib), qMax(ia, ib));
-            if (!edgeMap.contains(p)) {
+//    QHash<QPair<int,int>, Adjacent> edgeMap;
+//    for(Obj::Triangle tri : m_mesh.triangles) {
+//        for (int i = 0; i < 3; ++i) {
+//            int ia = tri.indices[i].vertex;
+//            int ib = tri.indices[(i + 1) % 3].vertex;
+//            QPair<int, int> p(qMin(ia, ib), qMax(ia, ib));
+//            if (!edgeMap.contains(p)) {
 //                edgeMap.insert(p, )
-            } else {
+//            } else {
 
-            }
-        }
-    }
+//            }
+//        }
+//    }
 
     // TODO: move to a obj / buffer class
     GLuint meshSize = m_mesh.triangles.size() * 3;
@@ -183,27 +183,17 @@ void World::initialize(GLFunctions *gl)
 //    gl->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(MeshBuffer), (void *)offsetof(MeshBuffer, texcoord));
 //    gl->glEnableVertexAttribArray(m_goochFx.attrib("texcoord"));
 #endif
-#endif
 }
 
 void World::render(GLFunctions *gl)
 {
     g_model.reset();
 
-#ifdef OLD_GL
-//    glMatrixMode(GL_PROJECTION);
-//    glLoadIdentity();
-//    glLoadMatrixf(glm::value_ptr(g_camera.pMatrix));
-//    glMatrixMode(GL_MODELVIEW);
-//    glLoadIdentity();
-//    glLoadMatrixf(glm::value_ptr(g_camera.vMatrix));
-
-    // RENDER TERRAIN
+#ifdef TERRAIN
     terrain.draw();
 #endif
 
-    // RENDER PARTICLES
-#ifndef PARTICLES
+#ifdef CONTOUR
     gl->glBindVertexArray(m_vao);
     gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
 
@@ -220,45 +210,34 @@ void World::render(GLFunctions *gl)
     gl->glUniform1f(m_goochFx.uniform("diffuseCool"), 0.15f);
 
     gl->glDrawArrays(GL_TRIANGLES, 0, m_mesh.triangles.size() * 3);
+
 #endif
 
-#ifndef SMOKE_DISABLE
+#ifdef PARTICLES
     for (int i = 0; i < emitters.size(); i++){
         emitters[i]->draw();
     }
 #endif
 
-#ifdef DEBUG_TEST_TRIANGLE
+#ifdef DEBUG_TRIANGLE
     gl->glUseProgram(m_goochFx.program());
     gl->glDrawArrays(GL_TRIANGLES, 0, 3);
 #endif
-
 }
 
 void World::update(float seconds)
 {
     g_camera.update(seconds);
 
-    // PARTICLES
-
-    // Upwards force
-//    dSpaceCollide(space, this, nearCallback);
-//    sphere.update(seconds);
-
+#ifdef TERRAIN
     terrain.update(seconds, g_camera.m_position);
+#endif
 
-#ifndef SMOKE_DISABLE
+#ifdef PARTICLES
     for (int i = 0; i < emitters.size(); i++){
         emitters[i]->update(seconds);
     }
 #endif
-
-//    float angle = atan2(circlingEmitter->location[2], circlingEmitter->location[0]);
-//    if (angle < 0)
-//        angle = M_PI*2 + angle;
-
-//    circlingEmitter->location = glm::vec3(30*cos(angle + 0.02f), 0, 30*sin(angle + 0.02f));
-//    circlingEmitter->update(seconds);
 
     dWorldQuickStep(m_world_id, 1/30.0f);
 //    dJointGroupEmpty(contactgroup);

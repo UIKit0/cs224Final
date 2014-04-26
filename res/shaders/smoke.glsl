@@ -84,8 +84,7 @@ out vec4 color;
 void main(void)
 {
 
-    color = texture(tex_color, gl_PointCoord) * vec4(0.8, 0.8, 0.8, 0.2
-                                                     );
+    color = texture(tex_color, gl_PointCoord) * vec4(0.8, 0.8, 0.8, 0.2);
 //    color = vec4(1.0,0,0,1.0);
 }
 

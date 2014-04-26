@@ -102,13 +102,6 @@ void World::initialize(GLFunctions *gl)
     emitter->minInitialVel = glm::vec3(-0.5f, 0.5f, -0.5f);
     emitters.append(emitter);
 
-//    circlingEmitter = new SmokeTrailEmitter(m_world_id, space, m);
-//    circlingEmitter->location = glm::vec3(30,0,0);
-
-//    sphere = SolidObject(m_world_id, space, m);
-
-
-
 #ifdef DEBUG_TEST_TRIANGLE
     //    m_goochFx.initialize(gl, "../../../../res/shaders/");
     m_goochFx.initialize(gl, "../res/shaders/");

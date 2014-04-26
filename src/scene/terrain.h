@@ -6,7 +6,7 @@
 #include <QHash>
 #include <iostream>
 
-#include <QOpenGLFunctions>
+#include "scene/global.h"
 
 #define GRID_SIZE 11
 #define UPDATE_RADIUS 2
@@ -56,6 +56,7 @@ private:
 
     QList<Update> updateQueue;
 
+    GLFunctions *gl;
 };
 
 #endif // TERRAIN_H

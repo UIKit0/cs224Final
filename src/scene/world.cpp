@@ -96,15 +96,13 @@ void World::initialize(GLFunctions *gl)
     // camera
     g_camera.setAspectRatio((float)m_screenWidth/m_screenHeight);
 
-    terrain.initialize(gl);
+//    terrain.initialize(gl);
 
-#ifndef SMOKE_DISABLE
     BasicSmokeEmitter *emitter = new BasicSmokeEmitter(m_world_id, space, m);
     emitter->initialize(gl, 2000);
     emitter->maxInitialVel = glm::vec3(0.5f, 2.0f, 0.5f);
     emitter->minInitialVel = glm::vec3(-0.5f, 0.5f, -0.5f);
     emitters.append(emitter);
-#endif
 
 #ifdef DEBUG_TEST_TRIANGLE
     //    m_goochFx.initialize(gl, "../../../../res/shaders/");
@@ -190,20 +188,10 @@ void World::render(GLFunctions *gl)
 {
     g_model.reset();
 
-#ifdef OLD_GL
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glLoadMatrixf(glm::value_ptr(g_camera.pMatrix));
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glLoadMatrixf(glm::value_ptr(g_camera.vMatrix));
-
-    // RENDER TERRAIN
-    terrain.draw();
-#endif
+//    terrain.draw();
 
     // RENDER PARTICLES
-#ifndef PARTICLES
+
     gl->glBindVertexArray(m_vao);
     gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
 
@@ -220,13 +208,10 @@ void World::render(GLFunctions *gl)
     gl->glUniform1f(m_goochFx.uniform("diffuseCool"), 0.15f);
 
     gl->glDrawArrays(GL_TRIANGLES, 0, m_mesh.triangles.size() * 3);
-#endif
 
-#ifndef SMOKE_DISABLE
-    for (int i = 0; i < emitters.size(); i++){
-        emitters[i]->draw();
-    }
-#endif
+//    for (int i = 0; i < emitters.size(); i++){
+//        emitters[i]->draw();
+//    }
 
 #ifdef DEBUG_TEST_TRIANGLE
     gl->glUseProgram(m_goochFx.program());
@@ -245,13 +230,11 @@ void World::update(float seconds)
 //    dSpaceCollide(space, this, nearCallback);
 //    sphere.update(seconds);
 
-    terrain.update(seconds, g_camera.m_position);
+//    terrain.update(seconds, g_camera.m_position);
 
-#ifndef SMOKE_DISABLE
     for (int i = 0; i < emitters.size(); i++){
         emitters[i]->update(seconds);
     }
-#endif
 
 //    float angle = atan2(circlingEmitter->location[2], circlingEmitter->location[0]);
 //    if (angle < 0)

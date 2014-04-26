@@ -40,6 +40,9 @@ private:
 
     Program m_smokeFx;
 
+    GLuint texHandles[4];
+
+
     QVector<ParticleBuffer> data;
 };
 

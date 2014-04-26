@@ -38,8 +38,6 @@ void Particles::initialize(GLFunctions *gl, int maxParticles)
     m_gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
     m_gl->glBufferData(GL_ARRAY_BUFFER, sizeof(ParticleBuffer) * maxParticles, data.data(), GL_DYNAMIC_DRAW);
 
-<<<<<<< HEAD
-
     // Load textures
     int texNum = 4;
     QImage textures[texNum];
@@ -68,11 +66,6 @@ void Particles::initialize(GLFunctions *gl, int maxParticles)
                      0, GL_RGBA, GL_UNSIGNED_BYTE, textures[i].bits());
 
     }
-
-
-
-=======
->>>>>>> 18aaf5d031d9bb7bb6703d13cfa2df08f67646ce
 }
 
 void Particles::setBufferSize(int size)
@@ -113,7 +106,6 @@ void Particles::draw()
     m_gl->glEnableVertexAttribArray(m_sizeAttrib);
     m_gl->glVertexAttribPointer(m_sizeAttrib, 1, GL_FLOAT, GL_FALSE, sizeof(ParticleBuffer), (const void *) offset);
 
-<<<<<<< HEAD
     m_gl->glActiveTexture(GL_TEXTURE0);
     m_gl->glBindTexture(GL_TEXTURE_2D,texHandles[0]);
 
@@ -126,9 +118,5 @@ void Particles::draw()
     m_gl->glActiveTexture(GL_TEXTURE3);
     m_gl->glBindTexture(GL_TEXTURE_2D,texHandles[3]);
 
-
-=======
-//    qDebug() << data.size();
->>>>>>> 18aaf5d031d9bb7bb6703d13cfa2df08f67646ce
     glDrawArrays(GL_POINTS, 0, data.size());
 }

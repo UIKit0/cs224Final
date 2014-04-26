@@ -97,13 +97,13 @@ void World::initialize(GLFunctions *gl)
     g_camera.setAspectRatio((float)m_screenWidth/m_screenHeight);
 
     BasicSmokeEmitter *emitter = new BasicSmokeEmitter(m_world_id, space, m);
-    emitter->initialize(gl);
+    emitter->initialize(gl, 2000);
     emitter->maxInitialVel = glm::vec3(0.5f, 2.0f, 0.5f);
     emitter->minInitialVel = glm::vec3(-0.5f, 0.5f, -0.5f);
     emitters.append(emitter);
 
-    circlingEmitter = new SmokeTrailEmitter(m_world_id, space, m);
-    circlingEmitter->location = glm::vec3(30,0,0);
+//    circlingEmitter = new SmokeTrailEmitter(m_world_id, space, m);
+//    circlingEmitter->location = glm::vec3(30,0,0);
 
 //    sphere = SolidObject(m_world_id, space, m);
 
@@ -221,7 +221,7 @@ void World::render(GLFunctions *gl)
 #else
 #ifndef PARTICLES
     gl->glUseProgram(m_goochFx.program());
-
+//        qDebug() << particles[i].scale;
     // normal matrix
     glm::inverseTranspose(m_camera.vMatrix);
 
@@ -264,7 +264,7 @@ void World::update(float seconds)
 //    circlingEmitter->update(seconds);
 
     dWorldQuickStep(m_world_id, 1/30.0f);
-    dJointGroupEmpty(contactgroup);
+//    dJointGroupEmpty(contactgroup);
 }
 
 void World::setScreenSize(int width, int height)

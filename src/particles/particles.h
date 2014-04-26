@@ -38,6 +38,8 @@ private:
     GLuint m_buffer;
     GLuint m_vao;
 
+    int m_maxParticles;
+
     Program m_smokeFx;
 
     GLuint texHandles[4];

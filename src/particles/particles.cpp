@@ -45,7 +45,8 @@ void Particles::setBufferSize(int size)
 
 void Particles::setBufferValue(int index, glm::vec3 position, float size)
 {
-//    Q_ASSERT(index < m_maxParticles -1);
+    Q_ASSERT_X(index < m_maxParticles && index >= 0, "bad buffer index", QString::number(index).toLocal8Bit());
+
     ParticleBuffer &particle = data[index];
     particle.position = position;
     particle.size = size;

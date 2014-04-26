@@ -97,7 +97,7 @@ void World::initialize(GLFunctions *gl)
     g_camera.setAspectRatio((float)m_screenWidth/m_screenHeight);
 
     BasicSmokeEmitter *emitter = new BasicSmokeEmitter(m_world_id, space, m);
-    emitter->initialize(gl, 1600);
+    emitter->initialize(gl, 2000);
     emitter->maxInitialVel = glm::vec3(0.5f, 2.0f, 0.5f);
     emitter->minInitialVel = glm::vec3(-0.5f, 0.5f, -0.5f);
     emitters.append(emitter);

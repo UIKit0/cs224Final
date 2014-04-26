@@ -11,5 +11,9 @@
         <file>textures/smoke.png</file>
         <file>textures/smoke2.png</file>
         <file>meshes/monkey2.obj</file>
+        <file>textures/smoke_alpha.png</file>
+        <file>textures/smoke_color.png</file>
+        <file>textures/smoke_depth.png</file>
+        <file>textures/smoke_normal.png</file>
     </qresource>
 </RCC>

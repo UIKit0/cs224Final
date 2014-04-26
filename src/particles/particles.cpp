@@ -86,6 +86,8 @@ void Particles::draw()
 {
     Q_ASSERT(m_gl != NULL);
 
+    m_gl->glEnable(GL_PROGRAM_POINT_SIZE);
+
     m_gl->glBindVertexArray(m_vao);
     m_gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
 

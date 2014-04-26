@@ -39,7 +39,7 @@ void main(void)
 
 -- vertex.point ---------------------------------------
 
-float SCALE = 100.0;
+float SCALE = 200.0;
 float distance;
 
 uniform mat4 proj_matrix;
@@ -52,7 +52,6 @@ in float size;
 //{
 
 //} v_out;
-
 void main(void)
 {
     vec4 pos = proj_matrix * mv_matrix * vec4(position, 1.0);
@@ -85,7 +84,8 @@ out vec4 color;
 void main(void)
 {
 
-    color = texture(tex_color, gl_PointCoord);
+    color = texture(tex_color, gl_PointCoord) * vec4(0.8, 0.8, 0.8, 0.2
+                                                     );
 //    color = vec4(1.0,0,0,1.0);
 }
 

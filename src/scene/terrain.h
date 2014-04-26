@@ -9,18 +9,20 @@
 #include "scene/global.h"
 #include "graphics/program.h"
 
-#define GRID_SIZE 5
+#define GRID_SIZE 7
 #define UPDATE_RADIUS 2
-#define TILE_SIZE 10
-#define NOISE_COORDINATE_RATIO 0.1f
+#define TILE_SIZE 20
+#define NOISE_COORDINATE_RATIO 0.05f
 
 struct Update{
     int ix;
     int iy;
+    int pass;
 
     Update(int x, int y){
         ix = x;
         iy = y;
+        pass = 2;
     }
 };
 
@@ -35,7 +37,6 @@ struct Tile{
     glm::vec3 normals[TILE_SIZE + 1][TILE_SIZE + 1];
     VO vo;
 };
-
 
 /**
  * Terrain is composed of tiles, in which each tile has an
@@ -52,6 +53,7 @@ public:
     void initialize(GLFunctions *gl);
     void update(float seconds, glm::vec3 playerLocation);
     void updateVBO(int i, int j);
+    void addObjects(int i, int j);
 
     void draw();
 
@@ -66,6 +68,10 @@ private:
     QList<Update> updateQueue;
 
     QList<VO> vos;
+
+    QList<glm::vec3> objects;
+    GLuint object_vao;
+    GLuint object_vbo;
 
     GLFunctions *m_gl;
     Program shader;

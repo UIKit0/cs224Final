@@ -13,6 +13,7 @@ Particles::Particles(GLFunctions *gl, int maxParticles)
 void Particles::initialize(GLFunctions *gl, int maxParticles)
 {
     m_gl = gl;
+    m_maxParticles = maxParticles;
 
     m_smokeFx.initialize(gl, "../res/shaders/");
     m_smokeFx.compile(GL_VERTEX_SHADER, "smoke.vertex.point");
@@ -34,6 +35,7 @@ void Particles::initialize(GLFunctions *gl, int maxParticles)
 
     m_gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
     m_gl->glBufferData(GL_ARRAY_BUFFER, sizeof(ParticleBuffer) * maxParticles, data.data(), GL_DYNAMIC_DRAW);
+
 }
 
 void Particles::setBufferSize(int size)
@@ -43,8 +45,7 @@ void Particles::setBufferSize(int size)
 
 void Particles::setBufferValue(int index, glm::vec3 position, float size)
 {
-    Q_ASSERT(index < data.size());
-
+//    Q_ASSERT(index < m_maxParticles -1);
     ParticleBuffer &particle = data[index];
     particle.position = position;
     particle.size = size;
@@ -74,5 +75,6 @@ void Particles::draw()
     m_gl->glEnableVertexAttribArray(m_sizeAttrib);
     m_gl->glVertexAttribPointer(m_sizeAttrib, 1, GL_FLOAT, GL_FALSE, sizeof(ParticleBuffer), (const void *) offset);
 
+//    qDebug() << data.size();
     glDrawArrays(GL_POINTS, 0, data.size());
 }

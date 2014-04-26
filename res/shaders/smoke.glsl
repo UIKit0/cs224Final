@@ -39,6 +39,9 @@ void main(void)
 
 -- vertex.point ---------------------------------------
 
+float SCALE = 10.0;
+float distance;
+
 uniform mat4 proj_matrix;
 uniform mat4 mv_matrix;
 
@@ -52,8 +55,16 @@ in float size;
 
 void main(void)
 {
-    gl_Position = proj_matrix * mv_matrix * vec4(position, 1.0);
-    gl_PointSize = size;
+    vec4 pos = proj_matrix * mv_matrix * vec4(position, 1.0);
+
+    if (pos.w == 0.0) {
+        distance = 0.00001;
+    } else {
+        distance = pos.w;
+    }
+
+    gl_Position = pos;
+    gl_PointSize = (size * SCALE) / distance;
 }
 
 -- fragment.point ---------------------------------------
@@ -73,6 +84,7 @@ void main(void)
 {
     color = vec4(1.0,0,0,1.0);
 }
+
 
 -- fragment.depth ---------------------------------------
 

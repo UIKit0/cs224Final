@@ -8,7 +8,7 @@
 
 #include <QOpenGLFunctions>
 
-#define GRID_SIZE 7
+#define GRID_SIZE 11
 #define UPDATE_RADIUS 2
 #define TILE_SIZE 10
 #define NOISE_COORDINATE_RATIO 0.1f
@@ -26,6 +26,7 @@ struct Update{
 struct Tile{
     float terrain[TILE_SIZE][TILE_SIZE];
     glm::vec3 normals[TILE_SIZE][TILE_SIZE];
+    int m_buffer;
 };
 
 /**

@@ -16,8 +16,8 @@ void Particles::initialize(GLFunctions *gl, int maxParticles)
 {
     m_gl = gl;
     m_maxParticles = maxParticles;
-
-    m_smokeFx.initialize(gl, "../res/shaders/");
+#ifndef PARTICLES
+    m_smokeFx.initialize(gl, "../../res/shaders/");
     m_smokeFx.compile(GL_VERTEX_SHADER, "smoke.vertex.point");
     m_smokeFx.compile(GL_FRAGMENT_SHADER, "smoke.fragment.point");
     m_smokeFx.link();
@@ -39,6 +39,7 @@ void Particles::initialize(GLFunctions *gl, int maxParticles)
     m_gl->glBufferData(GL_ARRAY_BUFFER,
                        sizeof(ParticleBuffer) * maxParticles, data.data(),
                        GL_DYNAMIC_DRAW);
+#endif
 
     // Load textures
     int texNum = 4;
@@ -63,7 +64,7 @@ void Particles::initialize(GLFunctions *gl, int maxParticles)
         m_gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
         m_gl->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textures[i]->width(), textures[i]->height(),
                      0, GL_RGBA, GL_UNSIGNED_BYTE, textures[i]->bits());
-//        delete textures[i];
+        delete textures[i];
 
 //        m_gl->glTexSubImage2D(GL_TEXTURE_2D,
 //                              0,
@@ -91,6 +92,7 @@ void Particles::setBufferValue(int index, glm::vec3 position, float size)
 
 void Particles::draw()
 {
+#ifndef PARTICLES
     Q_ASSERT(m_gl != NULL);
     m_gl->glEnable(GL_PROGRAM_POINT_SIZE);
 
@@ -119,4 +121,5 @@ void Particles::draw()
 
     m_smokeFx.use();
     glDrawArrays(GL_POINTS, 0, data.size());
+#endif
 }

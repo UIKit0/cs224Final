@@ -7,9 +7,10 @@
 #include <iostream>
 
 #include "scene/global.h"
+#include "graphics/program.h"
 
 #define GRID_SIZE 5
-#define UPDATE_RADIUS 1
+#define UPDATE_RADIUS 2
 #define TILE_SIZE 10
 #define NOISE_COORDINATE_RATIO 0.1f
 
@@ -29,8 +30,9 @@ struct VO{
 };
 
 struct Tile{
-    glm::vec3 terrain[TILE_SIZE][TILE_SIZE];
-    glm::vec3 normals[TILE_SIZE][TILE_SIZE];
+    // Overlap between tiles
+    glm::vec3 terrain[TILE_SIZE + 1][TILE_SIZE + 1];
+    glm::vec3 normals[TILE_SIZE + 1][TILE_SIZE + 1];
     VO vo;
 };
 
@@ -66,6 +68,7 @@ private:
     QList<VO> vos;
 
     GLFunctions *m_gl;
+    Program shader;
 };
 
 #endif // TERRAIN_H

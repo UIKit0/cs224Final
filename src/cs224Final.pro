@@ -97,7 +97,8 @@ RESOURCES += \
 
 OTHER_FILES += \
     $${RES}/shaders/contour.glsl \
-    $${RES}/shaders/smoke.glsl
+    $${RES}/shaders/smoke.glsl \
+    $${RES}/shaders/terrain.glsl
 
 # install shaders (todo: replace wrangler loading from rcc)
 extra.path += $${OUT_PWD}/shaders

@@ -191,12 +191,12 @@ void World::render(GLFunctions *gl)
     g_model.reset();
 
 #ifdef OLD_GL
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glLoadMatrixf(glm::value_ptr(g_camera.pMatrix));
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glLoadMatrixf(glm::value_ptr(g_camera.vMatrix));
+//    glMatrixMode(GL_PROJECTION);
+//    glLoadIdentity();
+//    glLoadMatrixf(glm::value_ptr(g_camera.pMatrix));
+//    glMatrixMode(GL_MODELVIEW);
+//    glLoadIdentity();
+//    glLoadMatrixf(glm::value_ptr(g_camera.vMatrix));
 
     // RENDER TERRAIN
     terrain.draw();

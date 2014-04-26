@@ -6,8 +6,8 @@ Terrain::Terrain()
     for (int i = 0; i < GRID_SIZE; i++){
         for (int j = 0; j < GRID_SIZE; j++){
             tiles[i][j] = new Tile();
-            for (int x = 0; x < TILE_SIZE; x++){
-                for (int y = 0; y <  TILE_SIZE; y++){
+            for (int x = 0; x < TILE_SIZE + 1; x++){
+                for (int y = 0; y <  TILE_SIZE + 1; y++){
                     glm::vec2 loc = glm::vec2(x + i*TILE_SIZE + originLocation[0], y + j*TILE_SIZE + originLocation[2]);
                     tiles[i][j]->terrain[x][y] = glm::vec3(x, 4.0f*glm::perlin(loc*NOISE_COORDINATE_RATIO), y);
                 }
@@ -26,23 +26,29 @@ Terrain::~Terrain(){
 
 void Terrain::initialize(GLFunctions *gl){
     m_gl = gl;
+    shader.initialize(gl, "../../../../res/shaders/");
+    shader.compile(GL_VERTEX_SHADER, "terrain.vertex");
+    shader.compile(GL_FRAGMENT_SHADER, "terrain.fragment");
+    shader.link();
 
     for (int i = 0; i < GRID_SIZE; i++){
         for (int j = 0; j < GRID_SIZE; j++){
             m_gl->glGenVertexArrays(1, &(tiles[i][j]->vo.vao));
-            m_gl->glGenBuffers(1, &(tiles[i][j]->vo.vbo));
-
             m_gl->glBindVertexArray(tiles[i][j]->vo.vao);
 
+            m_gl->glGenBuffers(1, &(tiles[i][j]->vo.vbo));
             updateVBO(i, j);
-            m_gl->glEnableVertexAttribArray(0);
             m_gl->glBindBuffer(GL_ARRAY_BUFFER, tiles[i][j]->vo.vbo);
-            m_gl->glVertexAttribPointer(0, sizeof(glm::vec3), GL_FLOAT, GL_FALSE, sizeof(glm::vec3), 0);
+            m_gl->glEnableVertexAttribArray(shader.attrib("position"));
+            m_gl->glVertexAttribPointer(shader.attrib("position"), 3, GL_FLOAT, GL_FALSE, sizeof(float)*3, 0);
 
-            m_gl->glBindBuffer(GL_ARRAY_BUFFER,0);
-            m_gl->glBindVertexArray(0);
+//            m_gl->glBindBuffer(GL_ARRAY_BUFFER,0);
+//            m_gl->glBindVertexArray(0);
         }
     }
+//    gl->glEnableVertexAttribArray(m_goochFx.attrib("position"));
+//    gl->glVertexAttribPointer(m_goochFx.attrib("position"), 3, GL_FLOAT, GL_FALSE, sizeof(MeshBuffer), (const void *) offset);
+
 }
 
 void Terrain::updateVBO(int i, int j){
@@ -51,22 +57,53 @@ void Terrain::updateVBO(int i, int j){
         tile->vo = vos.front();
         vos.pop_front();
     }
+    float data[TILE_SIZE*TILE_SIZE*3*3];
+    for (int x = 0; x < TILE_SIZE; x++){
+        for (int z = 0; z < TILE_SIZE; z++){
+
+            int base = (x*TILE_SIZE + z)*3*3;
+            data[base + 0] = x;
+            data[base + 1] = tile->terrain[x][z][1];
+            data[base + 2] = z;
+
+            data[base + 3] = x;
+            data[base + 4] = tile->terrain[x][z + 1][1];
+            data[base + 5] = z + 1;
+
+            data[base + 6] = x + 1;
+            data[base + 7] = tile->terrain[x + 1][z + 1][1];
+            data[base + 8] = z + 1;
+        }
+    }
     m_gl->glBindBuffer(GL_ARRAY_BUFFER, tile->vo.vbo);
     m_gl->glBufferData(GL_ARRAY_BUFFER,
-                       sizeof(glm::vec3) * TILE_SIZE * TILE_SIZE, tile->terrain,
-                       GL_STATIC_DRAW);
-    m_gl->glBindBuffer(GL_ARRAY_BUFFER, 0);
+                       sizeof(float) * TILE_SIZE * TILE_SIZE * 3 * 3, data,
+                       GL_DYNAMIC_DRAW);
 }
 
 void Terrain::draw(){
-    glPushMatrix();
-    glTranslatef(originLocation[0], originLocation[1], originLocation[2]);
-    glColor3f(0.0f, 0.0f, 0.1f);
+//    glPushMatrix();
+//    glTranslatef(originLocation[0], originLocation[1], originLocation[2]);
+//    glColor3f(0.0f, 0.0f, 0.1f);
     for (int i = 0; i < GRID_SIZE; i++){
         for (int j = 0; j < GRID_SIZE; j++){
+            if (tiles[i][j] == NULL)
+                continue;
+            g_model.pushMatrix();
+            g_model.mMatrix = glm::translate(g_model.mMatrix, originLocation + glm::vec3(i*TILE_SIZE, 0, j*TILE_SIZE));
+
             m_gl->glBindVertexArray(tiles[i][j]->vo.vao);
-            m_gl->glDrawArrays(GL_POINTS, 0, sizeof(glm::vec3)*TILE_SIZE*TILE_SIZE);
-            m_gl->glBindVertexArray(0);
+            m_gl->glBindBuffer(GL_ARRAY_BUFFER, tiles[i][j]->vo.vbo);
+
+            m_gl->glUseProgram(shader.program());
+
+            m_gl->glUniformMatrix4fv(shader.uniform("proj_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix));
+            m_gl->glUniformMatrix4fv(shader.uniform("mv_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix*g_model.mMatrix));
+
+            m_gl->glDrawArrays(GL_TRIANGLES, 0, TILE_SIZE*TILE_SIZE*3*3);
+
+//            g_model.mMatrix = glm::translate(g_model.mMatrix, -originLocation);
+            g_model.popMatrix();
         }
     }
 //    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -88,7 +125,7 @@ void Terrain::draw(){
 //        glEnd();
 //    }
 //    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    glPopMatrix();
+//    glPopMatrix();
 }
 
 void Terrain::shiftTiles(int sx, int sy){
@@ -180,8 +217,8 @@ void Terrain::update(float seconds, glm::vec3 playerLocation){
         tiles[u.ix][u.iy] = new Tile();
         tiles[u.ix][u.iy]->vo.vao = 0;
         tiles[u.ix][u.iy]->vo.vbo = 0;
-        for (int x = 0; x < TILE_SIZE; x++){
-            for (int y = 0; y <  TILE_SIZE; y++){
+        for (int x = 0; x < TILE_SIZE + 1; x++){
+            for (int y = 0; y <  TILE_SIZE + 1; y++){
                 glm::vec2 loc = glm::vec2(x + u.ix*TILE_SIZE + originLocation[0], y + u.iy*TILE_SIZE + originLocation[2]);
                 tiles[u.ix][u.iy]->terrain[x][y] = glm::vec3(x, 4.0f*glm::perlin(loc*NOISE_COORDINATE_RATIO), y);
             }

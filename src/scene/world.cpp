@@ -1,8 +1,5 @@
 #include "world.h"
 
-//#define DEBUG_TEST_TRIANGLE
-//#define PARTICLES
-
 World::World()
     : sphereMesh("cube.obj")
     , m_mesh("monkey2.obj")
@@ -96,15 +93,19 @@ void World::initialize(GLFunctions *gl)
     // camera
     g_camera.setAspectRatio((float)m_screenWidth/m_screenHeight);
 
-//    terrain.initialize(gl);
+#ifdef TERRAIN
+    terrain.initialize(gl);
+#endif
 
+#ifdef PARTICLES
     BasicSmokeEmitter *emitter = new BasicSmokeEmitter(m_world_id, space, m);
     emitter->initialize(gl, 2000);
     emitter->maxInitialVel = glm::vec3(0.5f, 2.0f, 0.5f);
     emitter->minInitialVel = glm::vec3(-0.5f, 0.5f, -0.5f);
     emitters.append(emitter);
+#endif
 
-#ifdef DEBUG_TEST_TRIANGLE
+#ifdef DEBUG_TRIANGLE
     //    m_goochFx.initialize(gl, "../../../../res/shaders/");
     m_goochFx.initialize(gl, "../res/shaders/");
     m_goochFx.compile(GL_VERTEX_SHADER, "contour.vertex.debug");
@@ -116,6 +117,7 @@ void World::initialize(GLFunctions *gl)
     gl->glBindVertexArray(vertexArray);
 #endif
 
+#ifdef CONTOUR
     m_goochFx.initialize(gl, "../res/shaders/");
     m_goochFx.compile(GL_VERTEX_SHADER, "contour.vertex");
     m_goochFx.compile(GL_FRAGMENT_SHADER, "contour.fragment");
@@ -180,17 +182,18 @@ void World::initialize(GLFunctions *gl)
 
 //    gl->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(MeshBuffer), (void *)offsetof(MeshBuffer, texcoord));
 //    gl->glEnableVertexAttribArray(m_goochFx.attrib("texcoord"));
-
+#endif
 }
 
 void World::render(GLFunctions *gl)
 {
     g_model.reset();
 
-//    terrain.draw();
+#ifdef TERRAIN
+    terrain.draw();
+#endif
 
-    // RENDER PARTICLES
-
+#ifdef CONTOUR
     gl->glBindVertexArray(m_vao);
     gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
 
@@ -208,39 +211,33 @@ void World::render(GLFunctions *gl)
 
     gl->glDrawArrays(GL_TRIANGLES, 0, m_mesh.triangles.size() * 3);
 
+#endif
+
+#ifdef PARTICLES
     for (int i = 0; i < emitters.size(); i++){
         emitters[i]->draw();
     }
+#endif
 
-#ifdef DEBUG_TEST_TRIANGLE
+#ifdef DEBUG_TRIANGLE
     gl->glUseProgram(m_goochFx.program());
     gl->glDrawArrays(GL_TRIANGLES, 0, 3);
 #endif
-
 }
 
 void World::update(float seconds)
 {
     g_camera.update(seconds);
 
-    // PARTICLES
+#ifdef TERRAIN
+    terrain.update(seconds, g_camera.m_position);
+#endif
 
-    // Upwards force
-//    dSpaceCollide(space, this, nearCallback);
-//    sphere.update(seconds);
-
-//    terrain.update(seconds, g_camera.m_position);
-
+#ifdef PARTICLES
     for (int i = 0; i < emitters.size(); i++){
         emitters[i]->update(seconds);
     }
-
-//    float angle = atan2(circlingEmitter->location[2], circlingEmitter->location[0]);
-//    if (angle < 0)
-//        angle = M_PI*2 + angle;
-
-//    circlingEmitter->location = glm::vec3(30*cos(angle + 0.02f), 0, 30*sin(angle + 0.02f));
-//    circlingEmitter->update(seconds);
+#endif
 
     dWorldQuickStep(m_world_id, 1/30.0f);
 //    dJointGroupEmpty(contactgroup);

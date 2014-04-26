@@ -114,27 +114,27 @@ void World::initialize(GLFunctions *gl)
     GLuint vertexArray;
     gl->glGenVertexArrays(1, &vertexArray);
     gl->glBindVertexArray(vertexArray);
-#else
-#ifndef PARTICLES
+#endif
+
     m_goochFx.initialize(gl, "../res/shaders/");
     m_goochFx.compile(GL_VERTEX_SHADER, "contour.vertex");
     m_goochFx.compile(GL_FRAGMENT_SHADER, "contour.fragment");
 //    m_goochFx.compile(GL_GEOMETRY_SHADER, "contour.geometry");
     m_goochFx.link();
 
-    QHash<QPair<int,int>, Adjacent> edgeMap;
-    for(Obj::Triangle tri : m_mesh.triangles) {
-        for (int i = 0; i < 3; ++i) {
-            int ia = tri.indices[i].vertex;
-            int ib = tri.indices[(i + 1) % 3].vertex;
-            QPair<int, int> p(qMin(ia, ib), qMax(ia, ib));
-            if (!edgeMap.contains(p)) {
+//    QHash<QPair<int,int>, Adjacent> edgeMap;
+//    for(Obj::Triangle tri : m_mesh.triangles) {
+//        for (int i = 0; i < 3; ++i) {
+//            int ia = tri.indices[i].vertex;
+//            int ib = tri.indices[(i + 1) % 3].vertex;
+//            QPair<int, int> p(qMin(ia, ib), qMax(ia, ib));
+//            if (!edgeMap.contains(p)) {
 //                edgeMap.insert(p, )
-            } else {
+//            } else {
 
-            }
-        }
-    }
+//            }
+//        }
+//    }
 
     // TODO: move to a obj / buffer class
     GLuint meshSize = m_mesh.triangles.size() * 3;
@@ -180,8 +180,7 @@ void World::initialize(GLFunctions *gl)
 
 //    gl->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(MeshBuffer), (void *)offsetof(MeshBuffer, texcoord));
 //    gl->glEnableVertexAttribArray(m_goochFx.attrib("texcoord"));
-#endif
-#endif
+
 }
 
 void World::render(GLFunctions *gl)

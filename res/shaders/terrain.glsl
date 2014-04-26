@@ -1,4 +1,4 @@
-Smoke Shading
+Terrain Shading
 
 -- vertex ---------------------------------------
 

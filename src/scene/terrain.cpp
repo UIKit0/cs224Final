@@ -27,6 +27,7 @@ Terrain::~Terrain(){
 void Terrain::initialize(GLFunctions *gl){
     m_gl = gl;
     shader.initialize(gl, "../../../../res/shaders/");
+//    shader.initialize(gl, "../res/shaders/");
     shader.compile(GL_VERTEX_SHADER, "terrain.vertex");
     shader.compile(GL_FRAGMENT_SHADER, "terrain.fragment");
     shader.link();
@@ -100,7 +101,7 @@ void Terrain::draw(){
             m_gl->glUniformMatrix4fv(shader.uniform("proj_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix));
             m_gl->glUniformMatrix4fv(shader.uniform("mv_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix*g_model.mMatrix));
 
-            m_gl->glDrawArrays(GL_TRIANGLES, 0, TILE_SIZE*TILE_SIZE*3*3);
+            m_gl->glDrawArrays(GL_LINES, 0, TILE_SIZE*TILE_SIZE*3*3);
 
 //            g_model.mMatrix = glm::translate(g_model.mMatrix, -originLocation);
             g_model.popMatrix();

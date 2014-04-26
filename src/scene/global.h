@@ -11,11 +11,15 @@ typedef QOpenGLFunctions_4_1_Core GLFunctions;
 typedef QOpenGLFunctions_2_0 GLFunctions;
 #endif
 
-#define PARTICLES
-#define CONTOUR
-//#define TERRAIN
+// use this to check if u have problems with opengl
+// it should display a blue triangle
+//#define DEBUG_TRIANGLE
 
-#define DEBUG_TRIANGLE
+#ifndef DEBUG_TRIANGLE
+    #define PARTICLES
+    #define CONTOUR
+    #define TERRAIN
+#endif
 
 #include "matrixstack.h"
 #include "camera.h"

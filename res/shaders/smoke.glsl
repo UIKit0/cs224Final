@@ -68,11 +68,20 @@ void main(void)
 
 -- fragment.point ---------------------------------------
 
+uniform sampler2D tex_alpha;
 uniform sampler2D tex_color;
 uniform sampler2D tex_depth;
 uniform sampler2D tex_norm;
 
-vec4 lightPos;
+
+uniform vec3 Ld = vec3(1.0,1.0,1.0);
+uniform vec3 LightPosition;
+
+float granularity = 3.0;
+float invGranularity = 1.0/granularity;
+
+
+uniform mat4 V_Matrix;
 
 //in V_OUT
 //{
@@ -83,53 +92,19 @@ out vec4 color;
 
 void main(void)
 {
+    vec4 alpha = texture(tex_alpha, gl_PointCoord);
+    vec4 shade = texture(tex_color, gl_PointCoord);
+    vec4 depth = texture(tex_depth, gl_PointCoord);
+    vec4 normal = texture(tex_norm, gl_PointCoord);
 
-    color = texture(tex_color, gl_PointCoord) * vec4(0.8, 0.8, 0.8, 0.2);
-//    color = vec4(1.0,0,0,1.0);
-}
-
-
--- fragment.depth ---------------------------------------
-
-// Depth altering smoke shader
-// Fragment
-
-in vec2 TexCoord;
-uniform mat4 V_Matrix;
-
-uniform sampler2D AlphaMap;
-uniform sampler2D DepthMap;
-uniform sampler2D NormalMap;
-uniform sampler2D TexMap;
-
-uniform vec3 Ld = vec3(1.0,1.0,1.0);
-uniform vec3 LightPosition = vec3(0.0f, 0.0f, 2.0f);
-
-vec3 ambLight;
-vec3 difLight;
-vec3 specLight;
-
-float granularity = 3.0;
-float invGranularity = 1.0/granularity;
-float depth;
-
-vec4 lightPos;
-
-out vec4 FragColor;
-
-void main()
-{
     // Calculate the light position
-    lightPos = V_Matrix*vec4(-LightPosition.xyz,0);
+    vec4 lightPos = V_Matrix*vec4(LightPosition.xyz,1);
 
     // Retrieve and unpack the normal vector from the billboard
-    vec4 Normal = texture(tex_norm, gl_PointCoord);
+    vec4 Normal = normal;
     Normal.x = (Normal.x * 2.0) - 1.0;
     Normal.y = (Normal.y * 2.0) - 1.0;
     Normal.z = (Normal.z * 2.0) - 1.0;
-
-    // Retrieve depth info
-    depth = texture(tex_depth, gl_PointCoord).x - 0.5;
 
     // Calculate lighting
     vec3 n = normalize(Normal.xyz);
@@ -138,15 +113,13 @@ void main()
     float toonDif = floor(difDot * granularity) * invGranularity;
 
     // Color the pixel
-    vec4 color = texture(tex_color, gl_PointCoord);
-    float alpha = color.w;
-    vec3 Kd = color.xyz;
-    ambLight = Ld*Kd;
-    difLight = Ld*(Kd*toonDif);
-    specLight = vec3(0);
+    vec3 Kd = shade.xyz * vec3(0.9,0.9,0);
+    vec3 ambLight = Ld*Kd;
+    vec3 difLight = Ld*(Kd*toonDif);
 
-    FragColor = vec4(ambLight + difLight + specLight, alpha);
+    color = vec4(ambLight + difLight, alpha.x);
 
     // Modify the depth according the texture values
-    gl_FragDepth = gl_FragCoord.z + depth;
+    float d = depth.x - 0.5;
+    gl_FragDepth = gl_FragCoord.z + d;
 }

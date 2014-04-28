@@ -22,7 +22,6 @@ public:
     void setBufferSize(int size);
     virtual void draw();
 
-    Program m_smokeFx;
 
     struct ParticleBuffer {
         glm::vec3 position;
@@ -32,19 +31,24 @@ public:
 private:
     GLFunctions *m_gl;
 
+    Program m_smokeFx;
+
     GLint m_sizeAttrib;
     GLint m_posAttrib;
+
     GLuint m_projUniform;
+    GLuint m_viewUniform;
     GLuint m_mvUniform;
+
+    GLuint m_lightUniform;
 
     GLuint m_buffer;
     GLuint m_vao;
 
     int m_maxParticles;
 
-
-    GLuint texHandles[4];
-
+    GLuint m_texID[4];
+    GLuint m_texUniform[4];
 
     QVector<ParticleBuffer> data;
 };

@@ -43,13 +43,13 @@ void Camera::mouseRotation(glm::vec2 delta)
 //    if (m_rotation.x < 0) m_rotation.x += 360;
 //    if (m_rotation.x >  360) m_rotation.x += -360;
 
-    if (m_rotation.y < -90) m_rotation.y = -89.9f;
-    if (m_rotation.y >  90) m_rotation.y =  89.9f;
+    if (m_rotation.y <= -89.9) m_rotation.y = -89.9f;
+    if (m_rotation.y >=  89.9) m_rotation.y =  89.9f;
 }
 
 void Camera::update(float seconds)
 {
-    glm::vec2 smoothRotation = glm::mix(m_lastRotation, m_rotation, 12.0f * seconds);
+    glm::vec2 smoothRotation = glm::mix(m_lastRotation, m_rotation, 2.0f * seconds);
     m_lastRotation = smoothRotation;
 
     float rotX = glm::radians(smoothRotation.x);
@@ -70,10 +70,11 @@ void Camera::update(float seconds)
         if (pressingLeft) m_position -= m_speed * seconds * cross;
         if (pressingRight) m_position += m_speed * seconds * cross;
     }
-    m_lookAt += m_position;
 
 //    std::cout << "pos: " << glm::to_string(m_position) << std::endl;
 //    std::cout << "loo: " << glm::to_string(m_rotation) << std::endl;
 
-    vMatrix = glm::lookAt(m_position, m_lookAt, m_up);
+    vMatrix = glm::lookAt(m_position - m_lookAt*3.0f, m_position, m_up);
+
+    m_lookAt += m_position;
 }

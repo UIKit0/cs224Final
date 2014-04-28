@@ -93,6 +93,7 @@ void World::initialize(GLFunctions *gl)
     // camera
     g_camera.setAspectRatio((float)m_screenWidth/m_screenHeight);
 
+    player.initialize(gl);
 #ifdef TERRAIN
     terrain.initialize(gl);
 #endif
@@ -106,7 +107,7 @@ void World::initialize(GLFunctions *gl)
 #endif
 
 #ifdef DEBUG_TRIANGLE
-    //    m_goochFx.initialize(gl, "../../../../res/shaders/");
+//        m_goochFx.initialize(gl, "../../../../res/shaders/");
     m_goochFx.initialize(gl, "../res/shaders/");
     m_goochFx.compile(GL_VERTEX_SHADER, "contour.vertex.debug");
     m_goochFx.compile(GL_FRAGMENT_SHADER, "contour.fragment.debug");
@@ -118,7 +119,8 @@ void World::initialize(GLFunctions *gl)
 #endif
 
 #ifdef CONTOUR
-    m_goochFx.initialize(gl, "../res/shaders/");
+//    m_goochFx.initialize(gl, "../res/shaders/");
+    m_goochFx.initialize(gl, "../../../../res/shaders/");
     m_goochFx.compile(GL_VERTEX_SHADER, "contour.vertex");
     m_goochFx.compile(GL_FRAGMENT_SHADER, "contour.fragment");
 //    m_goochFx.compile(GL_GEOMETRY_SHADER, "contour.geometry");
@@ -188,6 +190,7 @@ void World::initialize(GLFunctions *gl)
 void World::render(GLFunctions *gl)
 {
     g_model.reset();
+    player.draw();
 
 #ifdef TERRAIN
     terrain.draw();
@@ -230,6 +233,15 @@ void World::render(GLFunctions *gl)
 void World::update(float seconds)
 {
     g_camera.update(seconds);
+
+    player.facing = g_camera.m_lookAt - g_camera.m_position;
+    player.facing = glm::normalize(player.facing);
+    player.up = glm::vec3(0,1.0f,0);
+    player.left = glm::cross(player.up, player.facing);
+    player.left = glm::normalize(player.left);
+    player.location = g_camera.m_position;
+    player.rotation = g_camera.m_lastRotation;
+    player.roll = glm::mix(player.roll, g_camera.m_rotation[0] - g_camera.m_lastRotation[0], 0.1f);
 
 #ifdef TERRAIN
     terrain.update(seconds, g_camera.m_position);
@@ -308,7 +320,8 @@ void World::mousePressEvent(QMouseEvent *event)
 
 void World::mouseMoveEvent(QMouseEvent *event)
 {
-    Q_UNUSED(event);
+//    Q_UNUSED(event);
+    std::cout<<event->pos().x()<<" "<<event->pos().y()<<std::endl;
 }
 
 void World::mouseReleaseEvent(QMouseEvent *event)

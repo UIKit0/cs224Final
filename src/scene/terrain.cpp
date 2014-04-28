@@ -27,8 +27,8 @@ Terrain::~Terrain(){
 
 void Terrain::initialize(GLFunctions *gl){
     m_gl = gl;
-//    shader.initialize(gl, "../../../../res/shaders/");
-    shader.initialize(gl, "../res/shaders/");
+    shader.initialize(gl, "../../../../res/shaders/");
+//    shader.initialize(gl, "../res/shaders/");
     shader.compile(GL_VERTEX_SHADER, "terrain.vertex");
     shader.compile(GL_FRAGMENT_SHADER, "terrain.fragment");
     shader.link();

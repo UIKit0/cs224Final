@@ -25,6 +25,7 @@
 #include "particles/basicsmokeemitter.h"
 #include "particles/smoketrailemitter.h"
 #include "scene/terrain.h"
+#include "scene/player.h"
 
 extern void handleVortexCollision(Vortex *v, dBodyID pbody);
 extern void handleWindVolumeCollision(WindVolume *v, dBodyID pbody);
@@ -90,6 +91,8 @@ public:
     // Sphere that moves left and right through the smoke
     SolidObject sphere;
     Obj sphereMesh;
+
+    Player player;
 
     bool moveSphere;
     bool moveWing;

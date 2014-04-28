@@ -104,7 +104,9 @@ void World::initialize(GLFunctions *gl)
 #endif
 
 #ifdef CONTOUR
-    Obj mesh("monkey.obj");
+    // TODO: support multiple contour drawn meshes
+//    Obj mesh("monkey2.obj");
+    Obj mesh("cube.obj");
     m_contour.initialize(gl, mesh);
 #endif
 

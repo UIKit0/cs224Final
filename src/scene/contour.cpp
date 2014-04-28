@@ -20,19 +20,20 @@ void Contour::initialize(GLFunctions *gl, Obj &mesh)
 //    m_goochFx.compile(GL_GEOMETRY_SHADER, "contour.geometry");
     m_goochFx.link();
 
-//    QHash<QPair<int,int>, Adjacent> edgeMap;
-//    for(Obj::Triangle tri : mesh.triangles) {
-//        for (int i = 0; i < 3; ++i) {
-//            int ia = tri.indices[i].vertex;
-//            int ib = tri.indices[(i + 1) % 3].vertex;
-//            QPair<int, int> p(qMin(ia, ib), qMax(ia, ib));
-//            if (!edgeMap.contains(p)) {
-//                edgeMap.insert(p, )
-//            } else {
 
-//            }
-//        }
-//    }
+    QHash<QPair<int,int>, Adjacent> edgeMap;
+    for(Obj::Triangle tri : mesh.triangles) {
+        for (int i = 0; i < 3; ++i) {
+            int ia = tri.indices[i].vertex;
+            int ib = tri.indices[(i + 1) % 3].vertex;
+            QPair<int, int> p(qMin(ia, ib), qMax(ia, ib));
+            if (!edgeMap.contains(p)) {
+//                edgeMap.insert(p, )
+            } else {
+
+            }
+        }
+    }
 
     m_meshSize = mesh.triangles.size() * 3;
     QVector<MeshBuffer> data;

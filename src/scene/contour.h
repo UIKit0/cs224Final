@@ -35,7 +35,8 @@ private:
 
     GLFunctions *m_gl;
     Program m_goochFx;
-    GLuint m_buffer;
+    GLuint m_bufferIndex;
+    GLuint m_bufferAttribs;
     GLuint m_vao;
 
 };

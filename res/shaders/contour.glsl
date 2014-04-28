@@ -10,6 +10,18 @@ void main(void)
     gl_Position = vertices[gl_VertexID];
 }
 
+-- vertex.debug2 -------------------------------------------------
+
+uniform mat4 proj_matrix;
+uniform mat4 mv_matrix;
+
+in vec3 position;
+
+void main(void)
+{
+    gl_Position = proj_matrix * mv_matrix * vec4(position, 1.0);
+}
+
 -- fragment.debug ------------------------------------------------
 
 out vec4 color;

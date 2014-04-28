@@ -22,6 +22,7 @@ void Particles::initialize(GLFunctions *gl, int maxParticles)
     m_smokeFx.compile(GL_VERTEX_SHADER, "smoke.vertex.point");
     m_smokeFx.compile(GL_FRAGMENT_SHADER, "smoke.fragment.point");
     m_smokeFx.link();
+    m_smokeFx.use();
 
     m_projUniform = m_smokeFx.uniform("proj_matrix");
     m_mvUniform = m_smokeFx.uniform("mv_matrix");
@@ -44,12 +45,33 @@ void Particles::initialize(GLFunctions *gl, int maxParticles)
     // Load textures
     int texNum = 4;
     QImage *textures[texNum];
-    textures[0] = new QImage(":/textures/smoke2.png");
+    textures[0] = new QImage(":/textures/smoke_alpha.png");
     textures[1] = new QImage(":/textures/smoke_color.png");
     textures[2] = new QImage(":/textures/smoke_depth.png");
     textures[3] = new QImage(":/textures/smoke_normal.png");
 
     m_gl->glGenTextures(texNum, texHandles);
+
+    GLint alphaLoc  = m_gl->glGetUniformLocation(m_smokeFx.program(), "tex_alpha");
+    GLint colorLoc  = m_gl->glGetUniformLocation(m_smokeFx.program(), "tex_color");
+    GLint depthLoc  = m_gl->glGetUniformLocation(m_smokeFx.program(), "tex_depth");
+    GLint normalLoc = m_gl->glGetUniformLocation(m_smokeFx.program(), "tex_norm");
+
+    m_gl->glUniform1i(alphaLoc,0);
+    m_gl->glUniform1i(colorLoc,1);
+    m_gl->glUniform1i(depthLoc,2);
+    m_gl->glUniform1i(normalLoc,3);
+
+    printf("alphaLoc:  %d\n",alphaLoc);
+    printf("colorLoc:  %d\n",colorLoc);
+    printf("depthLoc:  %d\n",depthLoc);
+    printf("normalLoc:  %d\n",normalLoc);
+
+    GLenum Tslots[4];
+    Tslots[0] = GL_TEXTURE0;
+    Tslots[1] = GL_TEXTURE1;
+    Tslots[2] = GL_TEXTURE2;
+    Tslots[3] = GL_TEXTURE3;
 
     for(int i = 0; i < texNum; i++)
     {
@@ -59,14 +81,12 @@ void Particles::initialize(GLFunctions *gl, int maxParticles)
             return;
         }
 
-        QImage img = textures[i]->convertToFormat(QImage::Format_RGBA8888);
-
+        m_gl->glActiveTexture(Tslots[i]);
         m_gl->glBindTexture(GL_TEXTURE_2D, texHandles[i]);
-
         m_gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
         m_gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
-        m_gl->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img.width(), img.height(),
-                     0, GL_RGBA, GL_UNSIGNED_BYTE, img.bits());
+        m_gl->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textures[i]->width(), textures[i]->height(),
+                     0, GL_RGBA, GL_UNSIGNED_BYTE, textures[i]->bits());
         delete textures[i];
     }
 }
@@ -90,30 +110,34 @@ void Particles::draw()
     Q_ASSERT(m_gl != NULL);
 
     m_gl->glEnable(GL_PROGRAM_POINT_SIZE);
+    m_gl->glUseProgram(m_smokeFx.program());
+    m_smokeFx.use();
 
+    // Update buffer
     m_gl->glBindVertexArray(m_vao);
     m_gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
-    m_gl->glBindTexture(GL_TEXTURE_2D,texHandles[0]);
-//    m_gl->glBindTexture(GL_TEXTURE_2D,texHandles[1]);
-//    m_gl->glBindTexture(GL_TEXTURE_2D,texHandles[2]);
-
-    // update buffer
     m_gl->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(ParticleBuffer) * data.size(), data.data());
 
-    m_gl->glUseProgram(m_smokeFx.program());
+    // Update camera info
     m_gl->glUniformMatrix4fv(m_projUniform, 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix));
     m_gl->glUniformMatrix4fv(m_mvUniform, 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix * g_model.mMatrix));
 
+    // Enable proper vertex attributes
     quintptr offset = 0;
-
     m_gl->glEnableVertexAttribArray(m_posAttrib);
     m_gl->glVertexAttribPointer(m_posAttrib, 3, GL_FLOAT, GL_FALSE, sizeof(ParticleBuffer), (const void *) offset);
-
     offset += sizeof(glm::vec3);
-
     m_gl->glEnableVertexAttribArray(m_sizeAttrib);
     m_gl->glVertexAttribPointer(m_sizeAttrib, 1, GL_FLOAT, GL_FALSE, sizeof(ParticleBuffer), (const void *) offset);
 
-    m_smokeFx.use();
+    // Bind textures
+    for(int i = 0; i < 4; i++)
+    {
+        m_gl->glActiveTexture(GL_TEXTURE0+i);
+        m_gl->glBindTexture(GL_TEXTURE_2D, texHandles[i]);
+    }
+
+
+
     glDrawArrays(GL_POINTS, 0, data.size());
 }

@@ -22,6 +22,8 @@ public:
     void setBufferSize(int size);
     virtual void draw();
 
+    Program m_smokeFx;
+
     struct ParticleBuffer {
         glm::vec3 position;
         GLfloat size;
@@ -40,7 +42,6 @@ private:
 
     int m_maxParticles;
 
-    Program m_smokeFx;
 
     GLuint texHandles[4];
 

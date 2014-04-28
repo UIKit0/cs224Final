@@ -201,6 +201,8 @@ void World::render(GLFunctions *gl)
 
     gl->glUniformMatrix4fv(m_goochFx.uniform("proj_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix));
     gl->glUniformMatrix4fv(m_goochFx.uniform("mv_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix));
+    gl->glUniformMatrix4fv(emitters[0]->m_smokeFx.uniform("V_Matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix));
+    gl->glUniform3f(emitters[0]->m_smokeFx.uniform("LightPosition"), 0.0f, 10.0f, 4.0f);
 
     gl->glUniform3f(m_goochFx.uniform("lightPos"), 0.0f, 10.0f, 4.0f);
     gl->glUniform3f(m_goochFx.uniform("surfaceColor"), 0.4f, 0.75f, 0.75f);

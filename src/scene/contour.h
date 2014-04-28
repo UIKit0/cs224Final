@@ -37,6 +37,7 @@ private:
     Program m_goochFx;
     GLuint m_buffer;
     GLuint m_vao;
+
 };
 
 #endif // CONTOUR_H

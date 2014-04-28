@@ -24,6 +24,8 @@ void Contour::initialize(GLFunctions *gl, Obj &mesh)
     QHash<QPair<int,int>, Adjacent> edgeMap;
     for(int i = 0; i < mesh.triangles.size(); ++i) {
         Obj::Triangle &tri = mesh.triangles[i];
+        qDebug() << "face(" << i << ")" << tri.a.vertex << tri.b.vertex << tri.c.vertex;
+
         for (int j = 0; j < 3; ++j) {
             int ia = tri.indices[j].vertex;
             int ib = tri.indices[(j + 1) % 3].vertex;
@@ -43,6 +45,28 @@ void Contour::initialize(GLFunctions *gl, Obj &mesh)
             }
         }
     }
+
+
+    // generate triangle adjecency index
+    QVector<int> adjIndex;
+    for(int i = 0; i < mesh.triangles.size(); ++i) {
+        Obj::Triangle &tri = mesh.triangles[i];
+
+        for (int j = 0; j < 3; ++j) {
+            int ia = tri.indices[j].vertex;
+            int ib = tri.indices[(j + 1) % 3].vertex;
+
+            adjIndex.append(ia);
+
+            QPair<int, int> p(qMin(ia, ib), qMax(ia, ib));
+            if (edgeMap.contains(p)) {
+                Adjacent &adj = edgeMap[p];
+
+                adjIndex.append(adj.getAdjVertex(i));
+            }
+        }
+    }
+
 
     m_meshSize = mesh.triangles.size() * 3;
     QVector<MeshBuffer> data;

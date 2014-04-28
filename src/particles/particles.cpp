@@ -126,9 +126,9 @@ void Particles::draw()
     // Bind textures
     for(GLuint i = 0; i < 4; i++)
     {
+        m_gl->glUniform1i(m_texUniform[i], i);
         m_gl->glActiveTexture(GL_TEXTURE0+i);
         m_gl->glBindTexture(GL_TEXTURE_2D, m_texID[i]);
-        m_gl->glUniform1i(m_texUniform[i], i);
     }
 
     glDrawArrays(GL_POINTS, 0, data.size());

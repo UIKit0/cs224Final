@@ -15,11 +15,10 @@ typedef QOpenGLFunctions_2_0 GLFunctions;
 // it should display a blue triangle
 //#define DEBUG_TRIANGLE
 
-#define TERRAIN
-
 #ifndef DEBUG_TRIANGLE
-    #define PARTICLES
+//    #define PARTICLES
     #define CONTOUR
+//    #define TERRAIN
 #endif
 
 #include "matrixstack.h"

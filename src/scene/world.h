@@ -49,28 +49,6 @@ public:
     void mouseMoveEvent(QMouseEvent *event);
     void mouseMoveDelta(float deltaX, float deltaY);
 
-    struct MeshBuffer {
-        glm::vec3 position;
-        glm::vec3 normal;
-        glm::vec2 texcoord;
-
-//        MeshBuffer() {}
-//        MeshBuffer(glm::vec3 &pos, glm::vec3 &norm, glm::vec2 &tex) :
-//            position(pos), normal(norm), texcoord(tex) {}
-    };
-
-    struct Adjacent {
-        int face1;
-        int face2;
-        int getFace(int f) {
-            Q_ASSERT_X(f == face1 || f == face2, "adj struct", "bad face request");
-            if (f == face1)
-                return face1;
-            else
-                return face2;
-        }
-    };
-
 public:
 
     // PARTICLES
@@ -87,27 +65,15 @@ public:
 
     ParticleEmitter *circlingEmitter;
 
-    // Sphere that moves left and right through the smoke
-    SolidObject sphere;
-    Obj sphereMesh;
-
     bool moveSphere;
     bool moveWing;
 
     Terrain terrain;
 
 private:
-    Obj m_mesh;
 
     int m_screenWidth;
     int m_screenHeight;
-
-    GLuint m_buffer;
-    GLuint m_vao;
-//    GLuint m_vboIds[2];
-
-    Program m_goochFx;
-
 
     GLuint m_posAttr;
     GLuint m_texAttr;
@@ -115,8 +81,9 @@ private:
     GLuint m_textureUniform;
     GLuint m_texture;
 
-    // Camera
-//    Camera m_camera;
+#ifdef DEBUG_TRIANGLE
+    Program m_debugFx;
+#endif
 };
 
 #endif // WORLD_H

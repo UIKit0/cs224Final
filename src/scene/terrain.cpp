@@ -9,7 +9,7 @@ Terrain::Terrain()
             for (int x = 0; x < TILE_SIZE + 1; x++){
                 for (int y = 0; y <  TILE_SIZE + 1; y++){
                     glm::vec2 loc = glm::vec2(x + i*TILE_SIZE + originLocation[0], y + j*TILE_SIZE + originLocation[2]);
-                    tiles[i][j]->terrain[x][y] = glm::vec3(x, 4.0f*glm::perlin(loc*NOISE_COORDINATE_RATIO), y);
+                    tiles[i][j]->terrain[x][y] = glm::vec3(x, noise(loc), y);
                 }
             }
             addObjects(i, j);
@@ -83,6 +83,10 @@ void Terrain::initialize(GLFunctions *gl){
     m_gl->glVertexAttribPointer(shader.attrib("position"), 3, GL_FLOAT, GL_FALSE, sizeof(float)*3, 0);
 }
 
+float Terrain::noise(glm::vec2 loc){
+    return 4.0f*glm::perlin(loc*NOISE_COORDINATE_RATIO) + 0.5f*glm::perlin(loc*NOISE_COORDINATE_RATIO*5.0f) + 0.1f*glm::perlin(loc*NOISE_COORDINATE_RATIO*20.0f);
+}
+
 void Terrain::updateVBO(int i, int j){
     Tile* tile = tiles[i][j];
     if (tile->vo.vao == 0){
@@ -118,12 +122,13 @@ void Terrain::addObjects(int i, int j){
     for (int x = 1; x < TILE_SIZE; x++){
         for (int y = 1; y < TILE_SIZE; y++){
             float height = tile->terrain[x][y][1];
-            if (height > tile->terrain[x + 1][y][1]
+            if (height > 1.5f
+                    && height > tile->terrain[x + 1][y][1]
                     && height > tile->terrain[x + 1][y + 1][1]
+                    && height > tile->terrain[x + 1][y - 1][1]
                     && height > tile->terrain[x][y + 1][1]
-                    && height > tile->terrain[x + 1][y - 1][1]
                     && height > tile->terrain[x][y - 1][1]
-                    && height > tile->terrain[x + 1][y - 1][1]
+                    && height > tile->terrain[x - 1][y + 1][1]
                     && height > tile->terrain[x - 1][y][1]
                     && height > tile->terrain[x - 1][y - 1][1]){
 
@@ -149,7 +154,7 @@ void Terrain::draw(){
             m_gl->glUniformMatrix4fv(shader.uniform("proj_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix));
             m_gl->glUniformMatrix4fv(shader.uniform("mv_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix*g_model.mMatrix));
 
-            m_gl->glDrawArrays(GL_LINES, 0, TILE_SIZE*TILE_SIZE*3*3);
+            m_gl->glDrawArrays(GL_TRIANGLES, 0, TILE_SIZE*TILE_SIZE*3*3);
 
             g_model.popMatrix();
         }
@@ -270,7 +275,7 @@ void Terrain::update(float seconds, glm::vec3 playerLocation){
             for (int x = 0; x < TILE_SIZE + 1; x++){
                 for (int y = 0; y <  TILE_SIZE + 1; y++){
                     glm::vec2 loc = glm::vec2(x + u.ix*TILE_SIZE + originLocation[0], y + u.iy*TILE_SIZE + originLocation[2]);
-                    tiles[u.ix][u.iy]->terrain[x][y] = glm::vec3(x, 4.0f*glm::perlin(loc*NOISE_COORDINATE_RATIO), y);
+                    tiles[u.ix][u.iy]->terrain[x][y] = glm::vec3(x, noise(loc), y);
                 }
             }
             updateVBO(u.ix, u.iy);

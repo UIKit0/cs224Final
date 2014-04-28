@@ -13,7 +13,7 @@ typedef QOpenGLFunctions_2_0 GLFunctions;
 
 // use this to check if u have problems with opengl
 // it should display a blue triangle
-//#define DEBUG_TRIANGLE
+#define DEBUG_TRIANGLE
 
 #define TERRAIN
 

@@ -58,6 +58,7 @@ public:
     void draw();
 
 private:
+    float noise(glm::vec2 loc);
     void shiftTiles(int x, int y);
 
     Tile *tiles[GRID_SIZE][GRID_SIZE];

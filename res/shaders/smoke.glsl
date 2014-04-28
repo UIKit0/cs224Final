@@ -75,13 +75,13 @@ uniform sampler2D tex_norm;
 
 
 uniform vec3 Ld = vec3(1.0,1.0,1.0);
-uniform vec3 LightPosition;
+uniform vec3 lightPos;
 
 float granularity = 3.0;
 float invGranularity = 1.0/granularity;
 
 
-uniform mat4 V_Matrix;
+uniform mat4 view_matrix;
 
 //in V_OUT
 //{
@@ -98,7 +98,7 @@ void main(void)
     vec4 normal = texture(tex_norm, gl_PointCoord);
 
     // Calculate the light position
-    vec4 lightPos = V_Matrix*vec4(LightPosition.xyz,1);
+    vec4 tlightPos = view_matrix*vec4(lightPos.xyz,1);
 
     // Retrieve and unpack the normal vector from the billboard
     vec4 Normal = normal;
@@ -108,7 +108,7 @@ void main(void)
 
     // Calculate lighting
     vec3 n = normalize(Normal.xyz);
-    vec3 hitToLight = normalize(vec3(lightPos));
+    vec3 hitToLight = normalize(vec3(tlightPos));
     float difDot = max(dot(hitToLight,n),0.0);
     float toonDif = floor(difDot * granularity) * invGranularity;
 

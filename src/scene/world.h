@@ -24,7 +24,9 @@
 #include "particles/smokeparticle.h"
 #include "particles/basicsmokeemitter.h"
 #include "particles/smoketrailemitter.h"
+
 #include "scene/terrain.h"
+#include "scene/contour.h"
 
 extern void handleVortexCollision(Vortex *v, dBodyID pbody);
 extern void handleWindVolumeCollision(WindVolume *v, dBodyID pbody);
@@ -50,36 +52,27 @@ public:
     void mouseMoveDelta(float deltaX, float deltaY);
 
 public:
+    dJointGroupID contactgroup;
+    dWorldID m_world_id;
+
+private:
+    Terrain m_terrain;
+    Contour m_contour;
 
     // PARTICLES
+    QList<ParticleEmitter*> emitters;
+    ParticleEmitter *circlingEmitter;
     void toggleDrawVortices();
     void toggleMovingSphere();
-
-    // ODE stuff that is only created once per world
-    dWorldID m_world_id;
-    dSpaceID space;
-    dMass m;
-    dJointGroupID contactgroup;
-
-    QList<ParticleEmitter*> emitters;
-
-    ParticleEmitter *circlingEmitter;
-
     bool moveSphere;
     bool moveWing;
 
-    Terrain terrain;
-
-private:
+    // ODE stuff that is only created once per world
+    dSpaceID space;
+    dMass m;
 
     int m_screenWidth;
     int m_screenHeight;
-
-    GLuint m_posAttr;
-    GLuint m_texAttr;
-    GLuint m_matrixUniform;
-    GLuint m_textureUniform;
-    GLuint m_texture;
 
 #ifdef DEBUG_TRIANGLE
     Program m_debugFx;

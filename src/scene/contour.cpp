@@ -5,13 +5,15 @@ Contour::Contour()
 {
 }
 
-Contour::Contour(GLFunctions *gl)
+Contour::Contour(GLFunctions *gl, Obj &mesh)
 {
-
+    initialize(gl, mesh);
 }
 
 void Contour::initialize(GLFunctions *gl, Obj &mesh)
 {
+    m_gl = gl;
+
     m_goochFx.initialize(gl, "../res/shaders/");
     m_goochFx.compile(GL_VERTEX_SHADER, "contour.vertex");
     m_goochFx.compile(GL_FRAGMENT_SHADER, "contour.fragment");
@@ -19,7 +21,7 @@ void Contour::initialize(GLFunctions *gl, Obj &mesh)
     m_goochFx.link();
 
 //    QHash<QPair<int,int>, Adjacent> edgeMap;
-//    for(Obj::Triangle tri : m_mesh.triangles) {
+//    for(Obj::Triangle tri : mesh.triangles) {
 //        for (int i = 0; i < 3; ++i) {
 //            int ia = tri.indices[i].vertex;
 //            int ib = tri.indices[(i + 1) % 3].vertex;
@@ -32,21 +34,21 @@ void Contour::initialize(GLFunctions *gl, Obj &mesh)
 //        }
 //    }
 
-    // TODO: move to a obj / buffer class
-    GLuint meshSize = m_mesh.triangles.size() * 3;
+    m_meshSize = mesh.triangles.size() * 3;
     QVector<MeshBuffer> data;
-    data.reserve(meshSize);
+    data.reserve(m_meshSize);
 
-    for(Obj::Triangle tri : m_mesh.triangles) {
+    // TODO : add texture coords
+    for(Obj::Triangle tri : mesh.triangles) {
         MeshBuffer a;
-        a.position = m_mesh.vertices[tri.a.vertex];
-        a.normal = m_mesh.normals[tri.a.normal];
+        a.position = mesh.vertices[tri.a.vertex];
+        a.normal = mesh.normals[tri.a.normal];
         MeshBuffer b;
-        b.position = m_mesh.vertices[tri.b.vertex];
-        b.normal = m_mesh.normals[tri.b.normal];
+        b.position = mesh.vertices[tri.b.vertex];
+        b.normal = mesh.normals[tri.b.normal];
         MeshBuffer c;
-        c.position = m_mesh.vertices[tri.c.vertex];
-        c.normal = m_mesh.normals[tri.c.normal];
+        c.position = mesh.vertices[tri.c.vertex];
+        c.normal = mesh.normals[tri.c.normal];
 
         data.append(a);
         data.append(b);
@@ -60,7 +62,7 @@ void Contour::initialize(GLFunctions *gl, Obj &mesh)
 
     gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
 
-    gl->glBufferData(GL_ARRAY_BUFFER, sizeof(World::MeshBuffer) * data.size(), data.data(), GL_STATIC_DRAW);
+    gl->glBufferData(GL_ARRAY_BUFFER, sizeof(MeshBuffer) * data.size(), data.data(), GL_STATIC_DRAW);
 
     quintptr offset = 0;
 
@@ -80,20 +82,20 @@ void Contour::initialize(GLFunctions *gl, Obj &mesh)
 
 void Contour::draw()
 {
-    gl->glBindVertexArray(m_vao);
-    gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
+    m_gl->glBindVertexArray(m_vao);
+    m_gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
 
-    gl->glUseProgram(m_goochFx.program());
+    m_gl->glUseProgram(m_goochFx.program());
 
-    gl->glUniformMatrix4fv(m_goochFx.uniform("proj_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix));
-    gl->glUniformMatrix4fv(m_goochFx.uniform("mv_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix));
+    m_gl->glUniformMatrix4fv(m_goochFx.uniform("proj_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix));
+    m_gl->glUniformMatrix4fv(m_goochFx.uniform("mv_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix));
 
-    gl->glUniform3f(m_goochFx.uniform("lightPos"), 0.0f, 10.0f, 4.0f);
-    gl->glUniform3f(m_goochFx.uniform("surfaceColor"), 0.4f, 0.75f, 0.75f);
-    gl->glUniform3f(m_goochFx.uniform("warmColor"), 0.6f, 0.6f, 0.0f);
-    gl->glUniform3f(m_goochFx.uniform("coolColor"), 0.0f, 0.1f, 0.6f);
-    gl->glUniform1f(m_goochFx.uniform("diffuseWarm"), 0.45f);
-    gl->glUniform1f(m_goochFx.uniform("diffuseCool"), 0.15f);
+    m_gl->glUniform3f(m_goochFx.uniform("lightPos"), 0.0f, 10.0f, 4.0f);
+    m_gl->glUniform3f(m_goochFx.uniform("surfaceColor"), 0.4f, 0.75f, 0.75f);
+    m_gl->glUniform3f(m_goochFx.uniform("warmColor"), 0.6f, 0.6f, 0.0f);
+    m_gl->glUniform3f(m_goochFx.uniform("coolColor"), 0.0f, 0.1f, 0.6f);
+    m_gl->glUniform1f(m_goochFx.uniform("diffuseWarm"), 0.45f);
+    m_gl->glUniform1f(m_goochFx.uniform("diffuseCool"), 0.15f);
 
-    gl->glDrawArrays(GL_TRIANGLES, 0, m_mesh.triangles.size() * 3);
+    m_gl->glDrawArrays(GL_TRIANGLES, 0, m_meshSize);
 }

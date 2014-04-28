@@ -1,7 +1,7 @@
 #include "world.h"
 
 World::World()
-    , m_screenWidth(500)
+    : m_screenWidth(500)
     , m_screenHeight(500)
 {
     // Initialize ODE stuff
@@ -48,10 +48,10 @@ void World::toggleDrawVortices()
 
 void World::toggleMovingSphere()
 {
-    if (sphere.moving != 0)
-        sphere.stop();
-    else
-        sphere.start();
+//    if (sphere.moving != 0)
+//        sphere.stop();
+//    else
+//        sphere.start();
 }
 
 static void nearCallback(void* data, dGeomID o1, dGeomID o2)
@@ -92,7 +92,7 @@ void World::initialize(GLFunctions *gl)
     g_camera.setAspectRatio((float)m_screenWidth/m_screenHeight);
 
 #ifdef TERRAIN
-    terrain.initialize(gl);
+    m_terrain.initialize(gl);
 #endif
 
 #ifdef PARTICLES
@@ -104,7 +104,8 @@ void World::initialize(GLFunctions *gl)
 #endif
 
 #ifdef CONTOUR
-// TODO: initialize contour
+    Obj mesh("monkey.obj");
+    m_contour.initialize(gl, mesh);
 #endif
 
 #ifdef DEBUG_TRIANGLE
@@ -125,11 +126,11 @@ void World::render(GLFunctions *gl)
     g_model.reset();
 
 #ifdef TERRAIN
-    terrain.draw();
+    m_terrain.draw();
 #endif
 
 #ifdef CONTOUR
-// TODO: add contour draw
+    m_contour.draw();
 #endif
 
 #ifdef PARTICLES
@@ -149,7 +150,7 @@ void World::update(float seconds)
     g_camera.update(seconds);
 
 #ifdef TERRAIN
-    terrain.update(seconds, g_camera.m_position);
+    m_terrain.update(seconds, g_camera.m_position);
 #endif
 
 #ifdef PARTICLES

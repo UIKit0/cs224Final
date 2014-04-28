@@ -20,14 +20,14 @@ public:
     };
 
     struct Adjacent {
-        int face1;
-        int face2;
-        int getFace(int f) {
+        int face1 = -1; int vertex1 = -1;
+        int face2 = -1; int vertex2 = -1;
+        int getAdjVertex(int f) {
             Q_ASSERT_X(f == face1 || f == face2, "adj struct", "bad face request");
             if (f == face1)
-                return face1;
+                return vertex2;
             else
-                return face2;
+                return vertex1;
         }
     };
 private:

@@ -22,15 +22,24 @@ void Contour::initialize(GLFunctions *gl, Obj &mesh)
 
 
     QHash<QPair<int,int>, Adjacent> edgeMap;
-    for(Obj::Triangle tri : mesh.triangles) {
-        for (int i = 0; i < 3; ++i) {
-            int ia = tri.indices[i].vertex;
-            int ib = tri.indices[(i + 1) % 3].vertex;
+    for(int i = 0; i < mesh.triangles.size(); ++i) {
+        Obj::Triangle &tri = mesh.triangles[i];
+        for (int j = 0; j < 3; ++j) {
+            int ia = tri.indices[j].vertex;
+            int ib = tri.indices[(j + 1) % 3].vertex;
+            int ic = tri.indices[(j + 2) % 3].vertex;
+
             QPair<int, int> p(qMin(ia, ib), qMax(ia, ib));
             if (!edgeMap.contains(p)) {
-//                edgeMap.insert(p, )
+                Adjacent adj;
+                adj.face1 = i;
+                adj.vertex1 = ic;
+                edgeMap.insert(p, adj);
             } else {
-
+                Adjacent &adj = edgeMap[p];
+                Q_ASSERT(adj.face2 == -1);
+                adj.face2 = i;
+                adj.vertex2 = ic;
             }
         }
     }

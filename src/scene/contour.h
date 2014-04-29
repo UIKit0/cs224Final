@@ -4,6 +4,7 @@
 #include "graphics/program.h"
 #include "assets/obj.h"
 #include "scene/global.h"
+#include <QHash>
 
 class Contour
 {
@@ -28,6 +29,12 @@ public:
                 return vertex2;
             else
                 return vertex1;
+        }
+        int getFace(int f) {
+            if (f == face1)
+                return face2;
+            else
+                return face1;
         }
     };
 private:

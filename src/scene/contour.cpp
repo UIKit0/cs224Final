@@ -15,8 +15,8 @@ void Contour::initialize(GLFunctions *gl, Obj &mesh)
     m_gl = gl;
 
     m_goochFx.initialize(gl, "../res/shaders/");
-    m_goochFx.compile(GL_VERTEX_SHADER, "contour.vertex.debug2");
-    m_goochFx.compile(GL_FRAGMENT_SHADER, "contour.fragment.debug");
+    m_goochFx.compile(GL_VERTEX_SHADER, "contour.vertex");
+    m_goochFx.compile(GL_FRAGMENT_SHADER, "contour.fragment");
 //    m_goochFx.compile(GL_GEOMETRY_SHADER, "contour.geometry");
     m_goochFx.link();
 
@@ -25,7 +25,7 @@ void Contour::initialize(GLFunctions *gl, Obj &mesh)
     QHash<QPair<int,int>, Adjacent> edgeMap;
     for(int i = 0; i < mesh.triangles.size(); ++i) {
         Obj::Triangle &tri = mesh.triangles[i];
-        qDebug() << "face(" << i << ")" << tri.a.vertex << tri.b.vertex << tri.c.vertex;
+//        qDebug() << "face(" << i << ")" << tri.a.vertex << tri.b.vertex << tri.c.vertex;
 
         for (int j = 0; j < 3; ++j) {
             int ia = tri.indices[j].vertex;
@@ -47,6 +47,36 @@ void Contour::initialize(GLFunctions *gl, Obj &mesh)
         }
     }
 
+    QHash<QPair<int,int>, int> vertexId;
+    QVector<MeshBuffer> data;
+    data.reserve(m_meshSize);
+
+    // TODO : add texture coords
+    for(int i = 0; i < mesh.triangles.size(); ++i) {
+        Obj::Triangle &tri = mesh.triangles[i];
+        MeshBuffer a;
+        a.position = mesh.vertices[tri.a.vertex];
+        a.normal = mesh.normals[tri.a.normal];
+        MeshBuffer b;
+        b.position = mesh.vertices[tri.b.vertex];
+        b.normal = mesh.normals[tri.b.normal];
+        MeshBuffer c;
+        c.position = mesh.vertices[tri.c.vertex];
+        c.normal = mesh.normals[tri.c.normal];
+
+        data.append(a);
+        data.append(b);
+        data.append(c);
+//        qDebug() << "face" << i << tri.a.vertex;
+        QPair<int, int> ap(i, tri.a.vertex);
+        QPair<int, int> bp(i, tri.b.vertex);
+        QPair<int, int> cp(i, tri.c.vertex);
+        int index = data.size() - 1;
+        vertexId.insert(ap, index - 2);
+        vertexId.insert(bp, index - 1);
+        vertexId.insert(cp, index);
+    }
+
     // generate triangle adjecency index
     QVector<GLushort> adjIndex;
     for(int i = 0; i < mesh.triangles.size(); ++i) {
@@ -56,34 +86,49 @@ void Contour::initialize(GLFunctions *gl, Obj &mesh)
             int ia = tri.indices[j].vertex;
             int ib = tri.indices[(j + 1) % 3].vertex;
 
-            adjIndex.append(ia);
+            adjIndex.append((i * 3) + j);
 
             QPair<int, int> p(qMin(ia, ib), qMax(ia, ib));
             if (edgeMap.contains(p)) {
                 Adjacent &adj = edgeMap[p];
-                Q_ASSERT(adj.face2 != -1);
-                adjIndex.append(adj.getAdjVertex(i));
+//                Q_ASSERT(adj.face2 != -1);
+                if (adj.face2 != -1) {
+                    QPair<int, int> cp(adj.getFace(i), adj.getAdjVertex(i));
+                    adjIndex.append(vertexId[cp]);
+                } else {
+                    adjIndex.append((i * 3) + (j + 2) % 3);
+                }
             }
         }
     }
 
-    QDebug debug = qDebug();
-    for(int v : adjIndex) {
-       debug << v;
-    }
+//    QDebug debug = qDebug();
+//    for(int v : adjIndex) {
+//       debug << v;
+//    }
 
     gl->glGenVertexArrays(1, &m_vao);
     gl->glBindVertexArray(m_vao);
 
     m_gl->glGenBuffers(1, &m_bufferAttribs);
     m_gl->glBindBuffer(GL_ARRAY_BUFFER, m_bufferAttribs);
-    gl->glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * mesh.vertices.size(),
-                     mesh.vertices.data(), GL_STATIC_DRAW);
+    gl->glBufferData(GL_ARRAY_BUFFER, sizeof(MeshBuffer) * data.size(),
+                    data.data(), GL_STATIC_DRAW);
 
     quintptr offset = 0;
-    m_gl->glVertexAttribPointer(m_goochFx.attrib("position"), 3, GL_FLOAT, GL_FALSE,
-                                sizeof(glm::vec3), (const void *) offset);
-    m_gl->glEnableVertexAttribArray(m_goochFx.attrib("position"));
+
+    gl->glVertexAttribPointer(m_goochFx.attrib("position"), 3, GL_FLOAT, GL_FALSE, sizeof(MeshBuffer), (const void *) offset);
+    gl->glEnableVertexAttribArray(m_goochFx.attrib("position"));
+
+    offset += sizeof(glm::vec3);
+
+    gl->glVertexAttribPointer(m_goochFx.attrib("normal"), 3, GL_FLOAT, GL_FALSE, sizeof(MeshBuffer), (const void *) offset);
+    gl->glEnableVertexAttribArray(m_goochFx.attrib("normal"));
+
+    offset += sizeof(glm::vec3);
+
+    //    gl->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(MeshBuffer), (void *)offsetof(MeshBuffer, texcoord));
+    //    gl->glEnableVertexAttribArray(m_goochFx.attrib("texcoord"));
 
     m_gl->glGenBuffers(1, &m_bufferIndex);
     m_gl->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_bufferIndex);
@@ -93,13 +138,13 @@ void Contour::initialize(GLFunctions *gl, Obj &mesh)
     qDebug() << "mesh size:" << m_meshSize;
 
     // uniforms
-//    m_goochFx.use();
-//    m_gl->glUniform3f(m_goochFx.uniform("lightPos"), 0.0f, 10.0f, 4.0f);
-//    m_gl->glUniform3f(m_goochFx.uniform("surfaceColor"), 0.4f, 0.75f, 0.75f);
-//    m_gl->glUniform3f(m_goochFx.uniform("warmColor"), 0.6f, 0.6f, 0.0f);
-//    m_gl->glUniform3f(m_goochFx.uniform("coolColor"), 0.0f, 0.1f, 0.6f);
-//    m_gl->glUniform1f(m_goochFx.uniform("diffuseWarm"), 0.45f);
-//    m_gl->glUniform1f(m_goochFx.uniform("diffuseCool"), 0.15f);
+    m_goochFx.use();
+    m_gl->glUniform3f(m_goochFx.uniform("lightPos"), 0.0f, 10.0f, 4.0f);
+    m_gl->glUniform3f(m_goochFx.uniform("surfaceColor"), 0.4f, 0.75f, 0.75f);
+    m_gl->glUniform3f(m_goochFx.uniform("warmColor"), 0.6f, 0.6f, 0.0f);
+    m_gl->glUniform3f(m_goochFx.uniform("coolColor"), 0.0f, 0.1f, 0.6f);
+    m_gl->glUniform1f(m_goochFx.uniform("diffuseWarm"), 0.45f);
+    m_gl->glUniform1f(m_goochFx.uniform("diffuseCool"), 0.15f);
 }
 
 void Contour::draw()

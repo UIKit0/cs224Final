@@ -6,11 +6,12 @@ Terrain::Terrain()
 }
 
 Terrain::~Terrain(){
-    for (int i = 0; i < GRID_SIZE; i++){
-        for (int j = 0; j < GRID_SIZE; j++){
-            delete tiles[i][j];
-        }
-    }
+    // FIX: this causing issues when quitting (bad access)!
+//    for (int i = 0; i < GRID_SIZE; i++){
+//        for (int j = 0; j < GRID_SIZE; j++){
+//            delete tiles[i][j];
+//        }
+//    }
 }
 
 void Terrain::initialize(GLFunctions *gl){

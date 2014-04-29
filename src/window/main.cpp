@@ -19,6 +19,7 @@ int main(int argc, char *argv[])
 #endif
 
     window.show();
+//    window.showFullScreen();
     // will tick according to sreen refresh screen rate
     window.setAnimating(true);
 

@@ -44,11 +44,15 @@ void Particles::initialize(GLFunctions *gl, int maxParticles)
 
     // Load textures
     int texNum = 4;
-    QImage *textures[texNum];
-    textures[0] = new QImage(":/textures/smoke_alpha.png");
-    textures[1] = new QImage(":/textures/smoke_color.png");
-    textures[2] = new QImage(":/textures/smoke_depth.png");
-    textures[3] = new QImage(":/textures/smoke_normal.png");
+    QImage textures[texNum];
+    textures[0] = QImage(":/textures/smoke_alpha.png");
+    textures[0] = textures[0].convertToFormat(QImage::Format_RGBA8888);
+    textures[1] = QImage(":/textures/smoke_color.png");
+    textures[1] = textures[1].convertToFormat(QImage::Format_RGBA8888);
+    textures[2] = QImage(":/textures/smoke_depth.png");
+    textures[2] = textures[2].convertToFormat(QImage::Format_RGBA8888);
+    textures[3] = QImage(":/textures/smoke_normal.png");
+    textures[3] = textures[3].convertToFormat(QImage::Format_RGBA8888);
 
     m_gl->glGenTextures(texNum, texHandles);
 
@@ -75,7 +79,7 @@ void Particles::initialize(GLFunctions *gl, int maxParticles)
 
     for(int i = 0; i < texNum; i++)
     {
-        if (textures[i]->isNull())
+        if (textures[i].isNull())
         {
             qCritical("Unable to load texture!");
             return;
@@ -83,11 +87,14 @@ void Particles::initialize(GLFunctions *gl, int maxParticles)
 
         m_gl->glActiveTexture(Tslots[i]);
         m_gl->glBindTexture(GL_TEXTURE_2D, texHandles[i]);
-        m_gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
-        m_gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
-        m_gl->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textures[i]->width(), textures[i]->height(),
-                     0, GL_RGBA, GL_UNSIGNED_BYTE, textures[i]->bits());
-        delete textures[i];
+//        m_gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
+//        m_gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+        m_gl->glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        m_gl->glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        m_gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        m_gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        m_gl->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textures[i].width(), textures[i].height(),
+                     0, GL_RGBA, GL_UNSIGNED_BYTE, textures[i].bits());
     }
 }
 
@@ -131,9 +138,14 @@ void Particles::draw()
     m_gl->glVertexAttribPointer(m_sizeAttrib, 1, GL_FLOAT, GL_FALSE, sizeof(ParticleBuffer), (const void *) offset);
 
     // Bind textures
+    GLenum Tslots[4];
+    Tslots[0] = GL_TEXTURE0;
+    Tslots[1] = GL_TEXTURE1;
+    Tslots[2] = GL_TEXTURE2;
+    Tslots[3] = GL_TEXTURE3;
     for(int i = 0; i < 4; i++)
     {
-        m_gl->glActiveTexture(GL_TEXTURE0+i);
+        m_gl->glActiveTexture(Tslots[i]);
         m_gl->glBindTexture(GL_TEXTURE_2D, texHandles[i]);
     }
 

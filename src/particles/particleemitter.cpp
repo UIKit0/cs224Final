@@ -23,10 +23,12 @@ void ParticleEmitter::draw(){
 //    glEnable(GL_TEXTURE_2D);
 //    glBindTexture(GL_TEXTURE_2D, sprites);
 
-    glDepthMask(GL_FALSE);
+    //glDepthMask(GL_FALSE);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_MULTISAMPLE);
+    glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 
     Particles::draw();
 
@@ -43,7 +45,7 @@ void ParticleEmitter::draw(){
 }
 
 void ParticleEmitter::update(float seconds){
-    time += seconds;
+    time += seconds*0.1;
     updateParticles();
     updateVortices();
 

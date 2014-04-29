@@ -52,6 +52,9 @@ in float size;
 //{
 
 //} v_out;
+
+out vec4 cs_position;
+
 void main(void)
 {
     vec4 pos = proj_matrix * mv_matrix * vec4(position, 1.0);
@@ -62,6 +65,7 @@ void main(void)
         distance = pos.w;
     }
 
+    cs_position = mv_matrix * vec4(position, 1.0);
     gl_Position = pos;
     gl_PointSize = (size * SCALE) / distance;
 }
@@ -77,18 +81,28 @@ uniform sampler2D tex_norm;
 uniform vec3 Ld = vec3(1.0,1.0,1.0);
 uniform vec3 LightPosition;
 
-float granularity = 3.0;
+float granularity = 4.0;
 float invGranularity = 1.0/granularity;
 
-
+uniform mat4 proj_matrix;
 uniform mat4 V_Matrix;
+
+uniform float zNear = 0.1;
+uniform float zFar = 100.0;
 
 //in V_OUT
 //{
 
 //} f_in;
 
+in vec4 cs_position;
+
 out vec4 color;
+
+float lum(vec3 v)
+{
+    return 0.2126*v.x + 0.7152*v.y + 0.0722*v.z;
+}
 
 void main(void)
 {
@@ -98,28 +112,27 @@ void main(void)
     vec4 normal = texture(tex_norm, gl_PointCoord);
 
     // Calculate the light position
-    vec4 lightPos = V_Matrix*vec4(LightPosition.xyz,1);
-
-    // Retrieve and unpack the normal vector from the billboard
-    vec4 Normal = normal;
-    Normal.x = (Normal.x * 2.0) - 1.0;
-    Normal.y = (Normal.y * 2.0) - 1.0;
-    Normal.z = (Normal.z * 2.0) - 1.0;
+    vec4 lightPos = V_Matrix*vec4(LightPosition,1);
 
     // Calculate lighting
-    vec3 n = normalize(Normal.xyz);
-    vec3 hitToLight = normalize(vec3(lightPos));
+    vec3 n = normalize(normal.xyz);
+    vec3 hitToLight = normalize(vec3(lightPos-cs_position));
     float difDot = max(dot(hitToLight,n),0.0);
     float toonDif = floor(difDot * granularity) * invGranularity;
 
     // Color the pixel
-    vec3 Kd = shade.xyz * vec3(0.9,0.9,0);
-    vec3 ambLight = Ld*Kd;
+    vec3 Kd = shade.xyz;
+    vec3 ambLight = Ld*Kd*0.1;
     vec3 difLight = Ld*(Kd*toonDif);
 
-    color = vec4(ambLight + difLight, alpha.x);
+    float a = lum(alpha.xyz);
+    color = vec4(ambLight + difLight, a);
 
     // Modify the depth according the texture values
-    float d = depth.x - 0.5;
-    gl_FragDepth = gl_FragCoord.z + d;
+    float d = lum(depth.xyz);
+    vec4 cameraCoords = cs_position;
+    cameraCoords.z -= 4*(1-d);
+    vec4 clipcoords = proj_matrix * cameraCoords;
+    vec4 ndCoords = vec4((clipcoords.xyz)/clipcoords.w,0);
+    gl_FragDepth = ndCoords.z;
 }

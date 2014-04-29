@@ -1,11 +1,19 @@
 #include "player.h"
 
-Player::Player()
+Player::Player(dWorldID w, dSpaceID s, dMass m, Terrain *t) :
+    up(0,1.0f,0),
+    roll(0),
+    terrain(t)
 {
+    world = w;
+    space = s;
+    mass = m;
+    timer = 0;
 }
 
 void Player::initialize(GLFunctions *gl){
     m_gl = gl;
+    // TODO: load model
     shader.initialize(gl, "../../../../res/shaders/");
 //    shader.initialize(gl, "../res/shaders/");
     shader.compile(GL_VERTEX_SHADER, "terrain.vertex");
@@ -40,11 +48,19 @@ void Player::initialize(GLFunctions *gl){
 
 void Player::draw(){
     g_model.pushMatrix();
-    g_model.mMatrix = glm::translate(g_model.mMatrix, location - glm::cross(facing, left));
+    // Translate to location
+    g_model.mMatrix = glm::translate(g_model.mMatrix, location - 1.5f*glm::cross(facing, left));
+
+    // A little extra rotation depending on how much the plane is turning
+    g_model.mMatrix = glm::rotate(g_model.mMatrix, -glm::radians(roll/3.0f), up);
+    // Rolling effect
     g_model.mMatrix = glm::rotate(g_model.mMatrix, glm::radians(roll), facing);
+
+    // Initial orientation
     g_model.mMatrix = glm::rotate(g_model.mMatrix, -glm::radians(rotation[0]), up);
     g_model.mMatrix = glm::rotate(g_model.mMatrix, glm::radians(rotation[1]), glm::vec3(0,0,1.0f));
 
+    // TODO: draw model
     m_gl->glBindVertexArray(object_vao);
     m_gl->glBindBuffer(GL_ARRAY_BUFFER, object_vbo);
 
@@ -52,7 +68,76 @@ void Player::draw(){
 
     m_gl->glUniformMatrix4fv(shader.uniform("proj_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix));
     m_gl->glUniformMatrix4fv(shader.uniform("mv_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix*g_model.mMatrix));
+    m_gl->glUniform3fv(shader.uniform("terrain_color"), 1, glm::value_ptr(glm::vec3(0.0f,0.0f,0.0f)));
 
     m_gl->glDrawArrays(GL_TRIANGLES, 0, 3*3);
+
     g_model.popMatrix();
+    // Draw bullets
+    for (int i = 0; i < bullets.size(); i++){
+        // TODO: draw
+        const dReal *l = dBodyGetPosition(bullets[i]->body);
+        glm::vec3 loc(l[0], l[1], l[2]);
+
+        g_model.pushMatrix();
+
+        // Translate to location
+        g_model.mMatrix = glm::translate(g_model.mMatrix, loc);
+
+        // Vertical triangles
+        g_model.mMatrix = glm::scale(g_model.mMatrix, glm::vec3(0.2f,0.2f,0.2f));
+
+        m_gl->glBindVertexArray(object_vao);
+        m_gl->glBindBuffer(GL_ARRAY_BUFFER, object_vbo);
+
+        m_gl->glUseProgram(shader.program());
+
+        m_gl->glUniformMatrix4fv(shader.uniform("proj_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix));
+        m_gl->glUniform3fv(shader.uniform("terrain_color"), 1, glm::value_ptr(glm::vec3(0.0f,1.0f,0.0f)));
+
+        for (int j = 0; j < 3; j++){
+            g_model.pushMatrix();
+
+            // Remove this: only for visualization
+            g_model.mMatrix = glm::rotate(g_model.mMatrix, (float)M_PI*2.0f/3*j + bullets[i]->time*5.0f, up);
+            g_model.mMatrix = glm::rotate(g_model.mMatrix, (float)M_PI/2, glm::vec3(0,0,1.0f));
+
+            m_gl->glUniformMatrix4fv(shader.uniform("mv_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix*g_model.mMatrix));
+            m_gl->glDrawArrays(GL_TRIANGLES, 0, 3*3);
+
+            g_model.popMatrix();
+        }
+
+        g_model.popMatrix();
+    }
+}
+
+void Player::update(float seconds){
+    timer += seconds;
+    if (terrain->collidePoint(location - 1.5f*glm::cross(facing, left))){
+        std::cout<<"smashing!"<<std::endl;
+    }
+    for (int i = bullets.size() - 1; i >= 0; i--){
+        bullets[i]->update(seconds);
+        if (bullets[i]->active){
+            // Collide with terrain
+            const dReal *pos = dBodyGetPosition(bullets[i]->body);
+            if (terrain->collidePoint(glm::vec3(pos[0],pos[1],pos[2]))){
+                bullets[i]->active = false;
+            }
+        }
+        if (!bullets[i]->active){
+            bullets[i]->destroy();
+            bullets.removeAt(i);
+        }
+    }
+}
+
+void Player::fire(){
+    if (timer > COOLDOWN){
+        bullets.append(new Bullet(world, space, mass, location - 1.5f*glm::cross(facing, left), facing*10.0f));
+        bullets.last()->power = 1.0f;
+        std::cout<<"fired "<<bullets.size()<<std::endl;
+        timer = 0;
+    }
 }

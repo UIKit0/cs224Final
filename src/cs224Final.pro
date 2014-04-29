@@ -41,7 +41,9 @@ GLSW = $${LIB}/glsw-2010
 SOURCES += \
     $${GLSW}/glsw/bstrlib.c \
     $${GLSW}/glsw/glsw.c \
-    scene/player.cpp
+    scene/player.cpp \
+    interaction/bullet.cpp \
+    scene/terrainobject.cpp
 
 # glm library
 GLM = $${LIB}/glm-0.9.5.1
@@ -91,7 +93,10 @@ HEADERS += \
     scene/global.h \
     scene/terrain.h \
     particles/particles.h \
-    scene/player.h
+    scene/player.h \
+    interaction/collisions.h \
+    interaction/bullet.h \
+    scene/terrainobject.h
 
 RESOURCES += \
     $${RES}/resources.qrc

@@ -6,7 +6,7 @@
 class SmokeTrailEmitter : public ParticleEmitter
 {
 public:
-    SmokeTrailEmitter(dWorldID w, dSpaceID s, dMass m);
+    SmokeTrailEmitter(dWorldID w, dMass m);
 
     void updateParticles();
     void updateVortices();

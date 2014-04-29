@@ -5,10 +5,12 @@ World::World()
     , m_mesh("monkey2.obj")
     , m_screenWidth(500)
     , m_screenHeight(500)
+    , firing(false)
 {
     // Initialize ODE stuff
     dInitODE();
     m_world_id = dWorldCreate();
+    g_world = m_world_id;
     dWorldSetGravity(m_world_id, 0, 0, 0);
 
     dVector3 center;
@@ -40,25 +42,9 @@ World::~World()
     dCloseODE();
 }
 
-void World::toggleDrawVortices()
-{
-    for (int i = 0; i < emitters.size(); i++)
-    {
-        emitters[i]->drawVortices = !emitters[i]->drawVortices;
-    }
-}
-
-void World::toggleMovingSphere()
-{
-    if (sphere.moving != 0)
-        sphere.stop();
-    else
-        sphere.start();
-}
-
 static void nearCallback(void* data, dGeomID o1, dGeomID o2)
 {
-    World* world = (World*) data;
+    World *world = (World*) data;
     dBodyID b1 = dGeomGetBody(o1);
     dBodyID b2 = dGeomGetBody(o2);
 
@@ -88,15 +74,34 @@ static void nearCallback(void* data, dGeomID o1, dGeomID o2)
     }
 }
 
+
+void World::toggleDrawVortices()
+{
+    for (int i = 0; i < emitters.size(); i++)
+    {
+        emitters[i]->drawVortices = !emitters[i]->drawVortices;
+    }
+}
+
+void World::toggleMovingSphere()
+{
+    if (sphere.moving != 0)
+        sphere.stop();
+    else
+        sphere.start();
+}
+
+
 void World::initialize(GLFunctions *gl)
 {
     // camera
     g_camera.setAspectRatio((float)m_screenWidth/m_screenHeight);
 
-    player.initialize(gl);
 #ifdef TERRAIN
     terrain.initialize(gl);
 #endif
+    player = new Player(m_world_id, space, m, &terrain);
+    player->initialize(gl);
 
 #ifdef PARTICLES
     BasicSmokeEmitter *emitter = new BasicSmokeEmitter(m_world_id, space, m);
@@ -190,7 +195,7 @@ void World::initialize(GLFunctions *gl)
 void World::render(GLFunctions *gl)
 {
     g_model.reset();
-    player.draw();
+    player->draw();
 
 #ifdef TERRAIN
     terrain.draw();
@@ -232,14 +237,16 @@ void World::update(float seconds)
 {
     g_camera.update(seconds);
 
-    player.facing = g_camera.m_lookAt - g_camera.m_position;
-    player.facing = glm::normalize(player.facing);
-    player.up = glm::vec3(0,1.0f,0);
-    player.left = glm::cross(player.up, player.facing);
-    player.left = glm::normalize(player.left);
-    player.location = g_camera.m_position;
-    player.rotation = g_camera.m_lastRotation;
-    player.roll = glm::mix(player.roll, g_camera.m_rotation[0] - g_camera.m_lastRotation[0], 0.1f);
+    player->facing = glm::normalize(g_camera.m_lookAt - g_camera.m_position);
+    player->up = glm::vec3(0,1.0f,0);
+    player->left = glm::normalize(glm::cross(player->up, player->facing));
+    player->location = g_camera.m_position;
+    player->rotation = g_camera.m_lastRotation;
+    player->roll = glm::mix(player->roll, g_camera.m_rotation[0] - g_camera.m_lastRotation[0], 0.1f);
+
+    player->update(seconds);
+    if (firing)
+        player->fire();
 
 #ifdef TERRAIN
     terrain.update(seconds, g_camera.m_position);
@@ -293,36 +300,36 @@ void World::keyPressEvent(QKeyEvent *event)
 
 void World::keyReleaseEvent(QKeyEvent *event)
 {
-    switch(event->key()) {
-    case Qt::Key_W:
-        g_camera.pressingForward = false;
-        break;
-    case Qt::Key_S:
-        g_camera.pressingBackward = false;
-        break;
-    case Qt::Key_A:
-        g_camera.pressingLeft = false;
-        break;
-    case Qt::Key_D:
-        g_camera.pressingRight = false;
-        break;
-    }
+//    switch(event->key()) {
+//    case Qt::Key_W:
+//        g_camera.pressingForward = false;
+//        break;
+//    case Qt::Key_S:
+//        g_camera.pressingBackward = false;
+//        break;
+//    case Qt::Key_A:
+//        g_camera.pressingLeft = false;
+//        break;
+//    case Qt::Key_D:
+//        g_camera.pressingRight = false;
+//        break;
+//    }
 
     if (event->key() == Qt::Key_Space) g_camera.pressingJump = false;
 }
 
 void World::mousePressEvent(QMouseEvent *event)
 {
-    Q_UNUSED(event);
+    firing = true;
+    player->fire();
 }
 
 void World::mouseMoveEvent(QMouseEvent *event)
 {
-//    Q_UNUSED(event);
-    std::cout<<event->pos().x()<<" "<<event->pos().y()<<std::endl;
+    Q_UNUSED(event);
 }
 
 void World::mouseReleaseEvent(QMouseEvent *event)
 {
-    Q_UNUSED(event);
+    firing = false;
 }

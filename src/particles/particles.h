@@ -4,10 +4,12 @@
 #include "scene/global.h"
 #include "graphics/program.h"
 
+#include "ode/ode.h"
+
 /**
  * @brief The Particle class (rename to particle buffer)
  *
- * Represents a group of particles for drawing.
+ * Represents a group of particles for drawing and physics.
  *
  * Implented using point sprites.
  *
@@ -15,19 +17,24 @@
 class Particles
 {
 public:
-    Particles();
+    Particles(dWorldID w);
     Particles(GLFunctions *gl, int maxParticles = 1000);
     void initialize(GLFunctions *gl, int maxParticles = 1000);
     void setBufferValue(int index, glm::vec3 position, float size);
     void setBufferSize(int size);
     virtual void draw();
 
-
     struct ParticleBuffer {
         glm::vec3 position;
         GLfloat size;
     };
 
+// To be shared with subclasses
+protected:
+    dWorldID world;
+    dSpaceID space;
+
+// Rendering only, no need to share with subclasses
 private:
     GLFunctions *m_gl;
 

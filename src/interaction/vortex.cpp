@@ -1,7 +1,5 @@
 #include "vortex.h"
 
-QHash<dBodyID, Vortex*> g_vortices;
-
 Vortex::Vortex(dWorldID world, dSpaceID space, dMass mass, float r)
 {
     body = dBodyCreate(world);

@@ -1,18 +1,25 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include "ode/ode.h"
+#include <QList>
+
+#include "interaction/bullet.h"
 #include "scene/global.h"
+#include "scene/terrain.h"
 #include "graphics/program.h"
+
+#define COOLDOWN 0.1f
 
 class Player
 {
 public:
-    Player();
+    Player(dWorldID w, dSpaceID s, dMass m, Terrain* t);
     void initialize(GLFunctions *gl);
 
+    void update(float seconds);
     void draw();
-    GLuint object_vao;
-    GLuint object_vbo;
+    void fire();
 
     glm::vec3 facing;
     glm::vec3 left;
@@ -21,8 +28,22 @@ public:
     glm::vec2 rotation;
     float roll;
 
+private:
+    dWorldID world;
+    dSpaceID space;
+    dMass mass;
+
+    Terrain *terrain;
+
+    GLuint object_vao;
+    GLuint object_vbo;
+
     GLFunctions *m_gl;
     Program shader;
+
+    QList<Bullet*> bullets;
+
+    float timer;
 };
 
 #endif // PLAYER_H

@@ -2,9 +2,12 @@
 
 #include <QImage>
 
-Particles::Particles()
-    : m_gl(NULL)
+Particles::Particles(dWorldID w)
+    : m_gl(NULL), world(w)
 {
+    // Create a space for this group of particles
+    space = dHashSpaceCreate(0);
+    dHashSpaceSetLevels(space, 1, 5);
 }
 
 Particles::Particles(GLFunctions *gl, int maxParticles)
@@ -45,11 +48,11 @@ void Particles::initialize(GLFunctions *gl, int maxParticles)
 
     // Load textures
     int texNum = 4;
-    QImage textures[texNum];
-    textures[0] = QImage(":/textures/smoke_alpha.png");
-    textures[1] = QImage(":/textures/smoke_color.png");
-    textures[2] = QImage(":/textures/smoke_depth.png");
-    textures[3] = QImage(":/textures/smoke_normal.png");
+    QImage *textures[texNum];
+    textures[0] = new QImage(":/textures/smoke_alpha.png");
+    textures[1] = new QImage(":/textures/smoke_color.png");
+    textures[2] = new QImage(":/textures/smoke_depth.png");
+    textures[3] = new QImage(":/textures/smoke_normal.png");
 
     m_texUniform[0] = m_smokeFx.uniform("tex_alpha");
     m_texUniform[1] = m_smokeFx.uniform("tex_color");
@@ -66,13 +69,13 @@ void Particles::initialize(GLFunctions *gl, int maxParticles)
 
     for(int i = 0; i < texNum; i++)
     {
-        if (textures[i].isNull())
+        if (textures[i]->isNull())
         {
             qCritical("Unable to load texture!");
             return;
         }
 
-        QImage img = textures[i].convertToFormat(QImage::Format_RGBA8888);
+        QImage img = textures[i]->convertToFormat(QImage::Format_RGBA8888);
 
         m_gl->glActiveTexture(Tslots[i]);
         m_gl->glBindTexture(GL_TEXTURE_2D, m_texID[i]);
@@ -80,6 +83,7 @@ void Particles::initialize(GLFunctions *gl, int maxParticles)
         m_gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
         m_gl->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img.width(), img.height(),
                      0, GL_RGBA, GL_UNSIGNED_BYTE, img.bits());
+        delete textures[i];
     }
 }
 

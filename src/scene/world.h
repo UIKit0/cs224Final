@@ -26,10 +26,7 @@
 #include "particles/smoketrailemitter.h"
 #include "scene/terrain.h"
 #include "scene/player.h"
-
-extern void handleVortexCollision(Vortex *v, dBodyID pbody);
-extern void handleWindVolumeCollision(WindVolume *v, dBodyID pbody);
-extern QHash<dBodyID, Vortex*> g_vortices;
+#include "interaction/collisions.h"
 
 class World
 {
@@ -92,7 +89,7 @@ public:
     SolidObject sphere;
     Obj sphereMesh;
 
-    Player player;
+    Player *player;
 
     bool moveSphere;
     bool moveWing;
@@ -107,10 +104,8 @@ private:
 
     GLuint m_buffer;
     GLuint m_vao;
-//    GLuint m_vboIds[2];
 
     Program m_goochFx;
-
 
     GLuint m_posAttr;
     GLuint m_texAttr;
@@ -118,8 +113,7 @@ private:
     GLuint m_textureUniform;
     GLuint m_texture;
 
-    // Camera
-//    Camera m_camera;
+    bool firing;
 };
 
 #endif // WORLD_H

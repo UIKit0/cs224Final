@@ -16,9 +16,9 @@ typedef QOpenGLFunctions_2_0 GLFunctions;
 //#define DEBUG_TRIANGLE
 
 #ifndef DEBUG_TRIANGLE
-    #define TERRAIN
+//    #define TERRAIN
+    #define CONTOUR
 //    #define PARTICLES
-//    #define CONTOUR
 #endif
 
 #include "matrixstack.h"

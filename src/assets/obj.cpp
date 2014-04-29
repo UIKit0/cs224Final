@@ -1,5 +1,6 @@
 #include "obj.h"
-
+Obj::Obj()
+{}
 Obj::Obj(const QString &path)
 {
     if (!read(path))

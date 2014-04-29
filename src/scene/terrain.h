@@ -11,8 +11,8 @@
 #include "graphics/program.h"
 #include "scene/terrainobject.h"
 
-#define GRID_SIZE 7
-#define UPDATE_RADIUS 1
+#define GRID_SIZE 11
+#define UPDATE_RADIUS 2
 #define TILE_SIZE 20
 #define NOISE_COORDINATE_RATIO 0.04f
 #define MIN_Y -7.0f

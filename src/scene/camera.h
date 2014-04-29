@@ -33,10 +33,10 @@ public:
 
     glm::vec3 m_position;
     glm::vec3 m_lookAt;
-    glm::vec3 m_up;
-
-    glm::vec2 m_rotation;
     glm::vec2 m_lastRotation;
+    glm::vec2 m_rotation;
+private:
+    glm::vec3 m_up;
 
 private:
     glm::vec3 m_velocity;

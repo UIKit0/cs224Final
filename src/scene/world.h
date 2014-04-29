@@ -24,7 +24,9 @@
 #include "particles/smokeparticle.h"
 #include "particles/basicsmokeemitter.h"
 #include "particles/smoketrailemitter.h"
+
 #include "scene/terrain.h"
+#include "scene/contour.h"
 #include "scene/player.h"
 #include "interaction/collisions.h"
 
@@ -47,45 +49,24 @@ public:
     void mouseMoveEvent(QMouseEvent *event);
     void mouseMoveDelta(float deltaX, float deltaY);
 
-    struct MeshBuffer {
-        glm::vec3 position;
-        glm::vec3 normal;
-        glm::vec2 texcoord;
-
-//        MeshBuffer() {}
-//        MeshBuffer(glm::vec3 &pos, glm::vec3 &norm, glm::vec2 &tex) :
-//            position(pos), normal(norm), texcoord(tex) {}
-    };
-
-    struct Adjacent {
-        int face1;
-        int face2;
-        int getFace(int f) {
-            Q_ASSERT_X(f == face1 || f == face2, "adj struct", "bad face request");
-            if (f == face1)
-                return face1;
-            else
-                return face2;
-        }
-    };
-
 public:
+    dJointGroupID contactgroup;
+    dWorldID m_world_id;
 
-    // PARTICLES
-    void toggleDrawVortices();
-    void toggleMovingSphere();
+private:
+    Terrain m_terrain;
+    Contour m_contour;
 
     // ODE stuff that is only created once per world
-    dWorldID m_world_id;
     dSpaceID space;
     dMass m;
-    dJointGroupID contactgroup;
 
+    // PARTICLES
     QList<ParticleEmitter*> emitters;
-
     ParticleEmitter *circlingEmitter;
-
     // Sphere that moves left and right through the smoke
+    void toggleMovingSphere();
+    void toggleDrawVortices();
     SolidObject sphere;
     Obj sphereMesh;
 
@@ -95,9 +76,6 @@ public:
     bool moveWing;
 
     Terrain terrain;
-
-private:
-    Obj m_mesh;
 
     int m_screenWidth;
     int m_screenHeight;
@@ -114,6 +92,10 @@ private:
     GLuint m_texture;
 
     bool firing;
+
+#ifdef DEBUG_TRIANGLE
+    Program m_debugFx;
+#endif
 };
 
 #endif // WORLD_H

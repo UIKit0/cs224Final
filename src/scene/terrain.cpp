@@ -209,6 +209,7 @@ void Terrain::draw(){
             m_gl->glUniform3fv(shader.uniform("terrain_color"), 1, glm::value_ptr(color));
             m_gl->glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
             m_gl->glDrawArrays(GL_TRIANGLES, 0, TILE_SIZE*TILE_SIZE*3*3*TRIANGLES_PER_TILE_ELEMENT);
+
             g_model.popMatrix();
         }
     }
@@ -321,7 +322,6 @@ void Terrain::update(float seconds, glm::vec3 playerLocation){
         shiftTiles(shiftx, shifty);
 
     while (!updateQueue.isEmpty()){
-        std::cout<<"processing update"<<std::endl;
         Update u = updateQueue.front();
         updateQueue.pop_front();
         if (u.pass == 2){
@@ -384,7 +384,7 @@ void Terrain::update(float seconds, glm::vec3 playerLocation){
                     updateQueue.push_back(u);
                     break;
                 }
-                minx = maxx - TILE_SIZE*glm::linearRand(0.3f, 2.0f);
+                minx = maxx - TILE_SIZE*glm::linearRand(0.4f, 2.0f);
             }
             if (maxx == FLT_MAX){
                 if (minx == FLT_MAX){
@@ -394,7 +394,7 @@ void Terrain::update(float seconds, glm::vec3 playerLocation){
                     updateQueue.push_back(u);
                     break;
                 }
-                maxx = minx + TILE_SIZE*glm::linearRand(0.3f, 2.0f);
+                maxx = minx + TILE_SIZE*glm::linearRand(0.4f, 2.0f);
             }
             if (miny == FLT_MAX){
                 if (maxy == FLT_MAX){
@@ -404,7 +404,7 @@ void Terrain::update(float seconds, glm::vec3 playerLocation){
                     updateQueue.push_back(u);
                     break;
                 }
-                miny = maxy - TILE_SIZE*glm::linearRand(0.3f, 2.0f);
+                miny = maxy - TILE_SIZE*glm::linearRand(0.4f, 2.0f);
             }
             if (maxy == FLT_MAX){
                 if (miny == FLT_MAX){
@@ -414,7 +414,7 @@ void Terrain::update(float seconds, glm::vec3 playerLocation){
                     updateQueue.push_back(u);
                     break;
                 }
-                maxy = miny + TILE_SIZE*glm::linearRand(0.3f, 2.0f);
+                maxy = miny + TILE_SIZE*glm::linearRand(0.4f, 2.0f);
             }
 
             tile->loc0 = glm::vec2(minx, miny);

@@ -3,16 +3,20 @@
 
 #include "glm/vec3.hpp"
 #include "glm/gtc/noise.hpp"
+#include "glm/gtc/random.hpp"
 #include <QHash>
 #include <iostream>
 
 #include "scene/global.h"
 #include "graphics/program.h"
+#include "scene/terrainobject.h"
 
-#define GRID_SIZE 7
+#define GRID_SIZE 11
 #define UPDATE_RADIUS 2
 #define TILE_SIZE 20
-#define NOISE_COORDINATE_RATIO 0.05f
+#define NOISE_COORDINATE_RATIO 0.04f
+#define MIN_Y -7.0f
+
 
 struct Update{
     int ix;
@@ -36,7 +40,13 @@ struct Tile{
     glm::vec3 terrain[TILE_SIZE + 1][TILE_SIZE + 1];
     glm::vec3 normals[TILE_SIZE + 1][TILE_SIZE + 1];
     VO vo;
+
+    // Perlin noise coordinates at the corners, together they describe the tile in "perlin space"
+    glm::vec2 loc0;
+    glm::vec2 loc1;
 };
+
+#define TRIANGLES_PER_TILE_ELEMENT 2
 
 /**
  * Terrain is composed of tiles, in which each tile has an
@@ -57,7 +67,14 @@ public:
 
     void draw();
 
+    bool collidePoint(glm::vec3 point);
+
 private:
+
+    // Returns NULL if the index is out of bounds or has an empty tile
+    Tile* getTile(int i, int j);
+    // Height for an element of a tile
+    float noise(Tile *tile, int i, int j);
     void shiftTiles(int x, int y);
 
     Tile *tiles[GRID_SIZE][GRID_SIZE];
@@ -70,6 +87,7 @@ private:
     QList<VO> vos;
 
     QList<glm::vec3> objects;
+    QList<TerrainObject*> static_objects;
     GLuint object_vao;
     GLuint object_vbo;
 

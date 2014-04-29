@@ -1,6 +1,6 @@
 #include "basicsmokeemitter.h"
 
-BasicSmokeEmitter::BasicSmokeEmitter(dWorldID w, dSpaceID s, dMass m) : ParticleEmitter(w, s, m)
+BasicSmokeEmitter::BasicSmokeEmitter(dWorldID w, dMass m) : ParticleEmitter(w, m)
 {
     QImage img = QImage(":/textures/smoke2.png");
 

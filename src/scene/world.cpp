@@ -1,14 +1,14 @@
 #include "world.h"
 
 World::World()
-    : sphereMesh("cube.obj")
-    , m_mesh("monkey2.obj")
-    , m_screenWidth(500)
+    : m_screenWidth(500)
     , m_screenHeight(500)
+    , firing(false)
 {
     // Initialize ODE stuff
     dInitODE();
     m_world_id = dWorldCreate();
+    g_world = m_world_id;
     dWorldSetGravity(m_world_id, 0, 0, 0);
 
     dVector3 center;
@@ -50,15 +50,15 @@ void World::toggleDrawVortices()
 
 void World::toggleMovingSphere()
 {
-    if (sphere.moving != 0)
-        sphere.stop();
-    else
-        sphere.start();
+//    if (sphere.moving != 0)
+//        sphere.stop();
+//    else
+//        sphere.start();
 }
 
 static void nearCallback(void* data, dGeomID o1, dGeomID o2)
 {
-    World* world = (World*) data;
+    World *world = (World*) data;
     dBodyID b1 = dGeomGetBody(o1);
     dBodyID b2 = dGeomGetBody(o2);
 
@@ -94,127 +94,52 @@ void World::initialize(GLFunctions *gl)
     g_camera.setAspectRatio((float)m_screenWidth/m_screenHeight);
 
 #ifdef TERRAIN
-    terrain.initialize(gl);
+    m_terrain.initialize(gl);
 #endif
+    player = new Player(m_world_id, space, m, &terrain);
+    player->initialize(gl);
 
 #ifdef PARTICLES
-    BasicSmokeEmitter *emitter = new BasicSmokeEmitter(m_world_id, space, m);
+    BasicSmokeEmitter *emitter = new BasicSmokeEmitter(m_world_id, m);
     emitter->initialize(gl, 2000);
     emitter->maxInitialVel = glm::vec3(0.5f, 2.0f, 0.5f);
     emitter->minInitialVel = glm::vec3(-0.5f, 0.5f, -0.5f);
     emitters.append(emitter);
 #endif
 
+#ifdef CONTOUR
+    // TODO: support multiple contour drawn meshes
+    QString f("monkey.obj");
+    Obj mesh(f);
+//    Obj mesh("cube.obj");
+    m_contour.initialize(gl, mesh);
+#endif
+
 #ifdef DEBUG_TRIANGLE
-    //    m_goochFx.initialize(gl, "../../../../res/shaders/");
-    m_goochFx.initialize(gl, "../res/shaders/");
-    m_goochFx.compile(GL_VERTEX_SHADER, "contour.vertex.debug");
-    m_goochFx.compile(GL_FRAGMENT_SHADER, "contour.fragment.debug");
-    m_goochFx.link();
+    //    m_debugFx.initialize(gl, "../../../../res/shaders/");
+    m_debugFx.initialize(gl, "../res/shaders/");
+    m_debugFx.compile(GL_VERTEX_SHADER, "contour.vertex.debug");
+    m_debugFx.compile(GL_FRAGMENT_SHADER, "contour.fragment.debug");
+    m_debugFx.link();
 
     GLuint vertexArray;
     gl->glGenVertexArrays(1, &vertexArray);
     gl->glBindVertexArray(vertexArray);
-#endif
-
-#ifdef CONTOUR
-    m_goochFx.initialize(gl, "../res/shaders/");
-    m_goochFx.compile(GL_VERTEX_SHADER, "contour.vertex");
-    m_goochFx.compile(GL_FRAGMENT_SHADER, "contour.fragment");
-//    m_goochFx.compile(GL_GEOMETRY_SHADER, "contour.geometry");
-    m_goochFx.link();
-
-//    QHash<QPair<int,int>, Adjacent> edgeMap;
-//    for(Obj::Triangle tri : m_mesh.triangles) {
-//        for (int i = 0; i < 3; ++i) {
-//            int ia = tri.indices[i].vertex;
-//            int ib = tri.indices[(i + 1) % 3].vertex;
-//            QPair<int, int> p(qMin(ia, ib), qMax(ia, ib));
-//            if (!edgeMap.contains(p)) {
-//                edgeMap.insert(p, )
-//            } else {
-
-//            }
-//        }
-//    }
-
-    // TODO: move to a obj / buffer class
-    GLuint meshSize = m_mesh.triangles.size() * 3;
-    QVector<MeshBuffer> data;
-    data.reserve(meshSize);
-
-    for(Obj::Triangle tri : m_mesh.triangles) {
-        MeshBuffer a;
-        a.position = m_mesh.vertices[tri.a.vertex];
-        a.normal = m_mesh.normals[tri.a.normal];
-        MeshBuffer b;
-        b.position = m_mesh.vertices[tri.b.vertex];
-        b.normal = m_mesh.normals[tri.b.normal];
-        MeshBuffer c;
-        c.position = m_mesh.vertices[tri.c.vertex];
-        c.normal = m_mesh.normals[tri.c.normal];
-
-        data.append(a);
-        data.append(b);
-        data.append(c);
-    }
-
-    gl->glGenVertexArrays(1, &m_vao);
-    gl->glBindVertexArray(m_vao);
-
-    gl->glGenBuffers(1, &m_buffer);
-
-    gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
-
-    gl->glBufferData(GL_ARRAY_BUFFER, sizeof(World::MeshBuffer) * data.size(), data.data(), GL_STATIC_DRAW);
-
-    quintptr offset = 0;
-
-    gl->glEnableVertexAttribArray(m_goochFx.attrib("position"));
-    gl->glVertexAttribPointer(m_goochFx.attrib("position"), 3, GL_FLOAT, GL_FALSE, sizeof(MeshBuffer), (const void *) offset);
-
-    offset += sizeof(glm::vec3);
-
-    gl->glEnableVertexAttribArray(m_goochFx.attrib("normal"));
-    gl->glVertexAttribPointer(m_goochFx.attrib("normal"), 3, GL_FLOAT, GL_FALSE, sizeof(MeshBuffer), (const void *) offset);
-
-    offset += sizeof(glm::vec3);
-
-//    gl->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(MeshBuffer), (void *)offsetof(MeshBuffer, texcoord));
-//    gl->glEnableVertexAttribArray(m_goochFx.attrib("texcoord"));
 #endif
 }
 
 void World::render(GLFunctions *gl)
 {
     g_model.reset();
-    GLfloat clearcol = 0.6f;
-    gl->glClearColor(clearcol,clearcol,clearcol,0);
+
+    player->draw();
 
 #ifdef TERRAIN
-    terrain.draw();
+    m_terrain.draw();
 #endif
 
 #ifdef CONTOUR
-    gl->glBindVertexArray(m_vao);
-    gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
-
-    gl->glUseProgram(m_goochFx.program());
-
-    gl->glUniformMatrix4fv(m_goochFx.uniform("proj_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix));
-    gl->glUniformMatrix4fv(m_goochFx.uniform("mv_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix));
-    gl->glUniformMatrix4fv(emitters[0]->m_smokeFx.uniform("V_Matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix));
-    gl->glUniform3f(emitters[0]->m_smokeFx.uniform("LightPosition"), 10.0f, 10.0f, 4.0f);
-
-    gl->glUniform3f(m_goochFx.uniform("lightPos"), 0.0f, 10.0f, 4.0f);
-    gl->glUniform3f(m_goochFx.uniform("surfaceColor"), 0.4f, 0.75f, 0.75f);
-    gl->glUniform3f(m_goochFx.uniform("warmColor"), 0.6f, 0.6f, 0.0f);
-    gl->glUniform3f(m_goochFx.uniform("coolColor"), 0.0f, 0.1f, 0.6f);
-    gl->glUniform1f(m_goochFx.uniform("diffuseWarm"), 0.45f);
-    gl->glUniform1f(m_goochFx.uniform("diffuseCool"), 0.15f);
-
-    gl->glDrawArrays(GL_TRIANGLES, 0, m_mesh.triangles.size() * 3);
-
+    m_contour.draw();
 #endif
 
 #ifdef PARTICLES
@@ -224,7 +149,7 @@ void World::render(GLFunctions *gl)
 #endif
 
 #ifdef DEBUG_TRIANGLE
-    gl->glUseProgram(m_goochFx.program());
+    gl->glUseProgram(m_debugFx.program());
     gl->glDrawArrays(GL_TRIANGLES, 0, 3);
 #endif
 }
@@ -233,8 +158,19 @@ void World::update(float seconds)
 {
     g_camera.update(seconds);
 
+    player->facing = glm::normalize(g_camera.m_lookAt - g_camera.m_position);
+    player->up = glm::vec3(0,1.0f,0);
+    player->left = glm::normalize(glm::cross(player->up, player->facing));
+    player->location = g_camera.m_position;
+    player->rotation = g_camera.m_lastRotation;
+    player->roll = glm::mix(player->roll, g_camera.m_rotation[0] - g_camera.m_lastRotation[0], 0.1f);
+
+    player->update(seconds);
+    if (firing)
+        player->fire();
+
 #ifdef TERRAIN
-    terrain.update(seconds, g_camera.m_position);
+    m_terrain.update(seconds, g_camera.m_position);
 #endif
 
 #ifdef PARTICLES
@@ -305,7 +241,8 @@ void World::keyReleaseEvent(QKeyEvent *event)
 
 void World::mousePressEvent(QMouseEvent *event)
 {
-    Q_UNUSED(event);
+    firing = true;
+    player->fire();
 }
 
 void World::mouseMoveEvent(QMouseEvent *event)
@@ -315,5 +252,5 @@ void World::mouseMoveEvent(QMouseEvent *event)
 
 void World::mouseReleaseEvent(QMouseEvent *event)
 {
-    Q_UNUSED(event);
+    firing = false;
 }

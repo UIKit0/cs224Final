@@ -1,0 +1,9 @@
+smoke images:
+
+PNG
+
+colorspace: sRGB
+gamma: 0.4545
+
+NOTE:
+enable OpenGL sRGB texture option

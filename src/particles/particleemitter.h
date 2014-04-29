@@ -21,24 +21,24 @@
 class ParticleEmitter : public Particles
 {
 public:
-    ParticleEmitter(dWorldID w, dSpaceID s, dMass m);
+    ParticleEmitter(dWorldID w, dMass m);
 
     void destroy();
     void update(float seconds);
     virtual void draw();
 
+    bool drawVortices;
+
+protected:
     virtual void updateParticles() = 0;
     virtual void updateVortices() = 0;
 
-    dWorldID world;
-    dSpaceID space;
     dMass mass;
 
     QList<SmokeParticle> particles;
 
     QList<Vortex*> vortices;
 
-    bool drawVortices;
 
     float time;
     GLuint sprites;

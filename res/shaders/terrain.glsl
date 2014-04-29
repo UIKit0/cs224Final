@@ -14,9 +14,10 @@ void main(void)
 
 -- fragment ---------------------------------------
 
+uniform vec3 terrain_color;
 out vec4 color;
 
 void main(void)
 {
-    color = vec4(0.5, 0.5, 0.5, 1.0);
+    color = vec4(terrain_color, 1.0);
 }

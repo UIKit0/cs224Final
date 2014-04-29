@@ -12,7 +12,7 @@
 class BasicSmokeEmitter : public ParticleEmitter
 {
 public:
-    BasicSmokeEmitter(dWorldID w, dSpaceID s, dMass m);
+    BasicSmokeEmitter(dWorldID w, dMass m);
 
     void updateParticles();
     void updateVortices();

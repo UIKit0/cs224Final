@@ -1,6 +1,6 @@
 #include "smoketrailemitter.h"
 
-SmokeTrailEmitter::SmokeTrailEmitter(dWorldID w, dSpaceID s, dMass m) : ParticleEmitter(w, s, m)
+SmokeTrailEmitter::SmokeTrailEmitter(dWorldID w, dMass m) : ParticleEmitter(w, m)
 {
     QImage img = QImage(":/textures/smoke2.png");
 

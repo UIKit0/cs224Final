@@ -1,10 +1,8 @@
 #include "particleemitter.h"
 
-ParticleEmitter::ParticleEmitter(dWorldID w, dSpaceID s, dMass m)
-    : Particles()
+ParticleEmitter::ParticleEmitter(dWorldID w, dMass m)
+    : Particles(w)
 {
-    world = w;
-    space = s;
     mass = m;
     drawVortices = false;
     sprites = UINT_MAX;

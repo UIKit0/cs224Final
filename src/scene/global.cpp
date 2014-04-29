@@ -2,3 +2,6 @@
 
 MatrixStack g_model;
 Camera g_camera;
+
+dWorldID g_world;
+dMass g_mass;

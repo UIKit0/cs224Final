@@ -40,7 +40,7 @@ GLSW = $${LIB}/glsw-2010
 # TODO: compile to outside lib
 SOURCES += \
     $${GLSW}/glsw/bstrlib.c \
-    $${GLSW}/glsw/glsw.c
+    $${GLSW}/glsw/glsw.c \
 
 # glm library
 GLM = $${LIB}/glm-0.9.5.1
@@ -68,7 +68,11 @@ SOURCES += \
     scene/matrixstack.cpp \
     scene/global.cpp \
     scene/terrain.cpp \
-    particles/particles.cpp
+    particles/particles.cpp \
+    scene/contour.cpp \
+    scene/player.cpp \
+    interaction/bullet.cpp \
+    scene/terrainobject.cpp
 
 HEADERS += \
     scene/camera.h \
@@ -89,7 +93,12 @@ HEADERS += \
     scene/matrixstack.h \
     scene/global.h \
     scene/terrain.h \
-    particles/particles.h
+    particles/particles.h \
+    scene/player.h \
+    interaction/collisions.h \
+    interaction/bullet.h \
+    scene/terrainobject.h \
+    scene/contour.h
 
 RESOURCES += \
     $${RES}/resources.qrc

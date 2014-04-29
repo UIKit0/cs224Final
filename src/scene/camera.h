@@ -32,8 +32,8 @@ public:
     void update(float seconds);
 
     glm::vec3 m_position;
-private:
     glm::vec3 m_lookAt;
+private:
     glm::vec3 m_up;
 
     glm::vec2 m_rotation;

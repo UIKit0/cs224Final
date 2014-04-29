@@ -17,8 +17,13 @@ void Contour::initialize(GLFunctions *gl, Obj &mesh)
     m_goochFx.initialize(gl, "../res/shaders/");
     m_goochFx.compile(GL_VERTEX_SHADER, "contour.vertex");
     m_goochFx.compile(GL_FRAGMENT_SHADER, "contour.fragment");
-//    m_goochFx.compile(GL_GEOMETRY_SHADER, "contour.geometry");
     m_goochFx.link();
+
+    m_contourFx.initialize(gl, "../res/shaders/");
+    m_contourFx.compile(GL_GEOMETRY_SHADER, "contour.geometry");
+    m_contourFx.compile(GL_VERTEX_SHADER, "contour.vertex.mvp");
+    m_contourFx.compile(GL_FRAGMENT_SHADER, "contour.fragment.black");
+    m_contourFx.link();
 
     m_meshSize = mesh.triangles.size() * 3;
 
@@ -105,7 +110,6 @@ void Contour::initialize(GLFunctions *gl, Obj &mesh)
         }
     }
 
-
     gl->glGenVertexArrays(1, &m_vao);
     gl->glBindVertexArray(m_vao);
 
@@ -118,6 +122,9 @@ void Contour::initialize(GLFunctions *gl, Obj &mesh)
 
     gl->glVertexAttribPointer(m_goochFx.attrib("position"), 3, GL_FLOAT, GL_FALSE, sizeof(MeshBuffer), (const void *) offset);
     gl->glEnableVertexAttribArray(m_goochFx.attrib("position"));
+
+    gl->glVertexAttribPointer(m_contourFx.attrib("position"), 3, GL_FLOAT, GL_FALSE, sizeof(MeshBuffer), (const void *) offset);
+    gl->glEnableVertexAttribArray(m_contourFx.attrib("position"));
 
     offset += sizeof(glm::vec3);
 
@@ -136,7 +143,7 @@ void Contour::initialize(GLFunctions *gl, Obj &mesh)
 
     qDebug() << "mesh size:" << m_meshSize;
 
-    // uniforms
+//    // uniforms
     m_goochFx.use();
     m_gl->glUniform3f(m_goochFx.uniform("lightPos"), 0.0f, 10.0f, 4.0f);
     m_gl->glUniform3f(m_goochFx.uniform("surfaceColor"), 0.4f, 0.75f, 0.75f);
@@ -155,7 +162,21 @@ void Contour::draw()
     m_gl->glUseProgram(m_goochFx.program());
 
     m_gl->glUniformMatrix4fv(m_goochFx.uniform("proj_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix));
-    m_gl->glUniformMatrix4fv(m_goochFx.uniform("mv_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix));
+    m_gl->glUniformMatrix4fv(m_goochFx.uniform("mv_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix * g_model.mMatrix));
 
     m_gl->glDrawElements(GL_TRIANGLES_ADJACENCY, m_meshSize * 2, GL_UNSIGNED_SHORT, 0);
+
+//    m_gl->glDisable(GL_DEPTH_TEST);
+//    m_gl->glEnable(GL_BLEND);
+
+    m_gl->glUseProgram(m_contourFx.program());
+
+    m_gl->glUniformMatrix4fv(m_contourFx.uniform("mvp_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix * g_camera.vMatrix * g_model.mMatrix));
+//    m_gl->glUniformMatrix4fv(m_contourFx.uniform("m_matrix"), 1, GL_FALSE, glm::value_ptr(g_model.mMatrix));
+//    m_gl->glUniformMatrix4fv(m_contourFx.uniform("v_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix));
+//    m_gl->glUniform3fv(m_contourFx.uniform("viewVec"), 1, glm::value_ptr(glm::normalize(g_camera.m_lookAt)));
+
+    m_gl->glDrawElements(GL_TRIANGLES_ADJACENCY, m_meshSize * 2, GL_UNSIGNED_SHORT, 0);
+
+//    m_gl->glDisable(GL_BLEND);
 }

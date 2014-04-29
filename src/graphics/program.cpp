@@ -20,18 +20,18 @@ Program::Program()
 {
 }
 
-Program::Program(GLFunctions *gl, const char *path)
+Program::Program(GLFunctions *gl)
 {
-    initialize(gl, path);
+    initialize(gl);
 }
 
-void Program::initialize(GLFunctions *gl, const char *path)
+void Program::initialize(GLFunctions *gl)
 {
     m_gl = gl;
     m_program = INVALID_PROGRAM;
 
     glswInit();
-    glswSetPath(path, ".glsl");
+    glswSetPath(SHADER_PATH, ".glsl");
 
     // TODO: don't hardcode the directives
     // TODO: create a directives method

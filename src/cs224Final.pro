@@ -17,6 +17,14 @@ CONFIG(release, debug|release) {
     DEFINES += DEBUG_OPENGL
 }
 
+# quick fix solution - TODO: change glsw to use res
+SHADERS = $$(SHADER_PATH)
+
+isEmpty(SHADERS) {
+    SHADERS = ../res/shaders/
+}
+DEFINES += SHADER_PATH=\\\"$${SHADERS}\\\"
+
 ODE = $$(ODE_PATH)
 
 isEmpty(ODE) {

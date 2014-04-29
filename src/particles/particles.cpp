@@ -20,8 +20,7 @@ void Particles::initialize(GLFunctions *gl, int maxParticles)
     m_gl = gl;
     m_maxParticles = maxParticles;
 
-//    m_smokeFx.initialize(gl, "../../../../res/shaders/");
-    m_smokeFx.initialize(gl, "../res/shaders/");
+    m_smokeFx.initialize(gl);
     m_smokeFx.compile(GL_VERTEX_SHADER, "smoke.vertex.point");
     m_smokeFx.compile(GL_FRAGMENT_SHADER, "smoke.fragment.point");
     m_smokeFx.link();

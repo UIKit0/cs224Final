@@ -14,14 +14,12 @@ void Contour::initialize(GLFunctions *gl, Obj &mesh)
 {
     m_gl = gl;
 
-    m_goochFx.initialize(gl, "../res/shaders/");
-//    m_goochFx.initialize(gl, "../../../../res/shaders/");
+    m_goochFx.initialize(gl);
     m_goochFx.compile(GL_VERTEX_SHADER, "contour.vertex");
     m_goochFx.compile(GL_FRAGMENT_SHADER, "contour.fragment");
     m_goochFx.link();
 
-    m_contourFx.initialize(gl, "../res/shaders/");
-//    m_contourFx.initialize(gl, "../../../../res/shaders/");
+    m_contourFx.initialize(gl);
     m_contourFx.compile(GL_GEOMETRY_SHADER, "contour.geometry");
     m_contourFx.compile(GL_VERTEX_SHADER, "contour.vertex.mvp");
     m_contourFx.compile(GL_FRAGMENT_SHADER, "contour.fragment.black");

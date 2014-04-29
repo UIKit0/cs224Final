@@ -22,6 +22,9 @@ void Contour::initialize(GLFunctions *gl, Obj &mesh)
 
     m_meshSize = mesh.triangles.size() * 3;
 
+    if (m_meshSize > USHRT_MAX)
+        qCritical() << "Critical: mesh is too big!";
+
     QHash<QPair<int,int>, Adjacent> edgeMap;
     for(int i = 0; i < mesh.triangles.size(); ++i) {
         Obj::Triangle &tri = mesh.triangles[i];
@@ -102,10 +105,6 @@ void Contour::initialize(GLFunctions *gl, Obj &mesh)
         }
     }
 
-//    QDebug debug = qDebug();
-//    for(int v : adjIndex) {
-//       debug << v;
-//    }
 
     gl->glGenVertexArrays(1, &m_vao);
     gl->glBindVertexArray(m_vao);

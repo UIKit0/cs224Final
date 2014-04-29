@@ -18,6 +18,7 @@ struct Vertex;
 class Obj
 {
 public:
+    Obj();
     Obj(const QString &path);
 
     struct Index

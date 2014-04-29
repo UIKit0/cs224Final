@@ -27,6 +27,7 @@
 
 #include "scene/terrain.h"
 #include "scene/contour.h"
+#include "scene/player.h"
 
 extern void handleVortexCollision(Vortex *v, dBodyID pbody);
 extern void handleWindVolumeCollision(WindVolume *v, dBodyID pbody);
@@ -59,17 +60,23 @@ private:
     Terrain m_terrain;
     Contour m_contour;
 
-    // PARTICLES
-    QList<ParticleEmitter*> emitters;
-    ParticleEmitter *circlingEmitter;
-    void toggleDrawVortices();
-    void toggleMovingSphere();
-    bool moveSphere;
-    bool moveWing;
-
     // ODE stuff that is only created once per world
     dSpaceID space;
     dMass m;
+
+    // PARTICLES
+    QList<ParticleEmitter*> emitters;
+    ParticleEmitter *circlingEmitter;
+    // Sphere that moves left and right through the smoke
+    void toggleMovingSphere();
+    void toggleDrawVortices();
+    SolidObject sphere;
+    bool moveSphere;
+    bool moveWing;
+
+    Player player;
+
+    Terrain terrain;
 
     int m_screenWidth;
     int m_screenHeight;

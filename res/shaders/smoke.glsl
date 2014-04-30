@@ -79,7 +79,7 @@ uniform sampler2D tex_norm;
 
 
 uniform vec3 Ld = vec3(1.0,1.0,1.0);
-uniform vec3 LightPosition;
+uniform vec3 LightPosition = vec3(-1.0, -1.0, -1.0);
 
 float granularity = 4.0;
 float invGranularity = 1.0/granularity;
@@ -111,14 +111,44 @@ void main(void)
     vec4 depth = texture(tex_depth, gl_PointCoord);
     vec4 normal = texture(tex_norm, gl_PointCoord);
 
+    // Modify the depth according the texture values
+    float d = lum(depth.xyz);
+    vec4 cameraCoords = cs_position;
+    cameraCoords.z -= 8*(d);
+    vec4 clipcoords = proj_matrix * cameraCoords;
+    vec4 ndCoords = vec4((clipcoords.xyz)/clipcoords.w,0);
+    gl_FragDepth = ndCoords.z;
+
     // Calculate the light position
-    vec4 lightPos = V_Matrix*vec4(LightPosition,1);
+    vec4 lightPos = V_Matrix * vec4(LightPosition.xyz,0);
 
     // Calculate lighting
-    vec3 n = normalize(normal.xyz);
-    vec3 hitToLight = normalize(vec3(lightPos-cs_position));
-    float difDot = max(dot(hitToLight,n),0.0);
-    float toonDif = floor(difDot * granularity) * invGranularity;
+
+        // A. Rotate normals into their perp plane from image plane
+        //      Does proper lighting
+
+        // Get axis of rotation
+        vec3 pos = cs_position.xyz;
+        vec3 look = vec3(0,0,-1);
+        vec3 axis = cross(pos, look);
+        axis = normalize(axis);
+        float theta = acos(dot(look,pos)/(length(look)*length(pos)));
+
+        // Create A
+        mat3 A;
+        A[0] = vec3(      0,-axis.z, axis.y);
+        A[1] = vec3( axis.z,      0,-axis.x);
+        A[2] = vec3(-axis.y, axis.x,      0);
+
+        // Find rotation matrix
+        mat3 R = mat3(1.0) + sin(theta)*A + (1.0-cos(theta))*A*A;
+
+        // B. Calculate cel-shading pixel lighting
+        //
+        vec3 n = normalize(R*normal.xyz);
+        vec3 hitToLight = normalize(vec3(lightPos));
+        float difDot = max(dot(hitToLight,n),0.0);
+        float toonDif = floor(difDot * granularity) * invGranularity;
 
     // Color the pixel
     vec3 Kd = shade.xyz;
@@ -127,12 +157,4 @@ void main(void)
 
     float a = lum(alpha.xyz);
     color = vec4(ambLight + difLight, a);
-
-    // Modify the depth according the texture values
-    float d = lum(depth.xyz);
-    vec4 cameraCoords = cs_position;
-    cameraCoords.z -= 8*(d);
-    vec4 clipcoords = proj_matrix * cameraCoords;
-    vec4 ndCoords = vec4((clipcoords.xyz)/clipcoords.w,0);
-    gl_FragDepth = ndCoords.z;
 }

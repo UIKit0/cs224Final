@@ -75,8 +75,6 @@ private:
     bool moveSphere;
     bool moveWing;
 
-    Terrain terrain;
-
     int m_screenWidth;
     int m_screenHeight;
 

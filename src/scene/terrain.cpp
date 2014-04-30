@@ -31,7 +31,7 @@ void Terrain::initialize(GLFunctions *gl){
             tiles[i][j]->loc1 = glm::vec2(originLocation[0] + i*TILE_SIZE + TILE_SIZE, originLocation[1] + j*TILE_SIZE + TILE_SIZE);
             for (int x = 0; x < TILE_SIZE + 1; x++){
                 for (int y = 0; y <  TILE_SIZE + 1; y++){
-                    glm::vec2 loc = glm::vec2(x + i*TILE_SIZE + originLocation[0], y + j*TILE_SIZE + originLocation[2]);
+//                    glm::vec2 loc = glm::vec2(x + i*TILE_SIZE + originLocation[0], y + j*TILE_SIZE + originLocation[2]);
                     tiles[i][j]->terrain[x][y] = glm::vec3(x, noise(tiles[i][j], x, y), y);
                 }
             }
@@ -184,6 +184,7 @@ void Terrain::draw(){
     glm::vec3 color;
     for (int i = 0; i < GRID_SIZE; i++){
         for (int j = 0; j < GRID_SIZE; j++){
+//            std::cout<<"draw"<<i<<" "<<j<<" "<<tiles[i][j]<<std::endl;
             if (tiles[i][j] == NULL)
                 continue;
 
@@ -444,15 +445,16 @@ void Terrain::update(float seconds, glm::vec3 playerLocation){
 bool Terrain::collidePoint(glm::vec3 point){
     Tile* tile = getTile((int)(point[0] - originLocation[0]) / TILE_SIZE,
                           (int)(point[2] - originLocation[2]) / TILE_SIZE);
-//    if (tile != NULL){
-//        return tile->terrain[(int)(point[0] - originLocation[0]) % TILE_SIZE][(int)(point[2] - originLocation[2]) % TILE_SIZE][1] >
-//                     point[1] - originLocation[1];
-//    }
+    if (tile != NULL){
+        return tile->terrain[(int)(point[0] - originLocation[0]) % TILE_SIZE][(int)(point[2] - originLocation[2]) % TILE_SIZE][1] >
+                     point[1] - originLocation[1];
+    }
     return false;
 }
 
 Tile* Terrain::getTile(int i, int j){
     if (i < 0 || i > GRID_SIZE - 1 || j < 0 || j > GRID_SIZE - 1)
         return NULL;
+
     return tiles[i][j];
 }

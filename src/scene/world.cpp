@@ -96,7 +96,7 @@ void World::initialize(GLFunctions *gl)
 #ifdef TERRAIN
     m_terrain.initialize(gl);
 #endif
-    player = new Player(m_world_id, space, m, &terrain);
+    player = new Player(m_world_id, space, m, &m_terrain);
     player->initialize(gl);
 
 #ifdef PARTICLES

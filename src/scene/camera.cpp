@@ -18,7 +18,7 @@ Camera::Camera()
     pMatrix = glm::perspective(m_fov, 4.0f / 3.0f, 0.1f, 100.f);
     vMatrix = glm::mat4(1.0f);
 
-    m_position = glm::vec3(1.45f, 0.79f, 1.85f);
+    m_position = glm::vec3(3.45f, 0.79f, 8.85f);
 //    m_position = glm::vec3(8.58f, 3.027f, 7.475f);
     m_rotation = m_lastRotation = glm::vec2(-123, -21);
 }

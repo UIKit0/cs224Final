@@ -14,8 +14,7 @@ Player::Player(dWorldID w, dSpaceID s, dMass m, Terrain *t) :
 void Player::initialize(GLFunctions *gl){
     m_gl = gl;
     // TODO: load model
-//    shader.initialize(gl, "../../../../res/shaders/");
-    shader.initialize(gl, "../res/shaders/");
+    shader.initialize(gl);
     shader.compile(GL_VERTEX_SHADER, "terrain.vertex");
     shader.compile(GL_FRAGMENT_SHADER, "terrain.fragment");
     shader.link();

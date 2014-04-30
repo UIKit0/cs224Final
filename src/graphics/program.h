@@ -19,9 +19,9 @@ class Program
 {
 public:
     Program();
-    Program(GLFunctions *gl, const char *path = "shaders");
+    Program(GLFunctions *gl);
 
-    void initialize(GLFunctions *gl, const char *path = "shaders");
+    void initialize(GLFunctions *gl);
     bool compile(GLenum shaderType, const char *name);
     void link();
     void use();

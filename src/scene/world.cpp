@@ -96,7 +96,7 @@ void World::initialize(GLFunctions *gl)
 #ifdef TERRAIN
     m_terrain.initialize(gl);
 #endif
-    player = new Player(m_world_id, space, m, &terrain);
+    player = new Player(m_world_id, space, m, &m_terrain);
     player->initialize(gl);
 
 #ifdef PARTICLES
@@ -110,8 +110,8 @@ void World::initialize(GLFunctions *gl)
 #ifdef CONTOUR
     // TODO: support multiple contour drawn meshes
     QString f("monkey.obj");
-    Obj mesh(f);
 //    Obj mesh("cube.obj");
+    Obj mesh(f);
     m_contour.initialize(gl, mesh);
 #endif
 
@@ -139,7 +139,10 @@ void World::render(GLFunctions *gl)
 #endif
 
 #ifdef CONTOUR
+    g_model.pushMatrix();
+    g_model.mMatrix = glm::translate(glm::mat4(), glm::vec3(5,0,5));
     m_contour.draw();
+    g_model.popMatrix();
 #endif
 
 #ifdef PARTICLES

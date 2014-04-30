@@ -16,20 +16,22 @@ const QRegExp Program::rxAttributes = QRegExp(
 
 Program::Program()
     : m_gl(0)
-    , m_program(INVALID_VAR)
+    , m_program(INVALID_PROGRAM)
 {
 }
 
-Program::Program(GLFunctions *gl, const char *path)
+Program::Program(GLFunctions *gl)
 {
-    initialize(gl, path);
+    initialize(gl);
 }
 
-void Program::initialize(GLFunctions *gl, const char *path)
+void Program::initialize(GLFunctions *gl)
 {
     m_gl = gl;
+    m_program = INVALID_PROGRAM;
+
     glswInit();
-    glswSetPath(path, ".glsl");
+    glswSetPath(SHADER_PATH, ".glsl");
 
     // TODO: don't hardcode the directives
     // TODO: create a directives method
@@ -63,7 +65,7 @@ bool Program::compile(GLenum shaderType, const char *name)
 #ifdef DEBUG_OPENGL
     qDebug() << "--- Shader:" << name << "---";
 //    qDebug() << "uniforms:" << list;
-    qDebug() << shaderSource;
+//    qDebug() << shaderSource;
 
     GLint log_length;
     m_gl->glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &log_length);
@@ -82,7 +84,7 @@ bool Program::compile(GLenum shaderType, const char *name)
 
 void Program::link()
 {
-    Q_ASSERT(m_program != INVALID_PROGRAM);
+    Q_ASSERT(m_program == INVALID_PROGRAM);
 
     // create program
     m_program = m_gl->glCreateProgram();

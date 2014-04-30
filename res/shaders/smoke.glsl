@@ -81,7 +81,7 @@ uniform sampler2D tex_norm;
 uniform vec3 Ld = vec3(1.0,1.0,1.0);
 uniform vec3 LightPosition = vec3(-1.0, -1.0, -1.0);
 
-float granularity = 4.0;
+float granularity = 2.0;
 float invGranularity = 1.0/granularity;
 
 uniform mat4 proj_matrix;
@@ -114,7 +114,7 @@ void main(void)
     // Modify the depth according the texture values
     float d = lum(depth.xyz);
     vec4 cameraCoords = cs_position;
-    cameraCoords.z -= 8*(d);
+    cameraCoords.z -= 32*(1.0-d);
     vec4 clipcoords = proj_matrix * cameraCoords;
     vec4 ndCoords = vec4((clipcoords.xyz)/clipcoords.w,0);
     gl_FragDepth = ndCoords.z;
@@ -128,7 +128,7 @@ void main(void)
         //      Does proper lighting
 
         // Get axis of rotation
-        vec3 pos = cs_position.xyz;
+        vec3 pos = cs_position.xyz + d*normalize(cs_position.xyz);
         vec3 look = vec3(0,0,-1);
         vec3 axis = cross(pos, look);
         axis = normalize(axis);

@@ -40,7 +40,6 @@ void main(void)
 -- vertex.point ---------------------------------------
 
 float SCALE = 200.0;
-float distance;
 
 uniform mat4 proj_matrix;
 uniform mat4 mv_matrix;
@@ -57,6 +56,7 @@ out vec4 cs_position;
 
 void main(void)
 {
+    float distance = 1.0;
     vec4 pos = proj_matrix * mv_matrix * vec4(position, 1.0);
 
     if (pos.w == 0.0) {

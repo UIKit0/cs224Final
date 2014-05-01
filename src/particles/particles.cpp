@@ -169,6 +169,12 @@ void Particles::renderDepthPass()
     m_gl->glActiveTexture(GL_TEXTURE0);
     m_gl->glBindTexture(GL_TEXTURE_2D, m_texID[2]);
 
+    // Bind geometry
+    m_gl->glBindVertexArray(m_vao);
+    m_gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
+    m_gl->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(ParticleBuffer) * data.size(), data.data());
+
+
     glDrawArrays(GL_POINTS, 0, data.size());
 }
 
@@ -180,9 +186,9 @@ void Particles::renderLightingPass()
 
     m_gl->glUseProgram(m_smokeFx.program());
 
-//    m_gl->glBindVertexArray(m_vao);
-//    m_gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
-//    m_gl->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(ParticleBuffer) * data.size(), data.data());
+    m_gl->glBindVertexArray(m_vao);
+    m_gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
+    m_gl->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(ParticleBuffer) * data.size(), data.data());
 
     m_gl->glUniformMatrix4fv(m_pUniform, 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix));
     m_gl->glUniformMatrix4fv(m_vUniform, 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix));
@@ -224,15 +230,9 @@ void Particles::renderStencilPass()
 
     m_stencilPass.use();
 
-//    m_ShadowVolTech.SetLightPos(m_pointLight.Position);
-    // Set projection matrix
-//    m_gl->glUniformMatrix4fv(m_stencilPass.uniform("mvp_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix * g_camera.vMatrix * g_model.mMatrix));
     m_gl->glUniformMatrix4fv(m_stencilPass.uniform("vp_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix * g_camera.vMatrix));
     m_gl->glUniformMatrix4fv(m_stencilPass.uniform("m_matrix"), 1, GL_FALSE, glm::value_ptr(g_model.mMatrix));
 
-//    Pipeline p;
-//    p.SetCamera(m_pGameCamera->GetPos(), m_pGameCamera->GetTarget(), m_pGameCamera->GetUp());
-//    p.SetPerspectiveProj(m_persProjInfo);
 
     quintptr offset = 0;
     m_gl->glEnableVertexAttribArray(m_stencilPosAttrib);
@@ -245,6 +245,11 @@ void Particles::renderStencilPass()
 //    m_gl->glUniform1i(m_texUniform[2], 0);
 //    m_gl->glActiveTexture(GL_TEXTURE0+2);
 //    m_gl->glBindTexture(GL_TEXTURE_2D, m_texID[2]);
+
+    m_gl->glBindVertexArray(m_vao);
+    m_gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
+    m_gl->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(ParticleBuffer) * data.size(), data.data());
+
 
     glDrawArrays(GL_POINTS, 0, data.size());
 

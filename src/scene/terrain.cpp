@@ -34,7 +34,7 @@ void Terrain::initialize(GLFunctions *gl){
             tiles[i][j]->j = j;
             for (int x = 0; x < TILE_SIZE + 1; x++){
                 for (int y = 0; y <  TILE_SIZE + 1; y++){
-                    tiles[i][j]->terrain[x][y] = glm::vec3(x, noise(tiles[i][j], x, y), y);
+                    tiles[i][j]->terrain[x][y] = glm::vec3(x, height(tiles[i][j], x, y), y);
                 }
             }
             addObjects(i, j);
@@ -95,11 +95,19 @@ void Terrain::initialize(GLFunctions *gl){
 
 }
 
-float Terrain::noise(Tile *tile, int i, int j){
+float Terrain::height(Tile *tile, int i, int j){
     glm::vec2 loc = (tile->loc1 - tile->loc0) * glm::vec2((float)i,(float)j) / (float)TILE_SIZE + tile->loc0;
-    return fmax( MIN_Y, 10.0f*(glm::perlin(loc*NOISE_COORDINATE_RATIO)
-                  + 0.1f*glm::perlin(loc*NOISE_COORDINATE_RATIO*5.0f)
-                  + 0.01f*glm::perlin(loc*NOISE_COORDINATE_RATIO*20.0f)) );
+    return height(loc);
+}
+
+float Terrain::height(glm::vec2 loc){
+    return fmax(MIN_Y, 10.0f*raw_noise(loc));
+}
+
+float Terrain::raw_noise(glm::vec2 loc){
+    return glm::perlin(loc*NOISE_COORDINATE_RATIO)
+                      + 0.1f*glm::perlin(loc*NOISE_COORDINATE_RATIO*5.0f);
+                      + 0.01f*glm::perlin(loc*NOISE_COORDINATE_RATIO*20.0f);
 }
 
 void Terrain::updateVBO(int i, int j){
@@ -181,7 +189,7 @@ void Terrain::addObjects(int i, int j){
             }
             if (canPlace && rand() / (float)RAND_MAX > 0.1f){
                 tile->objects.append(TerrainObject(m_gl, this, tile, glm::vec3(x, height + EPSILON, y)));
-                tile->objects.last().rotation = glm::rotate(glm::mat4(), dRandReal()*(float)M_PI*2, glm::vec3(0,1.0f,0));
+//                tile->objects.last().rotation = glm::rotate(glm::mat4(), dRandReal()*(float)M_PI*2, glm::vec3(0,1.0f,0));
                 tile->objects.last().velocity = glm::vec3(dRandReal(), 0, dRandReal());
             }
         }
@@ -360,6 +368,8 @@ void Terrain::update(float seconds, glm::vec3 playerLocation){
             Tile* tile = tiles[u.ix][u.iy];
             tile->vo.vao = 0;
             tile->vo.vbo = 0;
+            tile->i = u.ix;
+            tile->j = u.iy;
 
             float minx, miny, maxx, maxy;
             minx = miny = maxx = maxy = FLT_MAX;
@@ -448,7 +458,7 @@ void Terrain::update(float seconds, glm::vec3 playerLocation){
             tile->loc1 = glm::vec2(maxx, maxy);
             for (int x = 0; x < TILE_SIZE + 1; x++){
                 for (int y = 0; y <  TILE_SIZE + 1; y++){
-                    tiles[u.ix][u.iy]->terrain[x][y] = glm::vec3(x, noise(tiles[u.ix][u.iy], x, y), y);
+                    tiles[u.ix][u.iy]->terrain[x][y] = glm::vec3(x, height(tiles[u.ix][u.iy], x, y), y);
                 }
             }
             updateVBO(u.ix, u.iy);
@@ -483,17 +493,27 @@ float Terrain::heightInTile(int i, int j, glm::vec3 location_in_tile){
     Tile* tile = getTile(i,j);
 
     Q_ASSERT(tile);
-    Q_ASSERT(location_in_tile[0] >= 0 && location_in_tile[2] >= 0);
-    int x = (int)location_in_tile[0];
-    int z = (int)location_in_tile[2];
-    float frac_x = location_in_tile[0] - x;
-    float frac_z = location_in_tile[2] - z;
+    glm::vec2 loc_in_tile(location_in_tile[0], location_in_tile[2]);
+    glm::vec2 loc = tile->loc0 + (tile->loc1 - tile->loc0) * loc_in_tile / (float)TILE_SIZE;
+    return height(loc);
+}
 
-    // Should never query for point outside of physical boundary of the tile
-    Q_ASSERT(x < TILE_SIZE && z < TILE_SIZE);
-    return tile->terrain[x + 1][z + 1][1]*frac_x*frac_z + tile->terrain[x][z + 1][1]*(1 - frac_x)*frac_z
-            + tile->terrain[x + 1][z][1]*frac_x*(1 - frac_z) + tile->terrain[x][z][1]*(1 - frac_x)*(1 - frac_z);
+glm::vec3 Terrain::tangentPlaneInTile(int i, int j, glm::vec3 location_in_tile){
+    Tile* tile = getTile(i,j);
 
+    Q_ASSERT(tile);
+    glm::vec2 loc_in_tile(location_in_tile[0], location_in_tile[2]);
+    glm::vec2 loc = tile->loc0 + (tile->loc1 - tile->loc0) * loc_in_tile / (float)TILE_SIZE;
+
+    float eps = 0.1f;
+    // Calculate x and z derivatives
+    float h0 = height(loc - glm::vec2(eps, 0));
+    float h1 = height(loc + glm::vec2(eps, 0));
+    float h2 = height(loc - glm::vec2(0, eps));
+    float h3 = height(loc + glm::vec2(0, eps));
+
+    return glm::vec3((h1 - h0)/eps/2.0f, 0, (h3 - h2)/eps/2.0f);
+    //return glm::normalize(glm::cross(glm::vec3(1.0f, (h1 - h0)/eps/2.0f, 0), glm::vec3(0, (h3 - h2)/eps/2.0f, 1.0f)));
 }
 
 bool Terrain::collideBullet(Bullet *bullet){

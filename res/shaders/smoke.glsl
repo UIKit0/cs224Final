@@ -54,6 +54,8 @@ out G_OUT
     vec2 texcoord;
 } g_out;
 
+out vec4 cs_position;
+
 void main(void)
 {
     vec4 pos = v_matrix * gl_in[0].gl_Position;
@@ -64,12 +66,14 @@ void main(void)
     // bottom left
     pos.x -= halfSize;
     pos.y += halfSize;
+    cs_position = pos;
     gl_Position = p_matrix * pos;
     g_out.texcoord = vec2(0.0, 1.0);
     EmitVertex();
 
     // top left
     pos.y -= fullSize;
+    cs_position = pos;
     gl_Position = p_matrix * pos;
     g_out.texcoord = vec2(0.0, 0.0);
     EmitVertex();
@@ -77,12 +81,14 @@ void main(void)
     // bottom right
     pos.y += fullSize;
     pos.x += fullSize;
+    cs_position = pos;
     gl_Position = p_matrix * pos;
     g_out.texcoord = vec2(1.0, 1.0);
     EmitVertex();
 
     // top right
     pos.y -= fullSize;
+    cs_position = pos;
     gl_Position = p_matrix * pos;
     g_out.texcoord = vec2(1.0, 0.0);
     EmitVertex();
@@ -185,7 +191,7 @@ void main(void)
     // Modify the depth according the texture values
     float d = lum(depth.xyz);
     vec4 cameraCoords = cs_position;
-    cameraCoords.z -= 2.0*(1.0-d);
+//    cameraCoords.z -= 2.0*(1.0-d);
     vec4 clipCoords = proj_matrix * cameraCoords;
     float ndc_depth = clipCoords.z / clipCoords.w;
     float Far = gl_DepthRange.far;
@@ -231,6 +237,8 @@ void main(void)
 
     float a = lum(alpha.xyz);
     color = vec4(ambLight + difLight, a);
+    color *= vec4(0.01,0.01,0.01,1);
+    color.xyz += normal.xyz;
 }
 
 -- fragment.point ---------------------------------------

@@ -8,10 +8,12 @@
  * we can filter by tile, which greatly improves collision detection efficiency.
  */
 
+#include "math.h"
 #include "scene/global.h"
 #include "particles/basicsmokeemitter.h"
 #include "interaction/bullet.h"
 #include "terrain.h"
+
 
 class Terrain;
 

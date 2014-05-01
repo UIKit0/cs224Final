@@ -175,6 +175,10 @@ void Particles::renderDepthPass()
     m_gl->glActiveTexture(GL_TEXTURE0+2);
     m_gl->glBindTexture(GL_TEXTURE_2D, m_texID[2]);
 
+    m_gl->glBindVertexArray(m_vao);
+    m_gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
+    m_gl->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(ParticleBuffer) * data.size(), data.data());
+
     glDrawArrays(GL_POINTS, 0, data.size());
 }
 

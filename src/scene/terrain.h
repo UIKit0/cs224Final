@@ -8,12 +8,12 @@
 #include <iostream>
 #include "scene/global.h"
 
-#define GRID_SIZE 11
-#define UPDATE_RADIUS 2
-#define TILE_SIZE 20
-#define NOISE_COORDINATE_RATIO 0.04f
+#define GRID_SIZE 5
+#define UPDATE_RADIUS 1
+#define TILE_SIZE 30
+#define NOISE_COORDINATE_RATIO 0.05f
 #define MIN_Y -5.0f
-#define EPSILON 0.01f
+#define EPSILON 0.3f
 #define TRIANGLES_PER_TILE_ELEMENT 2
 
 struct Update{
@@ -76,12 +76,15 @@ public:
     bool collideBullet(Bullet* bullet);
 
     float heightInTile(int i, int j, glm::vec3 location_in_tile);
+    glm::vec3 tangentPlaneInTile(int i, int j, glm::vec3 location_in_tile);
     // Returns NULL if the index is out of bounds or has an empty tile
     Tile* getTile(int i, int j);
 
 private:
     // Height for an element of a tile
-    float noise(Tile *tile, int i, int j);
+    float height(Tile *tile, int i, int j);
+    float height(glm::vec2 loc);
+    float raw_noise(glm::vec2 loc);
     void shiftTiles(int x, int y);
 
     Tile *tiles[GRID_SIZE][GRID_SIZE];

@@ -155,6 +155,8 @@ void Particles::renderDepthPass()
 
     m_depthPass.use();
 
+    m_gl->glBindVertexArray(m_vao);
+
     // Set projection matrix
     m_gl->glUniformMatrix4fv(m_depthPass.uniform("mv_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix * g_model.mMatrix));
 

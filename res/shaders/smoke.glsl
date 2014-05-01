@@ -191,7 +191,6 @@ void main(void)
     color = vec4(ambLight + difLight, a);
 }
 
-
 -- fragment.debug ---------------------------------------
 
 uniform sampler2D tex_color;

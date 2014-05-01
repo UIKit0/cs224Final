@@ -65,7 +65,7 @@ void Particles::initialize(GLFunctions *gl, int maxParticles)
     // Load textures
     int texNum = 4;
     QImage* textures[texNum];
-    textures[0] = new QImage(":/textures/smoke_alpha2.png");
+    textures[0] = new QImage(":/textures/smoke_alpha2.1.png");
     textures[1] = new QImage(":/textures/smoke_color2.png");
     textures[2] = new QImage(":/textures/smoke_depth2.png");
     textures[3] = new QImage(":/textures/smoke_normal2.png");

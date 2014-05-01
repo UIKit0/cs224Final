@@ -156,6 +156,8 @@ void Particles::renderDepthPass()
     m_depthPass.use();
 
     m_gl->glBindVertexArray(m_vao);
+    m_gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
+    m_gl->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(ParticleBuffer) * data.size(), data.data());
 
     // Set projection matrix
     m_gl->glUniformMatrix4fv(m_depthPass.uniform("mv_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix * g_model.mMatrix));
@@ -169,7 +171,7 @@ void Particles::renderDepthPass()
     m_gl->glVertexAttribPointer(m_depthSizeAttrib, 1, GL_FLOAT, GL_FALSE, sizeof(ParticleBuffer), (const void *) offset);
 
     // Bind depth texture
-    m_gl->glUniform1i(m_texUniform[2], 0);
+    m_gl->glUniform1i(m_depthPass.uniform("tex_depth"), 0);
     m_gl->glActiveTexture(GL_TEXTURE0+2);
     m_gl->glBindTexture(GL_TEXTURE_2D, m_texID[2]);
 
@@ -184,9 +186,9 @@ void Particles::renderLightingPass()
 
     m_gl->glUseProgram(m_smokeFx.program());
 
-    m_gl->glBindVertexArray(m_vao);
-    m_gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
-    m_gl->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(ParticleBuffer) * data.size(), data.data());
+//    m_gl->glBindVertexArray(m_vao);
+//    m_gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
+//    m_gl->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(ParticleBuffer) * data.size(), data.data());
 
     m_gl->glUniformMatrix4fv(m_pUniform, 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix));
     m_gl->glUniformMatrix4fv(m_vUniform, 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix));

@@ -248,6 +248,8 @@ void Terrain::draw(){
                 m_gl->glUniform3fv(shader.uniform("terrain_color"), 1, glm::value_ptr(color));
                 m_gl->glDrawArrays(GL_TRIANGLES, 0, 3*3*2);
                 g_model.popMatrix();
+
+                tiles[i][j]->objects[k].draw();
             }
         }
     }
@@ -516,8 +518,8 @@ glm::vec3 Terrain::tangentPlaneInTile(int i, int j, glm::vec3 location_in_tile){
     //return glm::normalize(glm::cross(glm::vec3(1.0f, (h1 - h0)/eps/2.0f, 0), glm::vec3(0, (h3 - h2)/eps/2.0f, 1.0f)));
 }
 
-bool Terrain::collideBullet(Bullet *bullet){
-    const dReal *loc = dBodyGetPosition(bullet->body);
+bool Terrain::collideMissile(Missile *missile){
+    const dReal *loc = dBodyGetPosition(missile->body);
     glm::vec3 point(loc[0], loc[1], loc[2]);
     glm::vec3 point_in_terrain = point - originLocation;
     int i = (int)point_in_terrain[0] / TILE_SIZE;
@@ -528,7 +530,7 @@ bool Terrain::collideBullet(Bullet *bullet){
         glm::vec3 point_in_tile = point_in_terrain - glm::vec3(i*(float)TILE_SIZE, 0.0f, j*(float)TILE_SIZE);
         for (int i = 0; i < tile->objects.size(); i++){
             if (tile->objects[i].radius*tile->objects[i].radius > glm::length2(point_in_tile - tile->objects[i].location)){
-                tile->objects[i].onBulletHit(*bullet);
+                tile->objects[i].onMissileHit(*missile);
                 return true;
             }
         }
@@ -544,4 +546,8 @@ Tile* Terrain::getTile(int i, int j){
         return NULL;
 
     return tiles[i][j];
+}
+
+glm::vec3 Terrain::trueLocation(Tile* tile, glm::vec3 location_in_tile){
+    return originLocation + glm::vec3((float)tile->i, 0, (float)tile->j) * (float)TILE_SIZE + location_in_tile;
 }

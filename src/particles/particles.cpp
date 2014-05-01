@@ -121,8 +121,6 @@ void Particles::draw()
 {
     Q_ASSERT(m_gl != NULL);
 
-
-
     // Shadows!
     // 1. Render scene into depth buffer
     renderDepthPass();

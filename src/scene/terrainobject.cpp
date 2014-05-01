@@ -11,11 +11,12 @@ TerrainObject::TerrainObject(GLFunctions *gl, Terrain *t, Tile *tile, glm::vec3 
 {
 }
 
-void TerrainObject::onBulletHit(Bullet &bullet){
-    health -= bullet.damage;
-    if (health < 5.0f && particles != NULL){
+void TerrainObject::onMissileHit(Missile &missile){
+    health -= missile.damage;
+    if (health < 5.0f && particles == NULL){
         particles = new BasicSmokeEmitter(g_world, g_mass);
-//        particles->initialize(m_gl);
+        particles->initialize(m_gl);
+        particles->location = terrain->trueLocation(tile, location);
         std::cout<<"smoking now"<<std::endl;
     }
 }

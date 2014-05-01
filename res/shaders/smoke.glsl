@@ -20,20 +20,84 @@ void main(void)
     gl_Position = proj_matrix * mv_matrix * vec4(position, 1.0);
 }
 
+-- vertex.billboard -------------------------------------------
+
+in vec3 position;
+in float size;
+
+out V_OUT
+{
+    float size;
+} v_out;
+
+void main(void)
+{
+    v_out.size = size;
+    gl_Position = vec4(position, 1.0);
+}
+
+-- geometry.billboard -----------------------------------------
+
+layout(points) in;
+layout(triangle_strip, max_vertices = 4) out;
+
+uniform mat4 vp_matrix;
+uniform vec3 eyePos;
+
+in V_OUT
+{
+    float size;
+} v_in;
+
+out G_OUT
+{
+    vec2 texcoord;
+} g_out;
+
+void main(void)
+{
+    vec3 pos = gl_in[0].gl_Position.xyz;
+    vec3 viewDir = normalize(eyePos - pos);
+    vec3 right = cross(viewDir, vec3(0.0, 1.0, 0.0));
+
+    pos = pos - (right * (v_in.size / 2.0));
+    gl_Position = vp_matrix * vec4(pos, 1.0);
+    g_out.texcoord = vec2(0.0, 1.0);
+    EmitVertex();
+
+    pos.y = pos.y + v_in.size;
+    gl_Position = vp_matrix * vec4(pos, 1.0);
+    g_out.texcoord = vec2(0.0, 1.0);
+    EmitVertex();
+
+    pos.y = pos.y - v_in.size;
+    gl_Position = vp_matrix * vec4(pos, 1.0);
+    g_out.texcoord = vec2(1.0, 0.0);
+    EmitVertex();
+
+    pos.y = pos.y + v_in.size;
+    gl_Position = vp_matrix * vec4(pos, 1.0);
+    g_out.texcoord = vec2(1.0, 1.0);
+    EmitVertex();
+
+    EndPrimitive();
+}
+
+
 -- fragment.debug ---------------------------------------
 
 uniform sampler2D tex_color;
 
-in V_OUT
+in G_OUT
 {
     vec2 texcoord;
-} f_in;
+} g_in;
 
 out vec4 color;
 
 void main(void)
 {
-//    color = texture(tex_color, f_in.texcoord);
+//    color = texture(tex_color, g_in.texcoord);
     color = vec4(1.0, 0, 0, 1.0);
 }
 

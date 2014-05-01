@@ -21,30 +21,29 @@ void Particles::initialize(GLFunctions *gl, int maxParticles)
     m_maxParticles = maxParticles;
 
     // Depth shader
-    m_depthPass.initialize(gl);
-    m_depthPass.compile(GL_VERTEX_SHADER,"depthPass.vertex.depth");
-    m_depthPass.compile(GL_FRAGMENT_SHADER,"depthPass.fragment.depth");
-    m_depthPass.link();
+//    m_depthPass.initialize(gl);
+//    m_depthPass.compile(GL_VERTEX_SHADER,"depthPass.vertex.depth");
+//    m_depthPass.compile(GL_FRAGMENT_SHADER,"depthPass.fragment.depth");
+//    m_depthPass.link();
 
-    m_depthPosAttrib = m_depthPass.attrib("position");
+//    m_depthPosAttrib = m_depthPass.attrib("position");
 
     // Stencil shader
-    m_stencilPass.initialize(gl);
-    m_stencilPass.compile(GL_VERTEX_SHADER,"stencilPass.vertex.stencil");
-    m_stencilPass.compile(GL_GEOMETRY_SHADER,"stencilPass.geometry.stencil");
-    m_stencilPass.compile(GL_FRAGMENT_SHADER, "stencilPass.fragment.stencil");
-    m_stencilPass.link();
+//    m_stencilPass.initialize(gl);
+//    m_stencilPass.compile(GL_VERTEX_SHADER,"stencilPass.vertex.stencil");
+//    m_stencilPass.compile(GL_GEOMETRY_SHADER,"stencilPass.geometry.stencil");
+//    m_stencilPass.compile(GL_FRAGMENT_SHADER, "stencilPass.fragment.stencil");
+//    m_stencilPass.link();
 
     // Smoke effects
     m_smokeFx.initialize(gl);
-    m_smokeFx.compile(GL_VERTEX_SHADER, "smoke.vertex.point");
-    m_smokeFx.compile(GL_FRAGMENT_SHADER, "smoke.fragment.point");
+    m_smokeFx.compile(GL_VERTEX_SHADER, "smoke.vertex.billboard");
+    m_smokeFx.compile(GL_GEOMETRY_SHADER, "smoke.geometry.billboard");
+    m_smokeFx.compile(GL_FRAGMENT_SHADER, "smoke.fragment.debug");
     m_smokeFx.link();
 
-    m_projUniform = m_smokeFx.uniform("proj_matrix");
-    m_viewUniform = m_smokeFx.uniform("V_Matrix");
-    m_mvUniform = m_smokeFx.uniform("mv_matrix");
-    m_lightUniform = m_smokeFx.uniform("LightPosition");
+    m_vpUniform = m_smokeFx.uniform("vp_matrix");
+    m_eyeUniform = m_smokeFx.uniform("eyePos");
 
     m_posAttrib = m_smokeFx.attrib("position");
     m_sizeAttrib = m_smokeFx.attrib("size");
@@ -167,17 +166,16 @@ void Particles::renderDepthPass()
 
 void Particles::renderLightingPass()
 {
-    m_gl->glEnable(GL_PROGRAM_POINT_SIZE);
+//    m_gl->glEnable(GL_PROGRAM_POINT_SIZE);
     m_gl->glUseProgram(m_smokeFx.program());
 
     m_gl->glBindVertexArray(m_vao);
     m_gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
     m_gl->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(ParticleBuffer) * data.size(), data.data());
 
-    m_gl->glUniformMatrix4fv(m_projUniform, 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix));
-    m_gl->glUniformMatrix4fv(m_viewUniform, 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix));
-    m_gl->glUniformMatrix4fv(m_mvUniform, 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix * g_model.mMatrix));
-    m_gl->glUniform3f(m_lightUniform, 0.0f, 10.0f, 4.0f);
+    m_gl->glUniformMatrix4fv(m_vpUniform, 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix));
+    m_gl->glUniform3fv(m_eyeUniform, 1, glm::value_ptr(g_camera.m_lookAt));
+//    m_gl->glUniform3f(m_lightUniform, 0.0f, 10.0f, 4.0f);
 
     // Vertex attributes
     quintptr offset = 0;

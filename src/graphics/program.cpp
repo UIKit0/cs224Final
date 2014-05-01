@@ -65,7 +65,7 @@ bool Program::compile(GLenum shaderType, const char *name)
 #ifdef DEBUG_OPENGL
     qDebug() << "--- Shader:" << name << "---";
 //    qDebug() << "uniforms:" << list;
-//    qDebug() << shaderSource;
+    qDebug() << shaderSource;
 
     GLint log_length;
     m_gl->glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &log_length);

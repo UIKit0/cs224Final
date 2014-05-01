@@ -45,9 +45,8 @@ private:
     GLint m_sizeAttrib;
     GLint m_posAttrib;
 
-    GLuint m_projUniform;
-    GLuint m_viewUniform;
-    GLuint m_mvUniform;
+    GLuint m_vpUniform;
+    GLuint m_eyeUniform;
 
     GLuint m_lightUniform;
 
@@ -70,7 +69,6 @@ private:
     void renderDepthPass();
     void renderLightingPass();
     void renderStencilPass();
-
 };
 
 #endif // PARTICLE_H

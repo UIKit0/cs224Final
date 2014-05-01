@@ -1,7 +1,5 @@
 #include "world.h"
 
-#define PARTICLES
-
 World::World()
     : m_screenWidth(500)
     , m_screenHeight(500)

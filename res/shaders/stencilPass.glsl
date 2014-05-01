@@ -65,6 +65,17 @@ void main()
     vec3 Normal = cross(e1,e2);
     vec3 LightDir = gLightPos - WorldPos[0];
 
+
+    // Calculate front top vertices
+    //  Extend bottom two vertices far away
+    //  Emit a quad
+
+    // Emit the degenerate endpoints
+
+    // Calculate back top vertices
+    //  Extend bottom two vertices far away
+    //  Emit a quad
+
     if (dot(Normal, LightDir) > 0.000001) {
 
         Normal = cross(e3,e1);
@@ -144,6 +155,8 @@ void main(void)
 
     float fullSize = v_in[0].size;
     float halfSize = v_in[0].size / 2.0;
+
+    // TODO: Outline is in Shadow Volumes how to
 
     // bottom left
     pos.x -= halfSize;

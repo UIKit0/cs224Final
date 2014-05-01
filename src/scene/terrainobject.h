@@ -8,14 +8,24 @@
  * we can filter by tile, which greatly improves collision detection efficiency.
  */
 
+
 #include "math.h"
 #include "scene/global.h"
 #include "particles/basicsmokeemitter.h"
 #include "interaction/missile.h"
 #include "terrain.h"
 
+//// THIS IS SO BAD, BUT I NO C++ WELL, SO WHATEVER
+enum Type{
+    BUNKER,     // Top of hills
+    BUILDING,   // Slopes of hills
+    BOAT,       // Lakes
+    TANK        // Anywhere (even lakes)
+};
 
 class Terrain;
+
+#define BOAT_SIZE 2
 
 class TerrainObject
 {
@@ -35,7 +45,7 @@ public:
     /*
      * Positioning fields
      */
-    // Relative to the tile
+    // Relative to the tile, in the tile coordinate system
     glm::vec3 location;
     // Rotation matrix
     glm::mat4 rotation;
@@ -47,7 +57,9 @@ public:
      */
     float health;
     float radius;
+    Type type;
 
+private:
     // Used only to pass onto the particles
     GLFunctions *m_gl;
     BasicSmokeEmitter *particles;

@@ -175,22 +175,22 @@ void Terrain::addObjects(int i, int j){
             }
         }
     }
-    for (int x = 3; x < TILE_SIZE - 2; x += 2){
-        for (int y = 3; y < TILE_SIZE - 2; y += 2){
-            float height = MIN_Y;
+
+    for (int x = BOAT_SIZE; x < TILE_SIZE - BOAT_SIZE; x += 2){
+        for (int y = BOAT_SIZE; y < TILE_SIZE - BOAT_SIZE; y += 2){
             bool canPlace = true;
-            for (int ii = -3; ii < 4; ii++){
-                for (int jj = -3; jj < 4; jj++){
-                    if (tile->terrain[x + ii][y + jj][1] != height){
+            for (int ii = -BOAT_SIZE; ii <= BOAT_SIZE; ii++){
+                for (int jj = -BOAT_SIZE; jj <= BOAT_SIZE; jj++){
+                    if (tile->terrain[x + ii][y + jj][1] != MIN_Y){
                         canPlace = false;
                         break;
                     }
                 }
             }
-            if (canPlace && rand() / (float)RAND_MAX > 0.1f){
-                tile->objects.append(TerrainObject(m_gl, this, tile, glm::vec3(x, height + EPSILON, y)));
-//                tile->objects.last().rotation = glm::rotate(glm::mat4(), dRandReal()*(float)M_PI*2, glm::vec3(0,1.0f,0));
+            if (canPlace && rand() / (float)RAND_MAX > 0.3f){
+                tile->objects.append(TerrainObject(m_gl, this, tile, glm::vec3(x, tile->terrain[x][y][1] + EPSILON, y)));
                 tile->objects.last().velocity = glm::vec3(dRandReal(), 0, dRandReal());
+                tile->objects.last().type = Type::BOAT;
             }
         }
     }
@@ -475,11 +475,13 @@ void Terrain::update(float seconds, glm::vec3 playerLocation){
             break;
         }
         else{
-            // Do Nothing
+            // Should never happen
+            Q_ASSERT(false);
         }
     }
 }
 
+// TODO: make this also check for collisions with objects
 bool Terrain::collidePoint(glm::vec3 point){
     Tile* tile = getTile((int)(point[0] - originLocation[0]) / TILE_SIZE,
                           (int)(point[2] - originLocation[2]) / TILE_SIZE);
@@ -515,7 +517,6 @@ glm::vec3 Terrain::tangentPlaneInTile(int i, int j, glm::vec3 location_in_tile){
     float h3 = height(loc + glm::vec2(0, eps));
 
     return glm::vec3((h1 - h0)/eps/2.0f, 0, (h3 - h2)/eps/2.0f);
-    //return glm::normalize(glm::cross(glm::vec3(1.0f, (h1 - h0)/eps/2.0f, 0), glm::vec3(0, (h3 - h2)/eps/2.0f, 1.0f)));
 }
 
 bool Terrain::collideMissile(Missile *missile){
@@ -550,4 +551,8 @@ Tile* Terrain::getTile(int i, int j){
 
 glm::vec3 Terrain::trueLocation(Tile* tile, glm::vec3 location_in_tile){
     return originLocation + glm::vec3((float)tile->i, 0, (float)tile->j) * (float)TILE_SIZE + location_in_tile;
+}
+
+glm::vec2 Terrain::perlinLocation(Tile* tile, glm::vec3 location_in_tile){
+    return tile->loc0 + (tile->loc1 - tile->loc0) * glm::vec2(location_in_tile[0], location_in_tile[2]) * (1.0f/TILE_SIZE);
 }

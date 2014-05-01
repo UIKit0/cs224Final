@@ -25,7 +25,8 @@ void Missile::update(float seconds){
     time += seconds;
 
     // Decay power over time/distance
-    damage = damage*0.98f;
+//    damage = damage*0.95f;
     if (time > LIFETIME)
         active = false;
+
 }

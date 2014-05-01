@@ -8,6 +8,7 @@ TerrainObject::TerrainObject(GLFunctions *gl, Terrain *t, Tile *tile, glm::vec3 
   , m_gl(gl)
   , health(10.0f)
   , radius(0.5f)
+  , type(Type::BUNKER)
 {
 }
 
@@ -27,6 +28,27 @@ void TerrainObject::update(float seconds){
 
     if (glm::length2(velocity) == 0){
         return;
+    }
+
+    if (type == Type::BOAT){
+        bool hit = false;
+        glm::vec3 hitdir;
+        for (int i = -BOAT_SIZE; i <= BOAT_SIZE; i++){
+            for (int j = -BOAT_SIZE; j <= BOAT_SIZE; j++){
+                glm::vec2 loc = terrain->perlinLocation(tile, location + glm::vec3(i, 0, j));
+                if (terrain->height(loc) > MIN_Y + EPSILON){
+                    hit = true;
+                    hitdir = glm::vec3(i, 0, j);
+                    break;
+                }
+            }
+            if (hit) break;
+        }
+        if (hit){
+            Q_ASSERT(!(hitdir[0] == 0 && hitdir[2] == 0));
+            velocity = velocity*-1.0f;
+            location += velocity*seconds;
+        }
     }
 
     location += velocity*seconds;
@@ -58,7 +80,7 @@ void TerrainObject::update(float seconds){
         rotation = glm::rotate(glm::mat4(), (float)atan2(tangent[0], 1.0f), glm::vec3(0.0f, 0.0f, 1.0f));
         rotation = glm::rotate(rotation, -(float)atan2(tangent[2], 1.0f), glm::vec3(1.0f, 0.0f, 0.0f));
         rotation = glm::rotate(rotation, -(float)atan2(velocity[2], velocity[0]), glm::vec3(0.0f, 1.0f, 0.0f));
-        // TODO: rename the rotation matrix
+        // TODO: rename the rotation matrix, or not, whatever
         rotation = glm::translate(rotation, glm::vec3(0, EPSILON, 0));
     }
 }

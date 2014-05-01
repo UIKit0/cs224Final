@@ -118,7 +118,6 @@ void Player::update(float seconds){
         missiles[i]->update(seconds);
         if (missiles[i]->active){
             // Collide with terrain
-            const dReal *pos = dBodyGetPosition(missiles[i]->body);
             if (terrain->collideMissile(missiles[i])){
                 missiles[i]->active = false;
             }

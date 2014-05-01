@@ -39,7 +39,7 @@ void Particles::initialize(GLFunctions *gl, int maxParticles)
     m_smokeFx.initialize(gl);
     m_smokeFx.compile(GL_VERTEX_SHADER, "smoke.vertex.billboard");
     m_smokeFx.compile(GL_GEOMETRY_SHADER, "smoke.geometry.billboard");
-    m_smokeFx.compile(GL_FRAGMENT_SHADER, "smoke.fragment.debug");
+    m_smokeFx.compile(GL_FRAGMENT_SHADER, "smoke.fragment.point");
     m_smokeFx.link();
 
     m_pUniform = m_smokeFx.uniform("p_matrix");
@@ -68,37 +68,37 @@ void Particles::initialize(GLFunctions *gl, int maxParticles)
     textures[2] = new QImage(":/textures/smoke_depth.png");
     textures[3] = new QImage(":/textures/smoke_normal.png");
 
-//    m_texUniform[0] = m_smokeFx.uniform("tex_alpha");
-//    m_texUniform[1] = m_smokeFx.uniform("tex_color");
-//    m_texUniform[2] = m_smokeFx.uniform("tex_depth");
-//    m_texUniform[3] = m_smokeFx.uniform("tex_norm");
+    m_texUniform[0] = m_smokeFx.uniform("tex_alpha");
+    m_texUniform[1] = m_smokeFx.uniform("tex_color");
+    m_texUniform[2] = m_smokeFx.uniform("tex_depth");
+    m_texUniform[3] = m_smokeFx.uniform("tex_norm");
 
-//    GLenum Tslots[4];
-//    Tslots[0] = GL_TEXTURE0;
-//    Tslots[1] = GL_TEXTURE1;
-//    Tslots[2] = GL_TEXTURE2;
-//    Tslots[3] = GL_TEXTURE3;
+    GLenum Tslots[4];
+    Tslots[0] = GL_TEXTURE0;
+    Tslots[1] = GL_TEXTURE1;
+    Tslots[2] = GL_TEXTURE2;
+    Tslots[3] = GL_TEXTURE3;
 
-//    m_gl->glGenTextures(texNum, m_texID);
+    m_gl->glGenTextures(texNum, m_texID);
 
-//    for(int i = 0; i < texNum; i++)
-//    {
-//        if (textures[i]->isNull())
-//        {
-//            qCritical("Unable to load texture!");
-//            return;
-//        }
+    for(int i = 0; i < texNum; i++)
+    {
+        if (textures[i]->isNull())
+        {
+            qCritical("Unable to load texture!");
+            return;
+        }
 
-//        QImage img = textures[i]->convertToFormat(QImage::Format_RGBA8888);
+        QImage img = textures[i]->convertToFormat(QImage::Format_RGBA8888);
 
-//        m_gl->glActiveTexture(Tslots[i]);
-//        m_gl->glBindTexture(GL_TEXTURE_2D, m_texID[i]);
-//        m_gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
-//        m_gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
-//        m_gl->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img.width(), img.height(),
-//                     0, GL_RGBA, GL_UNSIGNED_BYTE, img.bits());
-//        delete textures[i];
-//    }
+        m_gl->glActiveTexture(Tslots[i]);
+        m_gl->glBindTexture(GL_TEXTURE_2D, m_texID[i]);
+        m_gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
+        m_gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+        m_gl->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img.width(), img.height(),
+                     0, GL_RGBA, GL_UNSIGNED_BYTE, img.bits());
+        delete textures[i];
+    }
 }
 
 void Particles::setBufferSize(int size)
@@ -186,12 +186,12 @@ void Particles::renderLightingPass()
     m_gl->glVertexAttribPointer(m_sizeAttrib, 1, GL_FLOAT, GL_FALSE, sizeof(ParticleBuffer), (const void *) offset);
 
     // Bind textures
-//    for(GLuint i = 0; i < 4; i++)
-//    {
-//        m_gl->glUniform1i(m_texUniform[i], i);
-//        m_gl->glActiveTexture(GL_TEXTURE0+i);
-//        m_gl->glBindTexture(GL_TEXTURE_2D, m_texID[i]);
-//    }
+    for(GLuint i = 0; i < 4; i++)
+    {
+        m_gl->glUniform1i(m_texUniform[i], i);
+        m_gl->glActiveTexture(GL_TEXTURE0+i);
+        m_gl->glBindTexture(GL_TEXTURE_2D, m_texID[i]);
+    }
 
     glDrawArrays(GL_POINTS, 0, data.size());
 }

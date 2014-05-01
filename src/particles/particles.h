@@ -45,8 +45,8 @@ private:
     GLint m_sizeAttrib;
     GLint m_posAttrib;
 
-    GLuint m_vpUniform;
-    GLuint m_eyeUniform;
+    GLuint m_pUniform;
+    GLuint m_vUniform;
 
     GLuint m_lightUniform;
 

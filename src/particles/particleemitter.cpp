@@ -67,7 +67,7 @@ void ParticleEmitter::update(float seconds){
 
     //update buffer
     for (int i = 0; i < particles.size(); ++i){
-        Particles::setBufferValue(i, particles[i].getPosition(), particles[i].scale * 5);
+        Particles::setBufferValue(i, particles[i].getPosition(), particles[i].scale);
     }
 }
 

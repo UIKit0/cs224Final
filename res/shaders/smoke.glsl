@@ -41,13 +41,13 @@ void main(void)
 layout(points) in;
 layout(triangle_strip, max_vertices = 4) out;
 
-uniform mat4 vp_matrix;
-uniform vec3 eyePos;
+uniform mat4 p_matrix;
+uniform mat4 v_matrix;
 
 in V_OUT
 {
     float size;
-} v_in;
+} v_in[];
 
 out G_OUT
 {
@@ -56,27 +56,34 @@ out G_OUT
 
 void main(void)
 {
-    vec3 pos = gl_in[0].gl_Position.xyz;
-    vec3 viewDir = normalize(eyePos - pos);
-    vec3 right = cross(viewDir, vec3(0.0, 1.0, 0.0));
+    vec4 pos = v_matrix * gl_in[0].gl_Position;
 
-    pos = pos - (right * (v_in.size / 2.0));
-    gl_Position = vp_matrix * vec4(pos, 1.0);
+    float fullSize = v_in[0].size;
+    float halfSize = v_in[0].size / 2.0;
+
+    // bottom left
+    pos.x -= halfSize;
+    pos.y += halfSize;
+    gl_Position = p_matrix * pos;
     g_out.texcoord = vec2(0.0, 1.0);
     EmitVertex();
 
-    pos.y = pos.y + v_in.size;
-    gl_Position = vp_matrix * vec4(pos, 1.0);
+    // top left
+    pos.y -= fullSize;
+    gl_Position = p_matrix * pos;
     g_out.texcoord = vec2(0.0, 1.0);
     EmitVertex();
 
-    pos.y = pos.y - v_in.size;
-    gl_Position = vp_matrix * vec4(pos, 1.0);
+    // bottom right
+    pos.y += fullSize;
+    pos.x += fullSize;
+    gl_Position = p_matrix * pos;
     g_out.texcoord = vec2(1.0, 0.0);
     EmitVertex();
 
-    pos.y = pos.y + v_in.size;
-    gl_Position = vp_matrix * vec4(pos, 1.0);
+    // top right
+    pos.y -= fullSize;
+    gl_Position = p_matrix * pos;
     g_out.texcoord = vec2(1.0, 1.0);
     EmitVertex();
 

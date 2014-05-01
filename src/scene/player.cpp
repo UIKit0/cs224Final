@@ -1,13 +1,11 @@
 #include "player.h"
 
-Player::Player(dWorldID w, dSpaceID s, dMass m, Terrain *t) :
+Player::Player(dSpaceID s, Terrain *t) :
     up(0,1.0f,0),
     roll(0),
     terrain(t)
 {
-    world = w;
     space = s;
-    mass = m;
     timer = 0;
 }
 
@@ -121,7 +119,7 @@ void Player::update(float seconds){
         if (bullets[i]->active){
             // Collide with terrain
             const dReal *pos = dBodyGetPosition(bullets[i]->body);
-            if (terrain->collidePoint(glm::vec3(pos[0],pos[1],pos[2]))){
+            if (terrain->collideBullet(bullets[i])){
                 bullets[i]->active = false;
             }
         }
@@ -134,8 +132,8 @@ void Player::update(float seconds){
 
 void Player::fire(){
     if (timer > COOLDOWN){
-        bullets.append(new Bullet(world, space, mass, location - 1.5f*glm::cross(facing, left), facing*10.0f));
-        bullets.last()->power = 1.0f;
+        bullets.append(new Bullet(space, location - 1.5f*glm::cross(facing, left), facing*10.0f));
+        bullets.last()->damage = 1.0f;
         std::cout<<"fired "<<bullets.size()<<std::endl;
         timer = 0;
     }

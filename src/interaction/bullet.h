@@ -4,6 +4,7 @@
 #include "ode/ode.h"
 #include "glm/vec3.hpp"
 
+#include "scene/global.h"
 #include "interaction/collisions.h"
 
 #define BULLET_CATEGORY_BITS 8
@@ -12,19 +13,18 @@
 class Bullet
 {
 public:
-    Bullet(dWorldID w, dSpaceID s, dMass m, glm::vec3 loc, glm::vec3 vel);
+    Bullet(dSpaceID s, glm::vec3 loc, glm::vec3 vel);
 
     void destroy();
     void update(float seconds);
 
-    float power;
+    float damage;
     bool active;
 
     dBodyID body;
     dGeomID geom;
 
     float time;
-
 };
 
 #endif // BULLET_H

@@ -9,12 +9,12 @@
 #include "scene/terrain.h"
 #include "graphics/program.h"
 
-#define COOLDOWN 0.1f
+#define COOLDOWN 0.3f
 
 class Player
 {
 public:
-    Player(dWorldID w, dSpaceID s, dMass m, Terrain* t);
+    Player(dSpaceID s, Terrain* t);
     void initialize(GLFunctions *gl);
 
     void update(float seconds);

@@ -10,13 +10,14 @@
 #include "scene/global.h"
 #include "graphics/program.h"
 #include "scene/terrainobject.h"
+#include "interaction/bullet.h"
 
 #define GRID_SIZE 11
 #define UPDATE_RADIUS 2
 #define TILE_SIZE 20
 #define NOISE_COORDINATE_RATIO 0.04f
-#define MIN_Y -7.0f
-
+#define MIN_Y -5.0f
+#define EPSILON 0.01f
 
 struct Update{
     int ix;
@@ -44,6 +45,7 @@ struct Tile{
     // Perlin noise coordinates at the corners, together they describe the tile in "perlin space"
     glm::vec2 loc0;
     glm::vec2 loc1;
+    QList<TerrainObject> objects;
 };
 
 #define TRIANGLES_PER_TILE_ELEMENT 2
@@ -68,6 +70,7 @@ public:
     void draw();
 
     bool collidePoint(glm::vec3 point);
+    bool collideBullet(Bullet* bullet);
 
 private:
 
@@ -86,8 +89,7 @@ private:
 
     QList<VO> vos;
 
-    QList<glm::vec3> objects;
-    QList<TerrainObject*> static_objects;
+//    QList<TerrainObject*> static_objects;
     GLuint object_vao;
     GLuint object_vbo;
 

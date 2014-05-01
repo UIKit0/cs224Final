@@ -59,7 +59,6 @@ private:
 
     // ODE stuff that is only created once per world
     dSpaceID space;
-    dMass m;
 
     // PARTICLES
     QList<ParticleEmitter*> emitters;

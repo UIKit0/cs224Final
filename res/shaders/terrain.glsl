@@ -19,5 +19,19 @@ out vec4 color;
 
 void main(void)
 {
-    color = vec4(terrain_color, 1.0);
+    float far = 80.0f;
+    float near = 40.0f;
+    float fog = 1;
+    float distance = gl_FragCoord.z/gl_FragCoord.w;
+    vec3 target_color = vec3(1.0f,1.0f,1.0f);
+
+    if (distance > near && distance < far){
+        // TODO: make this a different function to look better
+        fog = (far - distance)/(far - near);
+    }
+    if (distance > far){
+        fog = 0;
+    }
+
+    color = vec4(terrain_color*fog + target_color*(1 - fog), 1.0f);
 }

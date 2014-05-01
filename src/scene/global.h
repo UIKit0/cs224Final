@@ -16,9 +16,9 @@ typedef QOpenGLFunctions_2_0 GLFunctions;
 //#define DEBUG_TRIANGLE
 
 #ifndef DEBUG_TRIANGLE
-//    #define TERRAIN
+    #define TERRAIN
 //    #define CONTOUR
-    #define PARTICLES
+//    #define PARTICLES
 #endif
 
 #include "matrixstack.h"
@@ -30,7 +30,6 @@ extern Camera g_camera;
 // TODO: same here the world should now about it's transformations
 // if a class needs to know about world then pass a reference of world to it
 extern MatrixStack g_model;
-
 
 // Globals for the world id and mass for ode
 #include "ode/ode.h"

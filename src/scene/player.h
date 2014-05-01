@@ -4,7 +4,7 @@
 #include "ode/ode.h"
 #include <QList>
 
-#include "interaction/bullet.h"
+#include "interaction/missile.h"
 #include "scene/global.h"
 #include "scene/terrain.h"
 #include "graphics/program.h"
@@ -41,7 +41,7 @@ private:
     GLFunctions *m_gl;
     Program shader;
 
-    QList<Bullet*> bullets;
+    QList<Missile*> missiles;
 
     float timer;
 };

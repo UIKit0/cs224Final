@@ -11,7 +11,7 @@
 #include "math.h"
 #include "scene/global.h"
 #include "particles/basicsmokeemitter.h"
-#include "interaction/bullet.h"
+#include "interaction/missile.h"
 #include "terrain.h"
 
 
@@ -24,7 +24,7 @@ public:
 
     void update(float seconds);
     void draw();
-    void onBulletHit(Bullet &bullet);
+    void onMissileHit(Missile &missile);
 
     /*
      * Terrain fields

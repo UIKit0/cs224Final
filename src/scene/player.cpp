@@ -71,9 +71,9 @@ void Player::draw(){
 
     g_model.popMatrix();
     // Draw bullets
-    for (int i = 0; i < bullets.size(); i++){
+    for (int i = 0; i < missiles.size(); i++){
         // TODO: draw
-        const dReal *l = dBodyGetPosition(bullets[i]->body);
+        const dReal *l = dBodyGetPosition(missiles[i]->body);
         glm::vec3 loc(l[0], l[1], l[2]);
 
         g_model.pushMatrix();
@@ -96,7 +96,7 @@ void Player::draw(){
             g_model.pushMatrix();
 
             // Remove this: only for visualization
-            g_model.mMatrix = glm::rotate(g_model.mMatrix, (float)M_PI*2.0f/3*j + bullets[i]->time*5.0f, up);
+            g_model.mMatrix = glm::rotate(g_model.mMatrix, (float)M_PI*2.0f/3*j + missiles[i]->time*5.0f, up);
             g_model.mMatrix = glm::rotate(g_model.mMatrix, (float)M_PI/2, glm::vec3(0,0,1.0f));
 
             m_gl->glUniformMatrix4fv(shader.uniform("mv_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix*g_model.mMatrix));
@@ -114,27 +114,27 @@ void Player::update(float seconds){
     if (terrain->collidePoint(location - 1.5f*glm::cross(facing, left))){
         std::cout<<"smashing!"<<std::endl;
     }
-    for (int i = bullets.size() - 1; i >= 0; i--){
-        bullets[i]->update(seconds);
-        if (bullets[i]->active){
+    for (int i = missiles.size() - 1; i >= 0; i--){
+        missiles[i]->update(seconds);
+        if (missiles[i]->active){
             // Collide with terrain
-            const dReal *pos = dBodyGetPosition(bullets[i]->body);
-            if (terrain->collideBullet(bullets[i])){
-                bullets[i]->active = false;
+            const dReal *pos = dBodyGetPosition(missiles[i]->body);
+            if (terrain->collideMissile(missiles[i])){
+                missiles[i]->active = false;
             }
         }
-        if (!bullets[i]->active){
-            bullets[i]->destroy();
-            bullets.removeAt(i);
+        if (!missiles[i]->active){
+            missiles[i]->destroy();
+            missiles.removeAt(i);
         }
     }
 }
 
 void Player::fire(){
     if (timer > COOLDOWN){
-        bullets.append(new Bullet(space, location - 1.5f*glm::cross(facing, left), facing*10.0f));
-        bullets.last()->damage = 1.0f;
-        std::cout<<"fired "<<bullets.size()<<std::endl;
+        missiles.append(new Missile(space, location - 1.5f*glm::cross(facing, left), facing*10.0f));
+        missiles.last()->damage = 1.0f;
+        std::cout<<"fired "<<missiles.size()<<std::endl;
         timer = 0;
     }
 }

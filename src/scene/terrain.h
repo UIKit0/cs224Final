@@ -50,7 +50,7 @@ struct Tile{
 
 #include "graphics/program.h"
 #include "scene/terrainobject.h"
-#include "interaction/bullet.h"
+#include "interaction/missile.h"
 
 
 /**
@@ -73,12 +73,13 @@ public:
     void draw();
 
     bool collidePoint(glm::vec3 point);
-    bool collideBullet(Bullet* bullet);
+    bool collideMissile(Missile* missile);
 
     float heightInTile(int i, int j, glm::vec3 location_in_tile);
     glm::vec3 tangentPlaneInTile(int i, int j, glm::vec3 location_in_tile);
     // Returns NULL if the index is out of bounds or has an empty tile
     Tile* getTile(int i, int j);
+    glm::vec3 trueLocation(Tile* tile, glm::vec3 location_in_tile);
 
 private:
     // Height for an element of a tile

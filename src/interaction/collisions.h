@@ -3,7 +3,7 @@
 
 #include "interaction/vortex.h"
 #include "interaction/windvolume.h"
-#include "interaction/bullet.h"
+#include "interaction/missile.h"
 
 #include "ode/ode.h"
 

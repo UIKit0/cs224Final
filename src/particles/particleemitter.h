@@ -29,6 +29,8 @@ public:
 
     bool drawVortices;
 
+    glm::vec3 location;
+
 protected:
     virtual void updateParticles() = 0;
     virtual void updateVortices() = 0;
@@ -39,11 +41,8 @@ protected:
 
     QList<Vortex*> vortices;
 
-
     float time;
     GLuint sprites;
-
-    glm::vec3 location;
 };
 
 #endif // SMOKEEMITTER_H

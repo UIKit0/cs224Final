@@ -226,10 +226,9 @@ void Particles::renderStencilPass()
 
 //    m_ShadowVolTech.SetLightPos(m_pointLight.Position);
     // Set projection matrix
-    m_gl->glUniformMatrix4fv(m_stencilPass.uniform("mvp_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix * g_camera.vMatrix * g_model.mMatrix));
+//    m_gl->glUniformMatrix4fv(m_stencilPass.uniform("mvp_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix * g_camera.vMatrix * g_model.mMatrix));
     m_gl->glUniformMatrix4fv(m_stencilPass.uniform("vp_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix * g_camera.vMatrix));
     m_gl->glUniformMatrix4fv(m_stencilPass.uniform("m_matrix"), 1, GL_FALSE, glm::value_ptr(g_model.mMatrix));
-    m_gl->glUniformMatrix4fv(m_stencilPass.uniform("v_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix));
 
 //    Pipeline p;
 //    p.SetCamera(m_pGameCamera->GetPos(), m_pGameCamera->GetTarget(), m_pGameCamera->GetUp());

@@ -6,13 +6,13 @@ in vec3 position;
 
 out vec3 WorldPos;                                                                 
 
-uniform mat4 mvp_matrix;
+//uniform mat4 mvp_matrix;
 uniform mat4 m_matrix;
                                                                                     
 void main()                                                                         
 {                                                                                   
     vec4 PosL   = vec4(position, 1.0);
-    gl_Position = mvp_matrix * PosL;
+//    gl_Position = mvp_matrix * PosL;
     WorldPos    = (m_matrix * PosL).xyz;
 }
 
@@ -128,10 +128,12 @@ void main()
 -- geometry.billboard -----------------------------------------
 
 layout(points) in;
-layout(triangle_strip, max_vertices = 4) out;
+layout(triangle_strip, max_vertices = 10) out;
 
 uniform mat4 p_matrix;
 uniform mat4 v_matrix;
+
+uniform vec3 LightPosition;
 
 in V_OUT
 {
@@ -150,36 +152,53 @@ void main(void)
     g_out.csPos = v_in[0].csPos;
 
     vec4 pos = v_matrix * gl_in[0].gl_Position;
+    vec4 opos = pos;
 
     float fullSize = v_in[0].size;
     float halfSize = v_in[0].size / 2.0;
 
+    float infty = 100.0*2;
+
     // TODO: Outline is in Shadow Volumes how to
 
-    // bottom left
+    // Infinity vertex
+    glPosition = vp_matrix * vec4(Lightdirection,0);
+    EmitVertex();
+    // Front top left
+    pos = opos;
     pos.x -= halfSize;
-    pos.y += halfSize;
+    pos.z += halfSize;
     gl_Position = p_matrix * pos;
-    g_out.texcoord = vec2(0.0, 1.0);
     EmitVertex();
 
-    // bottom right
-    pos.y += fullSize;
-    pos.x += fullSize;
+    // Infinity vertex
+    glPosition = vp_matrix * vec4(Lightdirection,0);
+    EmitVertex();
+    // Front top right
+    pos = opos;
+    pos.x += halfSize;
+    pos.z += halfSize;
     gl_Position = p_matrix * pos;
-    g_out.texcoord = vec2(1.0, 1.0);
     EmitVertex();
 
-    // top left
-    pos.y -= fullSize;
+    EndPrimitive();
+
+    // back top left
+    pos = opos;
+    pos.x -= halfSize;
+    pos.z -= halfSize;
     gl_Position = p_matrix * pos;
-    g_out.texcoord = vec2(0.0, 0.0);
+    // Infinity vertex
+    glPosition = vp_matrix * vec4(Lightdirection,0);
     EmitVertex();
 
     // top right
-    pos.y -= fullSize;
+    pos = opos;
+    pos.x += halfSize;
+    pos.z -= halfSize;
     gl_Position = p_matrix * pos;
-    g_out.texcoord = vec2(1.0, 0.0);
+    // Infinity vertex
+    glPosition = vp_matrix * vec4(Lightdirection,0);
     EmitVertex();
 
     EndPrimitive();

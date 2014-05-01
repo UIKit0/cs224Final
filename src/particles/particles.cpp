@@ -125,6 +125,10 @@ void Particles::draw()
 {
     Q_ASSERT(m_gl != NULL);
 
+    m_gl->glBindVertexArray(m_vao);
+    m_gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
+    m_gl->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(ParticleBuffer) * data.size(), data.data());
+
     // Shadows!
     // 1. Render scene into depth buffer
     renderDepthPass();
@@ -186,9 +190,6 @@ void Particles::renderLightingPass()
 
     m_gl->glUseProgram(m_smokeFx.program());
 
-    m_gl->glBindVertexArray(m_vao);
-    m_gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
-    m_gl->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(ParticleBuffer) * data.size(), data.data());
 
     m_gl->glUniformMatrix4fv(m_pUniform, 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix));
     m_gl->glUniformMatrix4fv(m_vUniform, 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix));
@@ -210,6 +211,12 @@ void Particles::renderLightingPass()
         m_gl->glActiveTexture(GL_TEXTURE0+i);
         m_gl->glBindTexture(GL_TEXTURE_2D, m_texID[i]);
     }
+
+    // Bind geometry
+    m_gl->glBindVertexArray(m_vao);
+    m_gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
+    m_gl->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(ParticleBuffer) * data.size(), data.data());
+
 
     glDrawArrays(GL_POINTS, 0, data.size());
 }
@@ -246,6 +253,7 @@ void Particles::renderStencilPass()
 //    m_gl->glActiveTexture(GL_TEXTURE0+2);
 //    m_gl->glBindTexture(GL_TEXTURE_2D, m_texID[2]);
 
+    // Bind geometry
     m_gl->glBindVertexArray(m_vao);
     m_gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
     m_gl->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(ParticleBuffer) * data.size(), data.data());

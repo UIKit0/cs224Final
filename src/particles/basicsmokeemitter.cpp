@@ -30,10 +30,10 @@ BasicSmokeEmitter::BasicSmokeEmitter(dWorldID w, dMass m) : ParticleEmitter(w, m
 void BasicSmokeEmitter::updateParticles(){
     // Spawn more particles
     int toAdd;
-    if (particles.size() > 1500)
+    if (particles.size() > 500)
         toAdd = 1;
     else
-        toAdd = 3;
+        toAdd = 2;
 
     for (int i = 0; i < toAdd; i++){
         SmokeParticle sp = SmokeParticle(world, space, mass, dRandReal()*0.05f + 0.03f);

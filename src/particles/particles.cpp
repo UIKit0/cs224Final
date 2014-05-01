@@ -131,7 +131,7 @@ void Particles::draw()
     //          ii.  Fragment: Nothing
     //      b. Render geometry
     // 2. Render shadow volume into stencil buffer
-    glEnable(GL_STENCIL_TEST);
+    //glEnable(GL_STENCIL_TEST);
     renderStencilPass();
     //      a. Bind shadow volume shader
     //          i.   Vertex: Minor pass-thru
@@ -139,7 +139,7 @@ void Particles::draw()
     //          iii. Fragment: Nothing
     // 3. Render shadowed scene
     renderLightingPass();
-    glDisable(GL_STENCIL_TEST);
+    //glDisable(GL_STENCIL_TEST);
     //      a. Bind normal lighting shader
     //      b. Render geometry
 }

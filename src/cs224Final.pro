@@ -49,6 +49,7 @@ GLSW = $${LIB}/glsw-2010
 SOURCES += \
     $${GLSW}/glsw/bstrlib.c \
     $${GLSW}/glsw/glsw.c \
+    window/smokecontroller.cpp
 
 # glm library
 GLM = $${LIB}/glm-0.9.5.1
@@ -106,7 +107,8 @@ HEADERS += \
     interaction/collisions.h \
     interaction/bullet.h \
     scene/terrainobject.h \
-    scene/contour.h
+    scene/contour.h \
+    window/smokecontroller.h
 
 RESOURCES += \
     $${RES}/resources.qrc
@@ -148,3 +150,6 @@ gcc {
                               -Wtrigraphs -Wuninitialized -Wunused-label -Wunused-variable \
                               -Wvolatile-register-var -Wno-extra
 }
+
+FORMS += \
+    window/smokecontroller.ui

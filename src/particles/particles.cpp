@@ -44,6 +44,8 @@ void Particles::initialize(GLFunctions *gl, int maxParticles)
 
     m_pUniform = m_smokeFx.uniform("p_matrix");
     m_vUniform = m_smokeFx.uniform("v_matrix");
+    m_mvUniform = m_smokeFx.uniform("mv_matrix");
+    m_lightUniform = m_smokeFx.uniform("LightPosition");
 
     m_posAttrib = m_smokeFx.attrib("position");
     m_sizeAttrib = m_smokeFx.attrib("size");
@@ -129,7 +131,7 @@ void Particles::draw()
     //          ii.  Fragment: Nothing
     //      b. Render geometry
     // 2. Render shadow volume into stencil buffer
-    glEnable(GL_STENCIL_TEST);
+    //glEnable(GL_STENCIL_TEST);
     renderStencilPass();
     //      a. Bind shadow volume shader
     //          i.   Vertex: Minor pass-thru
@@ -137,7 +139,7 @@ void Particles::draw()
     //          iii. Fragment: Nothing
     // 3. Render shadowed scene
     renderLightingPass();
-    glDisable(GL_STENCIL_TEST);
+    //glDisable(GL_STENCIL_TEST);
     //      a. Bind normal lighting shader
     //      b. Render geometry
 }
@@ -175,7 +177,8 @@ void Particles::renderLightingPass()
 
     m_gl->glUniformMatrix4fv(m_pUniform, 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix));
     m_gl->glUniformMatrix4fv(m_vUniform, 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix));
-//    m_gl->glUniform3f(m_lightUniform, 0.0f, 10.0f, 4.0f);
+    m_gl->glUniformMatrix4fv(m_mvUniform, 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix * g_model.mMatrix));
+    m_gl->glUniform3f(m_lightUniform, 0.0f, 10.0f, 4.0f);
 
     // Vertex attributes
     quintptr offset = 0;

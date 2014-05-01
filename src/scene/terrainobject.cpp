@@ -23,7 +23,13 @@ void TerrainObject::onBulletHit(Bullet &bullet){
 void TerrainObject::update(float seconds){
     if (particles != NULL)
         particles->update(seconds);
+
+    if (glm::length2(velocity) == 0){
+        return;
+    }
+
     location += velocity*seconds;
+
     int tilei = tile->i;
     int tilej = tile->j;
 
@@ -45,7 +51,14 @@ void TerrainObject::update(float seconds){
     }
     tile = terrain->getTile(tilei, tilej);
     if (tile){
-        location = glm::vec3(location[0], terrain->heightInTile(tile->i, tile->j, location) + EPSILON, location[2]);
+        float height = terrain->heightInTile(tile->i, tile->j, location);
+        location = glm::vec3(location[0], height, location[2]);
+        glm::vec3 tangent = terrain->tangentPlaneInTile(tile->i, tile->j, location);
+        rotation = glm::rotate(glm::mat4(), (float)atan2(tangent[0], 1.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+        rotation = glm::rotate(rotation, -(float)atan2(tangent[2], 1.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        rotation = glm::rotate(rotation, -(float)atan2(velocity[2], velocity[0]), glm::vec3(0.0f, 1.0f, 0.0f));
+        // TODO: rename the rotation matrix
+        rotation = glm::translate(rotation, glm::vec3(0, EPSILON, 0));
     }
 }
 

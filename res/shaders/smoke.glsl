@@ -146,7 +146,7 @@ void main(void)
     float d = lum(depth.xyz);
 
     vec4 cameraCoords = g_in.csPos;
-//    cameraCoords.z -= 2.0*(1.0-d);
+    cameraCoords.z -= 2*(1.0-d);
     vec4 clipCoords = p_matrix * cameraCoords;
 
     float ndc_depth = clipCoords.z / clipCoords.w;
@@ -193,8 +193,6 @@ void main(void)
 
     float a = lum(alpha.xyz);
     color = vec4(ambLight + difLight, a);
-    color *= vec4(0.01,0.01,0.01,1);
-    color.xyz += normal.xyz;
 }
 
 -- fragment.debug ---------------------------------------

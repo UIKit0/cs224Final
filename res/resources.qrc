@@ -15,5 +15,9 @@
         <file>textures/smoke_color.png</file>
         <file>textures/smoke_normal.png</file>
         <file>textures/smoke_depth.png</file>
+        <file>textures/smoke_alpha2.png</file>
+        <file>textures/smoke_color2.png</file>
+        <file>textures/smoke_depth2.png</file>
+        <file>textures/smoke_normal2.png</file>
     </qresource>
 </RCC>

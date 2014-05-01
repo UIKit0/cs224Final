@@ -140,7 +140,7 @@ void main(void)
     float d = lum(depth.xyz);
 
     vec4 cameraCoords = g_in.csPos;
-    cameraCoords.z -= 2*(1.0-d);
+    cameraCoords.z -= 2*(d);
     vec4 clipCoords = p_matrix * cameraCoords;
     float ndc_depth = clipCoords.z / clipCoords.w;
     float Far = gl_DepthRange.far;

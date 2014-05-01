@@ -80,7 +80,7 @@ SOURCES += \
     particles/particles.cpp \
     scene/contour.cpp \
     scene/player.cpp \
-    interaction/bullet.cpp \
+    interaction/missile.cpp \
     scene/terrainobject.cpp
 
 HEADERS += \
@@ -105,7 +105,7 @@ HEADERS += \
     particles/particles.h \
     scene/player.h \
     interaction/collisions.h \
-    interaction/bullet.h \
+    interaction/missile.h \
     scene/terrainobject.h \
     scene/contour.h \
     window/smokecontroller.h

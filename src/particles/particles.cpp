@@ -125,6 +125,10 @@ void Particles::draw()
 {
     Q_ASSERT(m_gl != NULL);
 
+    m_gl->glBindVertexArray(m_vao);
+    m_gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
+    m_gl->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(ParticleBuffer) * data.size(), data.data());
+
     // Shadows!
     // 1. Render scene into depth buffer
     renderDepthPass();
@@ -134,7 +138,7 @@ void Particles::draw()
     //      b. Render geometry
     // 2. Render shadow volume into stencil buffer
     m_gl->glEnable(GL_STENCIL_TEST);
-    //renderStencilPass();
+    renderStencilPass();
     //      a. Bind shadow volume shader
     //          i.   Vertex: Minor pass-thru
     //          ii.  Geometry: Quad emitter
@@ -142,8 +146,6 @@ void Particles::draw()
     // 3. Render shadowed scene
     renderLightingPass();
     m_gl->glDisable(GL_STENCIL_TEST);
-    m_gl->glDrawBuffer(GL_BACK);
-    m_gl->glDepthMask(GL_TRUE);
     //      a. Bind normal lighting shader
     //      b. Render geometry
 }
@@ -154,10 +156,6 @@ void Particles::renderDepthPass()
     m_gl->glDepthMask(GL_TRUE);
 
     m_depthPass.use();
-
-    m_gl->glBindVertexArray(m_vao);
-    m_gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
-    m_gl->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(ParticleBuffer) * data.size(), data.data());
 
     // Set projection matrix
     m_gl->glUniformMatrix4fv(m_depthPass.uniform("mv_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix * g_model.mMatrix));
@@ -172,8 +170,14 @@ void Particles::renderDepthPass()
 
     // Bind depth texture
     m_gl->glUniform1i(m_depthPass.uniform("tex_depth"), 0);
-    m_gl->glActiveTexture(GL_TEXTURE0+2);
+    m_gl->glActiveTexture(GL_TEXTURE0);
     m_gl->glBindTexture(GL_TEXTURE_2D, m_texID[2]);
+
+    // Bind geometry
+    m_gl->glBindVertexArray(m_vao);
+    m_gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
+    m_gl->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(ParticleBuffer) * data.size(), data.data());
+
 
     glDrawArrays(GL_POINTS, 0, data.size());
 }
@@ -186,9 +190,6 @@ void Particles::renderLightingPass()
 
     m_gl->glUseProgram(m_smokeFx.program());
 
-//    m_gl->glBindVertexArray(m_vao);
-//    m_gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
-//    m_gl->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(ParticleBuffer) * data.size(), data.data());
 
     m_gl->glUniformMatrix4fv(m_pUniform, 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix));
     m_gl->glUniformMatrix4fv(m_vUniform, 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix));
@@ -211,6 +212,12 @@ void Particles::renderLightingPass()
         m_gl->glBindTexture(GL_TEXTURE_2D, m_texID[i]);
     }
 
+    // Bind geometry
+    m_gl->glBindVertexArray(m_vao);
+    m_gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
+    m_gl->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(ParticleBuffer) * data.size(), data.data());
+
+
     glDrawArrays(GL_POINTS, 0, data.size());
 }
 
@@ -230,11 +237,9 @@ void Particles::renderStencilPass()
 
     m_stencilPass.use();
 
-//    m_ShadowVolTech.SetLightPos(m_pointLight.Position);
+    m_gl->glUniformMatrix4fv(m_stencilPass.uniform("vp_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix * g_camera.vMatrix));
+    m_gl->glUniformMatrix4fv(m_stencilPass.uniform("m_matrix"), 1, GL_FALSE, glm::value_ptr(g_model.mMatrix));
 
-//    Pipeline p;
-//    p.SetCamera(m_pGameCamera->GetPos(), m_pGameCamera->GetTarget(), m_pGameCamera->GetUp());
-//    p.SetPerspectiveProj(m_persProjInfo);
 
     quintptr offset = 0;
     m_gl->glEnableVertexAttribArray(m_stencilPosAttrib);
@@ -247,6 +252,12 @@ void Particles::renderStencilPass()
 //    m_gl->glUniform1i(m_texUniform[2], 0);
 //    m_gl->glActiveTexture(GL_TEXTURE0+2);
 //    m_gl->glBindTexture(GL_TEXTURE_2D, m_texID[2]);
+
+    // Bind geometry
+    m_gl->glBindVertexArray(m_vao);
+    m_gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
+    m_gl->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(ParticleBuffer) * data.size(), data.data());
+
 
     glDrawArrays(GL_POINTS, 0, data.size());
 

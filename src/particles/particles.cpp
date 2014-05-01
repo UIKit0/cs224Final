@@ -39,11 +39,11 @@ void Particles::initialize(GLFunctions *gl, int maxParticles)
     m_smokeFx.initialize(gl);
     m_smokeFx.compile(GL_VERTEX_SHADER, "smoke.vertex.billboard");
     m_smokeFx.compile(GL_GEOMETRY_SHADER, "smoke.geometry.billboard");
-    m_smokeFx.compile(GL_FRAGMENT_SHADER, "smoke.fragment.debug");
+    m_smokeFx.compile(GL_FRAGMENT_SHADER, "smoke.fragment.billboard");
     m_smokeFx.link();
 
-    m_vpUniform = m_smokeFx.uniform("vp_matrix");
-    m_eyeUniform = m_smokeFx.uniform("eyePos");
+    m_pUniform = m_smokeFx.uniform("p_matrix");
+    m_vUniform = m_smokeFx.uniform("v_matrix");
 
     m_posAttrib = m_smokeFx.attrib("position");
     m_sizeAttrib = m_smokeFx.attrib("size");
@@ -173,8 +173,8 @@ void Particles::renderLightingPass()
     m_gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
     m_gl->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(ParticleBuffer) * data.size(), data.data());
 
-    m_gl->glUniformMatrix4fv(m_vpUniform, 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix));
-    m_gl->glUniform3fv(m_eyeUniform, 1, glm::value_ptr(g_camera.m_lookAt));
+    m_gl->glUniformMatrix4fv(m_pUniform, 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix));
+    m_gl->glUniformMatrix4fv(m_vUniform, 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix));
 //    m_gl->glUniform3f(m_lightUniform, 0.0f, 10.0f, 4.0f);
 
     // Vertex attributes

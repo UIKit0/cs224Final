@@ -71,14 +71,12 @@ void main(void)
     // bottom left
     pos.x -= halfSize;
     pos.y += halfSize;
-    cs_position = pos;
     gl_Position = p_matrix * pos;
     g_out.texcoord = vec2(0.0, 1.0);
     EmitVertex();
 
     // top left
     pos.y -= fullSize;
-    cs_position = pos;
     gl_Position = p_matrix * pos;
     g_out.texcoord = vec2(0.0, 0.0);
     EmitVertex();
@@ -86,14 +84,12 @@ void main(void)
     // bottom right
     pos.y += fullSize;
     pos.x += fullSize;
-    cs_position = pos;
     gl_Position = p_matrix * pos;
     g_out.texcoord = vec2(1.0, 1.0);
     EmitVertex();
 
     // top right
     pos.y -= fullSize;
-    cs_position = pos;
     gl_Position = p_matrix * pos;
     g_out.texcoord = vec2(1.0, 0.0);
     EmitVertex();

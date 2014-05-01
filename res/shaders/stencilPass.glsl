@@ -114,3 +114,62 @@ void main()
 {
 	// Stencil buffer automatically updated
 }
+
+
+-- geometry.billboard -----------------------------------------
+
+layout(points) in;
+layout(triangle_strip, max_vertices = 4) out;
+
+uniform mat4 p_matrix;
+uniform mat4 v_matrix;
+
+in V_OUT
+{
+    float size;
+    vec4 csPos;
+} v_in[];
+
+out G_OUT
+{
+    vec4 csPos;
+    vec2 texcoord;
+} g_out;
+
+void main(void)
+{
+    g_out.csPos = v_in[0].csPos;
+
+    vec4 pos = v_matrix * gl_in[0].gl_Position;
+
+    float fullSize = v_in[0].size;
+    float halfSize = v_in[0].size / 2.0;
+
+    // bottom left
+    pos.x -= halfSize;
+    pos.y += halfSize;
+    gl_Position = p_matrix * pos;
+    g_out.texcoord = vec2(0.0, 1.0);
+    EmitVertex();
+
+    // bottom right
+    pos.y += fullSize;
+    pos.x += fullSize;
+    gl_Position = p_matrix * pos;
+    g_out.texcoord = vec2(1.0, 1.0);
+    EmitVertex();
+
+    // top left
+    pos.y -= fullSize;
+    gl_Position = p_matrix * pos;
+    g_out.texcoord = vec2(0.0, 0.0);
+    EmitVertex();
+
+    // top right
+    pos.y -= fullSize;
+    gl_Position = p_matrix * pos;
+    g_out.texcoord = vec2(1.0, 0.0);
+    EmitVertex();
+
+    EndPrimitive();
+}

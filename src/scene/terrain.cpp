@@ -176,20 +176,20 @@ void Terrain::addObjects(int i, int j){
         }
     }
 
-    for (int x = BOAT_SIZE; x < TILE_SIZE - BOAT_SIZE; x += 2){
-        for (int y = BOAT_SIZE; y < TILE_SIZE - BOAT_SIZE; y += 2){
+    for (int x = BOAT_SIZE*2; x < TILE_SIZE - BOAT_SIZE*2; x += 2){
+        for (int y = BOAT_SIZE*2; y < TILE_SIZE - BOAT_SIZE*2; y += 2){
             bool canPlace = true;
-            for (int ii = -BOAT_SIZE; ii <= BOAT_SIZE; ii++){
-                for (int jj = -BOAT_SIZE; jj <= BOAT_SIZE; jj++){
+            for (int ii = -BOAT_SIZE*2; ii <= BOAT_SIZE*2; ii++){
+                for (int jj = -BOAT_SIZE*2; jj <= BOAT_SIZE*2; jj++){
                     if (tile->terrain[x + ii][y + jj][1] != MIN_Y){
                         canPlace = false;
                         break;
                     }
                 }
             }
-            if (canPlace && rand() / (float)RAND_MAX > 0.3f){
+            if (canPlace && rand() / (float)RAND_MAX > 0.6f){
                 tile->objects.append(TerrainObject(m_gl, this, tile, glm::vec3(x, tile->terrain[x][y][1] + EPSILON, y)));
-                tile->objects.last().velocity = glm::vec3(dRandReal(), 0, dRandReal());
+                tile->objects.last().velocity = glm::vec3(dRandReal()*2.0f, 0, dRandReal()*2.0f);
                 tile->objects.last().type = Type::BOAT;
             }
         }
@@ -248,11 +248,21 @@ void Terrain::draw(){
                 m_gl->glUniform3fv(shader.uniform("terrain_color"), 1, glm::value_ptr(color));
                 m_gl->glDrawArrays(GL_TRIANGLES, 0, 3*3*2);
                 g_model.popMatrix();
+            }
+        }
+    }
 
+    // Draw the smoke in a different pass
+    for (int i = 0; i < GRID_SIZE; i++){
+        for (int j = 0; j < GRID_SIZE; j++){
+            if (tiles[i][j] == NULL)
+                continue;
+            for (int k = 0; k < tiles[i][j]->objects.size(); k++){
                 tiles[i][j]->objects[k].draw();
             }
         }
     }
+
 }
 
 void Terrain::shiftTiles(int sx, int sy){
@@ -329,7 +339,10 @@ void Terrain::update(float seconds, glm::vec3 playerLocation){
             if (tile != NULL){
                 for (int k = tile->objects.size() - 1; k >= 0; k--){
                     tile->objects[k].update(seconds);
-                    if (tile->objects[k].tile != tile){
+                    if (!tile->objects[k].active){
+                        tile->objects.removeAt(k);
+                    }
+                    else if (tile->objects[k].tile != tile){
                         if (tile->objects[k].tile != NULL)
                             tile->objects[k].tile->objects.append(tile->objects[k]);
                         tile->objects.removeAt(k);

@@ -12,7 +12,7 @@
 #define UPDATE_RADIUS 1
 #define TILE_SIZE 30
 #define NOISE_COORDINATE_RATIO 0.05f
-#define MIN_Y -5.0f
+#define MIN_Y -6.0f
 #define EPSILON 0.3f
 #define TRIANGLES_PER_TILE_ELEMENT 2
 

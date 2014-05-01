@@ -25,13 +25,14 @@ enum Type{
 
 class Terrain;
 
-#define BOAT_SIZE 2
+#define BOAT_SIZE 1
 
 class TerrainObject
 {
 public:
     TerrainObject(GLFunctions *gl, Terrain* t, Tile* tile, glm::vec3 loc);
 
+    void destroy();
     void update(float seconds);
     void draw();
     void onMissileHit(Missile &missile);
@@ -58,6 +59,7 @@ public:
     float health;
     float radius;
     Type type;
+    bool active;
 
 private:
     // Used only to pass onto the particles

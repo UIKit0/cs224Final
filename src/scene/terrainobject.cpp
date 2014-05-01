@@ -9,7 +9,16 @@ TerrainObject::TerrainObject(GLFunctions *gl, Terrain *t, Tile *tile, glm::vec3 
   , health(10.0f)
   , radius(0.5f)
   , type(Type::BUNKER)
+  , active(true)
 {
+}
+
+void TerrainObject::destroy(){
+    if (particles != NULL){
+//        particles->destroy();
+        // TODO: actually remove particles from the world
+        delete particles;
+    }
 }
 
 void TerrainObject::onMissileHit(Missile &missile){
@@ -18,36 +27,43 @@ void TerrainObject::onMissileHit(Missile &missile){
         particles = new BasicSmokeEmitter(g_world, g_mass);
         particles->initialize(m_gl);
         particles->location = terrain->trueLocation(tile, location);
-        std::cout<<"smoking now"<<std::endl;
+    }
+    if (health < 0.0f && particles != NULL){
+        active = false;
     }
 }
 
 void TerrainObject::update(float seconds){
-    if (particles != NULL)
+    if (particles != NULL){
+        particles->location = terrain->trueLocation(tile, location);
         particles->update(seconds);
+    }
 
     if (glm::length2(velocity) == 0){
         return;
     }
 
     if (type == Type::BOAT){
-        bool hit = false;
-        glm::vec3 hitdir;
+        int hit = 0;
+        glm::vec3 hitdir(0,0,0);
         for (int i = -BOAT_SIZE; i <= BOAT_SIZE; i++){
             for (int j = -BOAT_SIZE; j <= BOAT_SIZE; j++){
                 glm::vec2 loc = terrain->perlinLocation(tile, location + glm::vec3(i, 0, j));
                 if (terrain->height(loc) > MIN_Y + EPSILON){
-                    hit = true;
-                    hitdir = glm::vec3(i, 0, j);
-                    break;
+                    hit++;
+                    hitdir += glm::vec3(i, 0, j);
                 }
             }
-            if (hit) break;
         }
-        if (hit){
-            Q_ASSERT(!(hitdir[0] == 0 && hitdir[2] == 0));
-            velocity = velocity*-1.0f;
-            location += velocity*seconds;
+        if (hit > 0){
+            if (hitdir[0] == 0 && hitdir[2] == 0){
+                velocity = -velocity;
+            }
+            else{
+                glm::vec3 normal = glm::normalize(-hitdir/(float)hit);
+                velocity = velocity - 2.0f*normal*glm::dot(velocity, normal);
+                location += normal*0.5f;
+            }
         }
     }
 

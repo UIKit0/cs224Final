@@ -189,7 +189,7 @@ void Particles::renderLightingPass()
     m_gl->glUniformMatrix4fv(m_pUniform, 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix));
     m_gl->glUniformMatrix4fv(m_vUniform, 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix));
     m_gl->glUniformMatrix4fv(m_mvUniform, 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix * g_model.mMatrix));
-    m_gl->glUniform3f(m_lightUniform, 1.0f, 1.0f, 1.0f);
+    m_gl->glUniform3f(m_lightUniform, 1.0f, 0.0f, 1.0f);
 
     // Vertex attributes
     quintptr offset = 0;

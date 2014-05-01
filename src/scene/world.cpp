@@ -102,6 +102,7 @@ void World::initialize(GLFunctions *gl)
 #ifdef PARTICLES
     BasicSmokeEmitter *emitter = new BasicSmokeEmitter(g_world, g_mass);
     emitter->initialize(gl, 2000);
+    emitter->location = glm::vec3(3,0,0);
     emitter->maxInitialVel = glm::vec3(0.5f, 2.0f, 0.5f);
     emitter->minInitialVel = glm::vec3(-0.5f, 0.5f, -0.5f);
     emitters.append(emitter);

@@ -113,11 +113,11 @@ void main(void)
 
     // Modify the depth according the texture values
     float d = lum(depth.xyz);
-    vec4 cameraCoords = cs_position;
-    cameraCoords.z -= 32*(1.0-d);
-    vec4 clipcoords = proj_matrix * cameraCoords;
-    vec4 ndCoords = vec4((clipcoords.xyz)/clipcoords.w,0);
-    gl_FragDepth = ndCoords.z;
+//    vec4 cameraCoords = cs_position;
+//    cameraCoords.z -= 2*(1.0-d);
+//    vec4 clipcoords = proj_matrix * cameraCoords;
+//    vec4 ndCoords = vec4((clipcoords.xyz)/clipcoords.w,0);
+//    gl_FragDepth = ndCoords.z;
 
     // Calculate the light position
     vec4 lightPos = V_Matrix * vec4(LightPosition.xyz,0);

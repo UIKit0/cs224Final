@@ -20,6 +20,22 @@ void Particles::initialize(GLFunctions *gl, int maxParticles)
     m_gl = gl;
     m_maxParticles = maxParticles;
 
+    // Depth shader
+    m_depthPass.initialize(gl);
+    m_depthPass.compile(GL_VERTEX_SHADER,"depthPass.vertex.depth");
+    m_depthPass.compile(GL_FRAGMENT_SHADER,"depthPass.fragment.depth");
+    m_depthPass.link();
+
+    m_depthPosAttrib = m_depthPass.attrib("position");
+
+    // Stencil shader
+    m_stencilPass.initialize(gl);
+    m_stencilPass.compile(GL_VERTEX_SHADER,"stencilPass.vertex.stencil");
+    m_stencilPass.compile(GL_GEOMETRY_SHADER,"stencilPass.geometry.stencil");
+    m_stencilPass.compile(GL_FRAGMENT_SHADER, "stencilPass.fragment.stencil");
+    m_stencilPass.link();
+
+    // Smoke effects
     m_smokeFx.initialize(gl);
     m_smokeFx.compile(GL_VERTEX_SHADER, "smoke.vertex.point");
     m_smokeFx.compile(GL_FRAGMENT_SHADER, "smoke.fragment.point");
@@ -104,10 +120,56 @@ void Particles::draw()
 {
     Q_ASSERT(m_gl != NULL);
 
+
+
+    // Shadows!
+    // 1. Render scene into depth buffer
+    renderDepthPass();
+    //      a. Bind pass through shader.
+    //          i.   Vertex: Simple transform
+    //          ii.  Fragment: Nothing
+    //      b. Render geometry
+    // 2. Render shadow volume into stencil buffer
+    glEnable(GL_STENCIL_TEST);
+    renderStencilPass();
+    //      a. Bind shadow volume shader
+    //          i.   Vertex: Minor pass-thru
+    //          ii.  Geometry: Quad emitter
+    //          iii. Fragment: Nothing
+    // 3. Render shadowed scene
+    renderLightingPass();
+    glDisable(GL_STENCIL_TEST);
+    //      a. Bind normal lighting shader
+    //      b. Render geometry
+}
+
+void Particles::renderDepthPass()
+{
+//    m_gl->glDrawBuffers(GL_NONE);
+//    m_gl->glDepthMask(GL_TRUE);
+
+//    m_depthPass.use();
+
+//    // Set projection matrix
+//    m_gl->glUniformMatrix4fv(m_depthPass.uniform("MVP_Matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix * g_camera.vMatrix * g_model.mMatrix));
+
+//    //Draw smoke
+//    // Vertex attributes
+//    quintptr offset = 0;
+//    m_gl->glEnableVertexAttribArray(m_depthPass.attrib(""));
+//    m_gl->glVertexAttribPointer(m_posAttrib, 3, GL_FLOAT, GL_FALSE, sizeof(ParticleBuffer), (const void *) offset);
+//    offset += sizeof(glm::vec3);
+//    m_gl->glEnableVertexAttribArray(m_sizeAttrib);
+//    m_gl->glVertexAttribPointer(m_sizeAttrib, 1, GL_FLOAT, GL_FALSE, sizeof(ParticleBuffer), (const void *) offset);
+
+//    glDrawArrays(GL_POINTS, 0, data.size());
+}
+
+void Particles::renderLightingPass()
+{
     m_gl->glEnable(GL_PROGRAM_POINT_SIZE);
     m_gl->glUseProgram(m_smokeFx.program());
 
-    // Update buffer
     m_gl->glBindVertexArray(m_vao);
     m_gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
     m_gl->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(ParticleBuffer) * data.size(), data.data());
@@ -134,4 +196,9 @@ void Particles::draw()
     }
 
     glDrawArrays(GL_POINTS, 0, data.size());
+}
+
+void Particles::renderStencilPass()
+{
+
 }

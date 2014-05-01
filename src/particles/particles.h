@@ -38,6 +38,8 @@ protected:
 private:
     GLFunctions *m_gl;
 
+    Program m_depthPass;
+    Program m_stencilPass;
     Program m_smokeFx;
 
     GLint m_sizeAttrib;
@@ -52,12 +54,23 @@ private:
     GLuint m_buffer;
     GLuint m_vao;
 
+    // Depth shader attribute
+    GLint m_depthPosAttrib;
+
+    // Stencil shader attributes
+    GLint m_stencilPosAttrib;
+
     int m_maxParticles;
 
     GLuint m_texID[4];
     GLuint m_texUniform[4];
 
     QVector<ParticleBuffer> data;
+
+    void renderDepthPass();
+    void renderLightingPass();
+    void renderStencilPass();
+
 };
 
 #endif // PARTICLE_H

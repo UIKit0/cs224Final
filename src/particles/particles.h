@@ -47,6 +47,7 @@ private:
 
     GLuint m_pUniform;
     GLuint m_vUniform;
+    GLuint m_mvUniform;
 
     GLuint m_lightUniform;
 

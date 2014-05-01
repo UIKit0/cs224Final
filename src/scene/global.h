@@ -31,7 +31,6 @@ extern Camera g_camera;
 // if a class needs to know about world then pass a reference of world to it
 extern MatrixStack g_model;
 
-
 // Globals for the world id and mass for ode
 #include "ode/ode.h"
 

@@ -191,7 +191,7 @@ void main(void)
     float Far = gl_DepthRange.far;
     float Near = gl_DepthRange.near;
     float newdepth = (((Far - Near) * ndc_depth) + Near + Far) * 0.5;
-    gl_FragDepth = newdepth;
+//    gl_FragDepth = newdepth;
 
     // Calculate the light position
     vec4 lightPos = V_Matrix * vec4(LightPosition.xyz,0);

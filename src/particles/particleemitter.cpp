@@ -10,8 +10,6 @@ ParticleEmitter::ParticleEmitter(dWorldID w, dMass m)
 }
 
 void ParticleEmitter::draw(){
-    Q_ASSERT_X(sprites != UINT_MAX, "particle emitter", "no sprites loaded");
-
     // Particles
 //    float *m = glm::value_ptr(g_camera.vMatrix);
 //    glm::vec3 dx(m[0], m[4], m[8]); // left-right

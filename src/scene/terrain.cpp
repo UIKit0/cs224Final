@@ -30,6 +30,8 @@ void Terrain::initialize(GLFunctions *gl){
             tiles[i][j]->vo.vbo = 0;
             tiles[i][j]->loc0 = glm::vec2(originLocation[0] + i*TILE_SIZE, originLocation[1] + j*TILE_SIZE);
             tiles[i][j]->loc1 = glm::vec2(originLocation[0] + i*TILE_SIZE + TILE_SIZE, originLocation[1] + j*TILE_SIZE + TILE_SIZE);
+            tiles[i][j]->i = i;
+            tiles[i][j]->j = j;
             for (int x = 0; x < TILE_SIZE + 1; x++){
                 for (int y = 0; y <  TILE_SIZE + 1; y++){
                     tiles[i][j]->terrain[x][y] = glm::vec3(x, noise(tiles[i][j], x, y), y);
@@ -143,7 +145,8 @@ void Terrain::updateVBO(int i, int j){
 }
 
 void Terrain::addObjects(int i, int j){
-    Tile* tile = tiles[i][j];
+    Tile* tile = getTile(i, j);
+    Q_ASSERT(tile != NULL);
     for (int x = 1; x < TILE_SIZE; x++){
         for (int y = 1; y < TILE_SIZE; y++){
             float height = tile->terrain[x][y][1];
@@ -159,7 +162,7 @@ void Terrain::addObjects(int i, int j){
                     && height > tile->terrain[x - 1][y][1]
                     && height > tile->terrain[x - 1][y - 1][1]){
 
-                tile->objects.append(TerrainObject(m_gl, glm::vec3(x, height + EPSILON, y)));
+                tile->objects.append(TerrainObject(m_gl, this, tile, glm::vec3(x, height + EPSILON, y)));
                 tile->objects.last().rotation = glm::rotate(glm::mat4(), (float)M_PI/2.0f, glm::vec3(1.0f,0,0));
             }
         }
@@ -177,8 +180,9 @@ void Terrain::addObjects(int i, int j){
                 }
             }
             if (canPlace && rand() / (float)RAND_MAX > 0.1f){
-                tile->objects.append(TerrainObject(m_gl, glm::vec3(x, height + EPSILON, y)));
+                tile->objects.append(TerrainObject(m_gl, this, tile, glm::vec3(x, height + EPSILON, y)));
                 tile->objects.last().rotation = glm::rotate(glm::mat4(), dRandReal()*(float)M_PI*2, glm::vec3(0,1.0f,0));
+                tile->objects.last().velocity = glm::vec3(dRandReal(), 0, dRandReal());
             }
         }
     }
@@ -276,6 +280,8 @@ void Terrain::shiftTiles(int sx, int sy){
             }
             for (int i = startx; dirx*(i - endx) > 0; i -= dirx){
                 tiles[i][j] = tiles[i - sx][j];
+                tiles[i][j]->i = i;
+                tiles[i][j]->j = j;
             }
             for (int i = endx; dirx*(i - (endx - sx)) > 0; i -= dirx){
                 tiles[i][j] = NULL;
@@ -293,6 +299,8 @@ void Terrain::shiftTiles(int sx, int sy){
             }
             for (int j = starty; diry*(j - endy) > 0; j -= diry){
                 tiles[i][j] = tiles[i][j - sy];
+                tiles[i][j]->i = i;
+                tiles[i][j]->j = j;
             }
             for (int j = endy; diry*(j - (endy - sy)) > 0; j -= diry){
                 tiles[i][j] = NULL;
@@ -305,6 +313,22 @@ void Terrain::shiftTiles(int sx, int sy){
 }
 
 void Terrain::update(float seconds, glm::vec3 playerLocation){
+    for (int i = 0; i < GRID_SIZE; i++){
+        for (int j = 0; j < GRID_SIZE; j++){
+            Tile *tile = getTile(i,j);
+            if (tile != NULL){
+                for (int k = tile->objects.size() - 1; k >= 0; k--){
+                    tile->objects[k].update(seconds);
+                    if (tile->objects[k].tile != tile){
+                        if (tile->objects[k].tile != NULL)
+                            tile->objects[k].tile->objects.append(tile->objects[k]);
+                        tile->objects.removeAt(k);
+                    }
+                }
+            }
+        }
+    }
+
     glm::vec3 relLoc = playerLocation - originLocation;
     glm::vec2 grid((int)(relLoc[0] / TILE_SIZE), (int)(relLoc[2] / TILE_SIZE));
     int shiftx = 0;
@@ -452,6 +476,24 @@ bool Terrain::collidePoint(glm::vec3 point){
                      point[1] - originLocation[1];
     }
     return false;
+}
+
+// Ignores the y-component of location_in_tile
+float Terrain::heightInTile(int i, int j, glm::vec3 location_in_tile){
+    Tile* tile = getTile(i,j);
+
+    Q_ASSERT(tile);
+    Q_ASSERT(location_in_tile[0] >= 0 && location_in_tile[2] >= 0);
+    int x = (int)location_in_tile[0];
+    int z = (int)location_in_tile[2];
+    float frac_x = location_in_tile[0] - x;
+    float frac_z = location_in_tile[2] - z;
+
+    // Should never query for point outside of physical boundary of the tile
+    Q_ASSERT(x < TILE_SIZE && z < TILE_SIZE);
+    return tile->terrain[x + 1][z + 1][1]*frac_x*frac_z + tile->terrain[x][z + 1][1]*(1 - frac_x)*frac_z
+            + tile->terrain[x + 1][z][1]*frac_x*(1 - frac_z) + tile->terrain[x][z][1]*(1 - frac_x)*(1 - frac_z);
+
 }
 
 bool Terrain::collideBullet(Bullet *bullet){

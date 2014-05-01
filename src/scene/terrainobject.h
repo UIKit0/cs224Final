@@ -11,24 +11,44 @@
 #include "scene/global.h"
 #include "particles/basicsmokeemitter.h"
 #include "interaction/bullet.h"
+#include "terrain.h"
+
+class Terrain;
 
 class TerrainObject
 {
 public:
-    TerrainObject(GLFunctions *gl, glm::vec3 loc);
+    TerrainObject(GLFunctions *gl, Terrain* t, Tile* tile, glm::vec3 loc);
 
     void update(float seconds);
     void draw();
     void onBulletHit(Bullet &bullet);
 
+    /*
+     * Terrain fields
+     */
+    Terrain* terrain;
+    Tile* tile;
+
+    /*
+     * Positioning fields
+     */
     // Relative to the tile
     glm::vec3 location;
     // Rotation matrix
     glm::mat4 rotation;
-    GLFunctions *m_gl;
-    BasicSmokeEmitter *particles;
+    // Speed of the terrain object
+    glm::vec3 velocity;
+
+    /*
+     * Gameplay fields
+     */
     float health;
     float radius;
+
+    // Used only to pass onto the particles
+    GLFunctions *m_gl;
+    BasicSmokeEmitter *particles;
 };
 
 #endif // TERRAINOBJECT_H

@@ -6,11 +6,7 @@
 #include "glm/gtc/random.hpp"
 #include <QHash>
 #include <iostream>
-
 #include "scene/global.h"
-#include "graphics/program.h"
-#include "scene/terrainobject.h"
-#include "interaction/bullet.h"
 
 #define GRID_SIZE 11
 #define UPDATE_RADIUS 2
@@ -18,6 +14,7 @@
 #define NOISE_COORDINATE_RATIO 0.04f
 #define MIN_Y -5.0f
 #define EPSILON 0.01f
+#define TRIANGLES_PER_TILE_ELEMENT 2
 
 struct Update{
     int ix;
@@ -36,7 +33,10 @@ struct VO{
     GLuint vbo;
 };
 
+class TerrainObject;
+
 struct Tile{
+    int i, j;
     // Overlap between tiles
     glm::vec3 terrain[TILE_SIZE + 1][TILE_SIZE + 1];
     glm::vec3 normals[TILE_SIZE + 1][TILE_SIZE + 1];
@@ -48,7 +48,10 @@ struct Tile{
     QList<TerrainObject> objects;
 };
 
-#define TRIANGLES_PER_TILE_ELEMENT 2
+#include "graphics/program.h"
+#include "scene/terrainobject.h"
+#include "interaction/bullet.h"
+
 
 /**
  * Terrain is composed of tiles, in which each tile has an
@@ -72,10 +75,11 @@ public:
     bool collidePoint(glm::vec3 point);
     bool collideBullet(Bullet* bullet);
 
-private:
-
+    float heightInTile(int i, int j, glm::vec3 location_in_tile);
     // Returns NULL if the index is out of bounds or has an empty tile
     Tile* getTile(int i, int j);
+
+private:
     // Height for an element of a tile
     float noise(Tile *tile, int i, int j);
     void shiftTiles(int x, int y);

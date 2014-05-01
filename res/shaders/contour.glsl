@@ -86,14 +86,6 @@ layout(triangle_strip, max_vertices = 12) out;
 uniform float HalfWidth = 0.005;
 uniform float OverhangLength = 0.15;
 
-bool IsFront(vec3 A, vec3 B, vec3 C)
-{
-    float area = (A.x * B.y - B.x * A.y) +
-                 (B.x * C.y - C.x * B.y) +
-                 (C.x * A.y - A.x * C.y);
-    return area > 0;
-}
-
 void EmitEdge(vec3 P0, vec3 P1)
 {
     vec3  E = OverhangLength * vec3(P1.xy - P0.xy, 0);
@@ -108,6 +100,14 @@ void EmitEdge(vec3 P0, vec3 P1)
     gl_Position = vec4(P1 + N + E, 1); EmitVertex();
     gl_Position = vec4(P1 + S + E, 1); EmitVertex();
     EndPrimitive();
+}
+
+bool IsFront(vec3 A, vec3 B, vec3 C)
+{
+    float area = (A.x * B.y - B.x * A.y) +
+                 (B.x * C.y - C.x * B.y) +
+                 (C.x * A.y - A.x * C.y);
+    return area > 0;
 }
 
 void main()

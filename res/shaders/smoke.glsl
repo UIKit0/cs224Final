@@ -107,7 +107,7 @@ uniform sampler2D tex_norm;
 uniform vec3 Ld = vec3(1.0,1.0,1.0);
 uniform vec3 LightPosition = vec3(-1.0, -1.0, -1.0);
 
-float granularity = 4.0;
+float granularity = 1.0;
 float invGranularity = 1.0/granularity;
 
 uniform mat4 p_matrix;
@@ -140,7 +140,7 @@ void main(void)
     float d = lum(depth.xyz);
 
     vec4 cameraCoords = g_in.csPos;
-    cameraCoords.z -= 2*(1.0-d);
+    cameraCoords.z -= 2*(d);
     vec4 clipCoords = p_matrix * cameraCoords;
 
     float ndc_depth = clipCoords.z / clipCoords.w;
@@ -150,7 +150,7 @@ void main(void)
     gl_FragDepth = newdepth;
 
     // Calculate the light position
-    vec4 lightPos = v_matrix * vec4(LightPosition.xyz,0);
+    vec4 lightPos = v_matrix * vec4(LightPosition.xyz,1);
 
     // Calculate lighting
 
@@ -182,7 +182,7 @@ void main(void)
 
     // Color the pixel
     vec3 Kd = shade.xyz;
-    vec3 ambLight = Ld*Kd*0.1;
+    vec3 ambLight = Ld*Kd*1;
     vec3 difLight = Ld*(Kd*toonDif);
 
     float a = lum(alpha.xyz);
@@ -249,7 +249,7 @@ void main(void)
     // Modify the depth according the texture values
     float d = lum(depth.xyz);
     vec4 cameraCoords = g_in.csPos;
-    cameraCoords.z -= 2*(1.0-d);
+    cameraCoords.z -= 2*(d);
     vec4 clipCoords = p_matrix * cameraCoords;
     float ndc_depth = clipCoords.z / clipCoords.w;
     float Far = gl_DepthRange.far;

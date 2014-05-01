@@ -39,7 +39,7 @@ void Particles::initialize(GLFunctions *gl, int maxParticles)
     m_smokeFx.initialize(gl);
     m_smokeFx.compile(GL_VERTEX_SHADER, "smoke.vertex.billboard");
     m_smokeFx.compile(GL_GEOMETRY_SHADER, "smoke.geometry.billboard");
-    m_smokeFx.compile(GL_FRAGMENT_SHADER, "smoke.fragment.billboard.old");
+    m_smokeFx.compile(GL_FRAGMENT_SHADER, "smoke.fragment.billboard");
     m_smokeFx.link();
 
     m_pUniform = m_smokeFx.uniform("p_matrix");
@@ -65,7 +65,7 @@ void Particles::initialize(GLFunctions *gl, int maxParticles)
     // Load textures
     int texNum = 4;
     QImage* textures[texNum];
-    textures[0] = new QImage(":/textures/smoke_alpha2.png");
+    textures[0] = new QImage(":/textures/smoke_alpha2.1.png");
     textures[1] = new QImage(":/textures/smoke_color2.png");
     textures[2] = new QImage(":/textures/smoke_depth2.png");
     textures[3] = new QImage(":/textures/smoke_normal2.png");

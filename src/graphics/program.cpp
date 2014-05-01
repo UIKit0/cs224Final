@@ -154,12 +154,12 @@ GLuint Program::program() const
 
 GLint Program::attrib(const char *name)
 {
-    Q_ASSERT_X(m_attributes.contains(name) && m_attributes[name] != INVALID_VAR, "invalid attribute request" , name);
+//    Q_ASSERT_X(m_attributes.contains(name) && m_attributes[name] != INVALID_VAR, "invalid attribute request" , name);
     return m_attributes[name];
 }
 
 GLint Program::uniform(const char *name)
 {
-    Q_ASSERT_X(m_uniforms.contains(name) && m_uniforms[name] != INVALID_VAR, "invalid uniform request", name);
+//    Q_ASSERT_X(m_uniforms.contains(name) && m_uniforms[name] != INVALID_VAR, "invalid uniform request", name);
     return m_uniforms[name];
 }

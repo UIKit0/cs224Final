@@ -39,7 +39,7 @@ void Particles::initialize(GLFunctions *gl, int maxParticles)
     m_smokeFx.initialize(gl);
     m_smokeFx.compile(GL_VERTEX_SHADER, "smoke.vertex.billboard");
     m_smokeFx.compile(GL_GEOMETRY_SHADER, "smoke.geometry.billboard");
-    m_smokeFx.compile(GL_FRAGMENT_SHADER, "smoke.fragment.billboard.old");
+    m_smokeFx.compile(GL_FRAGMENT_SHADER, "smoke.fragment.billboard");
     m_smokeFx.link();
 
     m_pUniform = m_smokeFx.uniform("p_matrix");

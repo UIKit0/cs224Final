@@ -136,7 +136,6 @@ out G_OUT
     vec2 texcoord;
 } g_out;
 
-out vec4 cs_position;
 
 void main(void)
 {

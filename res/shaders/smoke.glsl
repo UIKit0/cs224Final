@@ -111,9 +111,9 @@ uniform sampler2D tex_depth;
 uniform sampler2D tex_norm;
 
 uniform vec3 Ld = vec3(1.0,1.0,1.0);
-uniform vec3 LightPosition = vec3(-1.0, -1.0, -1.0);
+uniform vec3 LightPosition = vec3(1.0, -1.0, -1.0);
 
-float granularity = 2.0;
+float granularity = 4.0;
 float invGranularity = 1.0/granularity;
 
 uniform mat4 p_matrix;
@@ -148,7 +148,6 @@ void main(void)
     vec4 cameraCoords = g_in.csPos;
     cameraCoords.z -= 2*(1.0-d);
     vec4 clipCoords = p_matrix * cameraCoords;
-
     float ndc_depth = clipCoords.z / clipCoords.w;
     float Far = gl_DepthRange.far;
     float Near = gl_DepthRange.near;

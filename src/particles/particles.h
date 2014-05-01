@@ -56,9 +56,13 @@ private:
 
     // Depth shader attribute
     GLint m_depthPosAttrib;
+    GLint m_depthSizeAttrib;
+    GLint m_depthPUniform;
+    GLint m_depthVUniform;
 
     // Stencil shader attributes
     GLint m_stencilPosAttrib;
+    GLint m_stencilSizeAttrib;
 
     int m_maxParticles;
 

@@ -2,20 +2,18 @@ Render shadow volumes into the stencil buffer
 
 -- vertex.stencil ---------------------------------------
 
-in vec3 position;                                             
-in vec2 TexCoord;                                             
-in vec3 Normal;                                               
+in vec3 position;
 
 out vec3 WorldPos;                                                                 
 
-uniform mat4 MVP_Matrix;                                                  
-uniform mat4 M_Matrix;                                                
+uniform mat4 mvp_matrix;
+uniform mat4 m_matrix;
                                                                                     
 void main()                                                                         
 {                                                                                   
     vec4 PosL   = vec4(position, 1.0);
-    gl_Position = MVP_Matrix * PosL;
-    WorldPos    = (M_Matrix * PosL).xyz;                                
+    gl_Position = mvp_matrix * PosL;
+    WorldPos    = (m_matrix * PosL).xyz;
 }
 
 -- geometry.stencil ---------------------------------------
@@ -25,28 +23,28 @@ layout (triangle_strip, max_vertices = 18) out;
 
 in vec3 WorldPos[];
 
-uniform vec3 gLightPos;
-uniform mat4 gVP;
+uniform vec3 LightPosition;
+uniform mat4 vp_matrix;
 
 float EPSILON = 0.01;
 
 void EmitQuad(int StartIndex, vec3 StartVertex, int EndIndex, vec3 EndVertex)
 {
-    vec3 LightDir = normalize(StartVertex - gLightPos);
+    vec3 LightDir = normalize(StartVertex - LightPosition);
     vec3 l = LightDir * EPSILON;
 
-    gl_Position = gVP * vec4((StartVertex + l), 1.0);
+    gl_Position = vp_matrix * vec4((StartVertex + l), 1.0);
     EmitVertex();
     
-    gl_Position = gVP * vec4(LightDir, 0.0);
+    gl_Position = vp_matrix * vec4(LightDir, 0.0);
     EmitVertex();
 
-    LightDir = normalize(EndVertex - gLightPos);
+    LightDir = normalize(EndVertex - LightPosition);
     l = LightDir * EPSILON;
-    gl_Position = gVP * vec4((EndVertex + l), 1.0);
+    gl_Position = vp_matrix * vec4((EndVertex + l), 1.0);
     EmitVertex();
     
-    gl_Position = gVP * vec4(LightDir, 0.0);
+    gl_Position = vp_matrix * vec4(LightDir, 0.0);
     EmitVertex();
 
     EndPrimitive();            
@@ -63,7 +61,7 @@ void main()
     vec3 e6 = WorldPos[5] - WorldPos[0];
 
     vec3 Normal = cross(e1,e2);
-    vec3 LightDir = gLightPos - WorldPos[0];
+    vec3 LightDir = LightPosition - WorldPos[0];
 
 
     // Calculate front top vertices
@@ -87,7 +85,7 @@ void main()
         }
 
         Normal = cross(e4,e5);
-        LightDir = gLightPos - WorldPos[2];
+        LightDir = LightPosition - WorldPos[2];
 
         if (dot(Normal, LightDir) <= 0) {
             vec3 StartVertex = WorldPos[2];
@@ -96,7 +94,7 @@ void main()
         }
 
         Normal = cross(e2,e6);
-        LightDir = gLightPos - WorldPos[4];
+        LightDir = LightPosition - WorldPos[4];
 
         if (dot(Normal, LightDir) <= 0) {
             vec3 StartVertex = WorldPos[4];
@@ -104,16 +102,16 @@ void main()
             EmitQuad(4, StartVertex, 0, EndVertex);
         }
 
-        vec3 LightDir = (normalize(WorldPos[0] - gLightPos)) * EPSILON;
-        gl_Position = gVP * vec4((WorldPos[0] + LightDir), 1.0);
+        vec3 LightDir = (normalize(WorldPos[0] - LightPosition)) * EPSILON;
+        gl_Position = vp_matrix * vec4((WorldPos[0] + LightDir), 1.0);
         EmitVertex();
 
-        LightDir = (normalize(WorldPos[2] - gLightPos)) * EPSILON;
-        gl_Position = gVP * vec4((WorldPos[2] + LightDir), 1.0);
+        LightDir = (normalize(WorldPos[2] - LightPosition)) * EPSILON;
+        gl_Position = vp_matrix * vec4((WorldPos[2] + LightDir), 1.0);
         EmitVertex();
 
-        LightDir = (normalize(WorldPos[4] - gLightPos)) * EPSILON;
-        gl_Position = gVP * vec4((WorldPos[4] + LightDir), 1.0);
+        LightDir = (normalize(WorldPos[4] - LightPosition)) * EPSILON;
+        gl_Position = vp_matrix * vec4((WorldPos[4] + LightDir), 1.0);
         EmitVertex();
         EndPrimitive();
     }

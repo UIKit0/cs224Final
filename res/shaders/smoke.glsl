@@ -71,20 +71,20 @@ void main(void)
     // top left
     pos.y -= fullSize;
     gl_Position = p_matrix * pos;
-    g_out.texcoord = vec2(0.0, 1.0);
+    g_out.texcoord = vec2(0.0, 0.0);
     EmitVertex();
 
     // bottom right
     pos.y += fullSize;
     pos.x += fullSize;
     gl_Position = p_matrix * pos;
-    g_out.texcoord = vec2(1.0, 0.0);
+    g_out.texcoord = vec2(1.0, 1.0);
     EmitVertex();
 
     // top right
     pos.y -= fullSize;
     gl_Position = p_matrix * pos;
-    g_out.texcoord = vec2(1.0, 1.0);
+    g_out.texcoord = vec2(1.0, 0.0);
     EmitVertex();
 
     EndPrimitive();

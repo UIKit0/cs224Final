@@ -96,11 +96,11 @@ void World::initialize(GLFunctions *gl)
 #ifdef TERRAIN
     m_terrain.initialize(gl);
 #endif
-    player = new Player(m_world_id, space, m, &m_terrain);
+    player = new Player(space, &m_terrain);
     player->initialize(gl);
 
 #ifdef PARTICLES
-    BasicSmokeEmitter *emitter = new BasicSmokeEmitter(m_world_id, m);
+    BasicSmokeEmitter *emitter = new BasicSmokeEmitter(g_world, g_mass);
     emitter->initialize(gl, 2000);
     emitter->maxInitialVel = glm::vec3(0.5f, 2.0f, 0.5f);
     emitter->minInitialVel = glm::vec3(-0.5f, 0.5f, -0.5f);

@@ -18,12 +18,17 @@ public:
     TerrainObject(GLFunctions *gl, glm::vec3 loc);
 
     void update(float seconds);
+    void draw();
     void onBulletHit(Bullet &bullet);
 
+    // Relative to the tile
     glm::vec3 location;
+    // Rotation matrix
+    glm::mat4 rotation;
     GLFunctions *m_gl;
     BasicSmokeEmitter *particles;
     float health;
+    float radius;
 };
 
 #endif // TERRAINOBJECT_H

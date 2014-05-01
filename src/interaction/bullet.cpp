@@ -1,12 +1,13 @@
 #include "bullet.h"
 
-Bullet::Bullet(dWorldID w, dSpaceID s, dMass m, glm::vec3 loc, glm::vec3 vel) :
+Bullet::Bullet(dSpaceID s, glm::vec3 loc, glm::vec3 vel) :
     active(true)
   , time(0)
+  , damage(1.0f)
 {
-    body = dBodyCreate(w);
+    body = dBodyCreate(g_world);
     geom = dCreateSphere(s, 0.5f);
-    dMassSetSphere(&m, 100.0f, 0.5f);
+    dMassSetSphere(&g_mass, 100.0f, 0.5f);
     dGeomSetBody(geom, body);
     dGeomSetCategoryBits(geom, BULLET_CATEGORY_BITS);
     // Don't interact with smoke
@@ -24,7 +25,7 @@ void Bullet::update(float seconds){
     time += seconds;
 
     // Decay power over time/distance
-    power = power*0.98f;
+    damage = damage*0.98f;
     if (time > LIFETIME)
         active = false;
 }

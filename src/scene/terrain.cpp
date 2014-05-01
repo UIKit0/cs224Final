@@ -9,7 +9,8 @@ Terrain::~Terrain(){
     // FIX: this causing issues when quitting (bad access)!
 //    for (int i = 0; i < GRID_SIZE; i++){
 //        for (int j = 0; j < GRID_SIZE; j++){
-//            delete tiles[i][j];
+//            if (tiles[i][j] != NULL)
+//                delete tiles[i][j];
 //        }
 //    }
 }
@@ -31,7 +32,6 @@ void Terrain::initialize(GLFunctions *gl){
             tiles[i][j]->loc1 = glm::vec2(originLocation[0] + i*TILE_SIZE + TILE_SIZE, originLocation[1] + j*TILE_SIZE + TILE_SIZE);
             for (int x = 0; x < TILE_SIZE + 1; x++){
                 for (int y = 0; y <  TILE_SIZE + 1; y++){
-//                    glm::vec2 loc = glm::vec2(x + i*TILE_SIZE + originLocation[0], y + j*TILE_SIZE + originLocation[2]);
                     tiles[i][j]->terrain[x][y] = glm::vec3(x, noise(tiles[i][j], x, y), y);
                 }
             }
@@ -59,36 +59,38 @@ void Terrain::initialize(GLFunctions *gl){
     m_gl->glGenBuffers(1, &object_vbo);
     m_gl->glBindBuffer(GL_ARRAY_BUFFER, object_vbo);
 
+    // Data for placeholder triangle
     float data[3*3*2];
     int base = 0;
     data[base + 0] = -1;
     data[base + 1] = 0;
-    data[base + 2] = 0;
+    data[base + 2] = -0.5f;
 
     data[base + 3] = -1;
-    data[base + 4] = 1;
-    data[base + 5] = 0;
+    data[base + 4] = 0;
+    data[base + 5] = 0.5f;
 
     data[base + 6] = 1;
-    data[base + 7] = 0.5f;
+    data[base + 7] = 0;
     data[base + 8] = 0;
 
-    data[base + 9] = -1;
+    data[base + 9] = 1;
     data[base + 10] = 0;
     data[base + 11] = 0;
 
-    data[base + 12] = 1;
-    data[base + 13] = 0.5;
-    data[base + 14] = 0;
+    data[base + 12] = -1;
+    data[base + 13] = 0;
+    data[base + 14] = 0.5f;
 
     data[base + 15] = -1;
-    data[base + 16] = 1;
-    data[base + 17] = 0;
+    data[base + 16] = 0;
+    data[base + 17] = -0.5f;
     m_gl->glBufferData(GL_ARRAY_BUFFER,
                        sizeof(float) * 3 * 3 * 2, data,
                        GL_DYNAMIC_DRAW);
     m_gl->glEnableVertexAttribArray(shader.attrib("position"));
     m_gl->glVertexAttribPointer(shader.attrib("position"), 3, GL_FLOAT, GL_FALSE, sizeof(float)*3, 0);
+
 }
 
 float Terrain::noise(Tile *tile, int i, int j){
@@ -157,7 +159,8 @@ void Terrain::addObjects(int i, int j){
                     && height > tile->terrain[x - 1][y][1]
                     && height > tile->terrain[x - 1][y - 1][1]){
 
-                static_objects.append(new TerrainObject(m_gl, glm::vec3(i*TILE_SIZE + x, height, j*TILE_SIZE + y)));
+                tile->objects.append(TerrainObject(m_gl, glm::vec3(x, height + EPSILON, y)));
+                tile->objects.last().rotation = glm::rotate(glm::mat4(), (float)M_PI/2.0f, glm::vec3(1.0f,0,0));
             }
         }
     }
@@ -173,8 +176,9 @@ void Terrain::addObjects(int i, int j){
                     }
                 }
             }
-            if (canPlace && rand() / (float)RAND_MAX > 0.3f){
-                static_objects.append(new TerrainObject(m_gl, glm::vec3(i*TILE_SIZE + x, height, j*TILE_SIZE + y)));
+            if (canPlace && rand() / (float)RAND_MAX > 0.1f){
+                tile->objects.append(TerrainObject(m_gl, glm::vec3(x, height + EPSILON, y)));
+                tile->objects.last().rotation = glm::rotate(glm::mat4(), dRandReal()*(float)M_PI*2, glm::vec3(0,1.0f,0));
             }
         }
     }
@@ -184,7 +188,6 @@ void Terrain::draw(){
     glm::vec3 color;
     for (int i = 0; i < GRID_SIZE; i++){
         for (int j = 0; j < GRID_SIZE; j++){
-//            std::cout<<"draw"<<i<<" "<<j<<" "<<tiles[i][j]<<std::endl;
             if (tiles[i][j] == NULL)
                 continue;
 
@@ -212,23 +215,29 @@ void Terrain::draw(){
             m_gl->glDrawArrays(GL_TRIANGLES, 0, TILE_SIZE*TILE_SIZE*3*3*TRIANGLES_PER_TILE_ELEMENT);
 
             g_model.popMatrix();
+
+            // Draw the objects in the tile
+            color = glm::vec3(1.0f,0.0f,0.0f);
+            for (int k = 0; k < tiles[i][j]->objects.size(); k++){
+                g_model.pushMatrix();
+                g_model.mMatrix = glm::translate(g_model.mMatrix, originLocation +
+                                                        glm::vec3(i*TILE_SIZE, 0, j*TILE_SIZE) +
+                                                        tiles[i][j]->objects[k].location);
+                g_model.mMatrix *= tiles[i][j]->objects[k].rotation;
+
+                m_gl->glBindVertexArray(object_vao);
+                m_gl->glBindBuffer(GL_ARRAY_BUFFER, object_vbo);
+
+                m_gl->glUseProgram(shader.program());
+
+                m_gl->glUniformMatrix4fv(shader.uniform("proj_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix));
+                m_gl->glUniformMatrix4fv(shader.uniform("mv_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix*g_model.mMatrix));
+
+                m_gl->glUniform3fv(shader.uniform("terrain_color"), 1, glm::value_ptr(color));
+                m_gl->glDrawArrays(GL_TRIANGLES, 0, 3*3*2);
+                g_model.popMatrix();
+            }
         }
-    }
-    color = glm::vec3(1.0f,0.0f,0.0f);
-    for (int i = 0; i < static_objects.size(); i++){
-        g_model.pushMatrix();
-        g_model.mMatrix = glm::translate(g_model.mMatrix, originLocation + static_objects[i]->location);
-        m_gl->glBindVertexArray(object_vao);
-        m_gl->glBindBuffer(GL_ARRAY_BUFFER, object_vbo);
-
-        m_gl->glUseProgram(shader.program());
-
-        m_gl->glUniformMatrix4fv(shader.uniform("proj_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix));
-        m_gl->glUniformMatrix4fv(shader.uniform("mv_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix*g_model.mMatrix));
-
-        m_gl->glUniform3fv(shader.uniform("terrain_color"), 1, glm::value_ptr(color));
-        m_gl->glDrawArrays(GL_TRIANGLES, 0, 3*3*2);
-        g_model.popMatrix();
     }
 }
 
@@ -292,13 +301,6 @@ void Terrain::shiftTiles(int sx, int sy){
         }
     }
     glm::vec3 shift(-sx*TILE_SIZE, 0, -sy*TILE_SIZE);
-    for (int i = static_objects.size() - 1; i >= 0; i--){
-        static_objects[i]->location -= shift;
-        // Remove objects that are out of bounds
-        if (static_objects[i]->location[0] < 0 || static_objects[i]->location[0] > GRID_SIZE*TILE_SIZE
-                || static_objects[i]->location[2] < 0 || static_objects[i]->location[2] > GRID_SIZE*TILE_SIZE)
-            static_objects.removeAt(i);
-    }
     originLocation += shift;
 }
 
@@ -448,6 +450,29 @@ bool Terrain::collidePoint(glm::vec3 point){
     if (tile != NULL){
         return tile->terrain[(int)(point[0] - originLocation[0]) % TILE_SIZE][(int)(point[2] - originLocation[2]) % TILE_SIZE][1] >
                      point[1] - originLocation[1];
+    }
+    return false;
+}
+
+bool Terrain::collideBullet(Bullet *bullet){
+    const dReal *loc = dBodyGetPosition(bullet->body);
+    glm::vec3 point(loc[0], loc[1], loc[2]);
+    glm::vec3 point_in_terrain = point - originLocation;
+    int i = (int)point_in_terrain[0] / TILE_SIZE;
+    int j = (int)point_in_terrain[2] / TILE_SIZE;
+
+    Tile* tile = getTile(i,j);
+    if (tile != NULL){
+        glm::vec3 point_in_tile = point_in_terrain - glm::vec3(i*(float)TILE_SIZE, 0.0f, j*(float)TILE_SIZE);
+        for (int i = 0; i < tile->objects.size(); i++){
+            if (tile->objects[i].radius*tile->objects[i].radius > glm::length2(point_in_tile - tile->objects[i].location)){
+                tile->objects[i].onBulletHit(*bullet);
+                return true;
+            }
+        }
+        if (tile->terrain[(int)(point[0] - originLocation[0]) % TILE_SIZE][(int)(point[2] - originLocation[2]) % TILE_SIZE][1] > point[1] - originLocation[1]){
+            return true;
+        }
     }
     return false;
 }

@@ -107,7 +107,7 @@ uniform sampler2D tex_norm;
 uniform vec3 Ld = vec3(1.0,1.0,1.0);
 uniform vec3 LightPosition = vec3(-1.0, -1.0, -1.0);
 
-float granularity = 2.0;
+float granularity = 4.0;
 float invGranularity = 1.0/granularity;
 
 uniform mat4 p_matrix;
@@ -188,6 +188,76 @@ void main(void)
     float a = lum(alpha.xyz);
     color = vec4(ambLight + difLight, a);
 }
+
+-- fragment.billboard.old ----------------------------------
+
+uniform sampler2D tex_alpha;
+uniform sampler2D tex_color;
+uniform sampler2D tex_depth;
+uniform sampler2D tex_norm;
+
+uniform vec3 Ld = vec3(1.0,1.0,1.0);
+uniform vec3 LightPosition;
+
+float granularity = 4.0;
+float invGranularity = 1.0/granularity;
+
+uniform mat4 p_matrix;
+uniform mat4 v_matrix;
+
+uniform float zNear = 0.1;
+uniform float zFar = 100.0;
+
+in G_OUT
+{
+    vec4 csPos;
+    vec2 texcoord;
+} g_in;
+
+
+out vec4 color;
+
+float lum(vec3 v)
+{
+    return 0.2126*v.x + 0.7152*v.y + 0.0722*v.z;
+}
+
+void main(void)
+{
+    vec4 alpha = texture(tex_alpha, g_in.texcoord);
+    vec4 shade = texture(tex_color, g_in.texcoord);
+    vec4 depth = texture(tex_depth, g_in.texcoord);
+    vec4 normal = texture(tex_norm, g_in.texcoord);
+
+    // Calculate the light position
+    vec4 lightPos = v_matrix*vec4(LightPosition,1);
+
+    // Calculate lighting
+    vec3 n = normalize(normal.xyz);
+    vec3 hitToLight = normalize(vec3(lightPos - g_in.csPos));
+    float difDot = max(dot(hitToLight,n),0.0);
+    float toonDif = floor(difDot * granularity) * invGranularity;
+
+    // Color the pixel
+    vec3 Kd = shade.xyz;
+    vec3 ambLight = Ld*Kd*0.1;
+    vec3 difLight = Ld*(Kd*toonDif);
+
+    float a = lum(alpha.xyz);
+    color = vec4(ambLight + difLight, a);
+
+    // Modify the depth according the texture values
+    float d = lum(depth.xyz);
+    vec4 cameraCoords = g_in.csPos;
+    cameraCoords.z -= 2*(1.0-d);
+    vec4 clipCoords = p_matrix * cameraCoords;
+    float ndc_depth = clipCoords.z / clipCoords.w;
+    float Far = gl_DepthRange.far;
+    float Near = gl_DepthRange.near;
+    float newdepth = (((Far - Near) * ndc_depth) + Near + Far) * 0.5;
+    gl_FragDepth = newdepth;
+}
+
 
 -- fragment.debug ---------------------------------------
 
@@ -294,7 +364,7 @@ void main(void)
     gl_FragDepth = newdepth;
 
     // Calculate the light position
-    vec4 lightPos = V_Matrix * vec4(LightPosition.xyz,0);
+    vec4 lightPos = V_Matrix * vec4(LightPosition.xyz,1);
 
     // Calculate lighting
 

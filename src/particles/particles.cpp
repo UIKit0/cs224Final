@@ -142,14 +142,14 @@ void Particles::draw()
 
     // Shadows!
     // 1. Render scene into depth buffer
-//    renderDepthPass();
+    renderDepthPass();
     //      a. Bind pass through shader.
     //          i.   Vertex: Simple transform
     //          ii.  Fragment: Nothing
     //      b. Render geometry
     // 2. Render shadow volume into stencil buffer
 //    m_gl->glEnable(GL_STENCIL_TEST);
-//    renderStencilPass();
+    renderStencilPass();
     //      a. Bind shadow volume shader
     //          i.   Vertex: Minor pass-thru
     //          ii.  Geometry: Quad emitter

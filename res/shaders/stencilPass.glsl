@@ -20,7 +20,7 @@ void main(void)
 -- geometry.stencil -----------------------------------------
 
 layout(points) in;
-layout(triangle_strip, max_vertices = 4) out;
+layout(triangle_strip, max_vertices = 8) out;
 
 uniform mat4 p_matrix;
 uniform mat4 v_matrix;
@@ -38,7 +38,8 @@ out G_OUT
     vec2 texcoord;
 } g_out;
 
-void main(void)
+
+void main()
 {
     vec4 pos = v_matrix * gl_in[0].gl_Position;
     vec4 opos = pos;
@@ -49,51 +50,52 @@ void main(void)
     halfSize += LightPosition.x*0.0000001;
 
     vec3 csLPos = -(v_matrix * vec4(LightPosition,0)).xyz;
-    vec4 infPos = vec4(csLPos,1);
+    vec4 infPos = vec4(csLPos,1)*4;
 
-    // Infinity vertex
-    gl_Position = infPos;
-    EmitVertex();
-    // Front top left
-    pos = opos;
-    pos.x -= halfSize;
-    pos.z += halfSize;
-    gl_Position = p_matrix * pos;
-    EmitVertex();
+    vec4 ptop;
+    vec4 pbot;
 
-    // Infinity vertex
-    gl_Position = infPos;
-    EmitVertex();
-    // Front top right
-    pos = opos;
-    pos.x += halfSize;
-    pos.z += halfSize;
-    gl_Position = p_matrix * pos;
-    EmitVertex();
+    // Front square
+    {
+        ptop = opos;
+        ptop.x -= halfSize;
+        ptop.z += halfSize;
+        pbot = ptop + infPos;
+        gl_Position = p_matrix * pbot;
+        EmitVertex();
+        gl_Position = p_matrix * ptop;
+        EmitVertex();
 
-    EndPrimitive();
+        ptop = opos;
+        ptop.x += halfSize;
+        ptop.z += halfSize;
+        pbot = ptop + infPos;
+        gl_Position = p_matrix * pbot;
+        EmitVertex();
+        gl_Position = p_matrix * ptop;
+        EmitVertex();
+    }
 
-    // back top left
-    pos = opos;
-    pos.x -= halfSize;
-    pos.z -= halfSize;
-    gl_Position = p_matrix * pos;
-    EmitVertex();
-    // Infinity vertex
-    gl_Position = infPos;
-    EmitVertex();
+    // Back square
+    {
+        ptop = opos;
+        ptop.x -= halfSize;
+        ptop.z -= halfSize;
+        pbot = ptop + infPos;
+        gl_Position = p_matrix * pbot;
+        EmitVertex();
+        gl_Position = p_matrix * ptop;
+        EmitVertex();
 
-    // top right
-    pos = opos;
-    pos.x += halfSize;
-    pos.z -= halfSize;
-    gl_Position = p_matrix * pos;
-    EmitVertex();
-    // Infinity vertex
-    gl_Position = infPos;
-    EmitVertex();
-
-    EndPrimitive();
+        ptop = opos;
+        ptop.x += halfSize;
+        ptop.z -= halfSize;
+        pbot = ptop + infPos;
+        gl_Position = p_matrix * pbot;
+        EmitVertex();
+        gl_Position = p_matrix * ptop;
+        EmitVertex();
+    }
 }
 
 -- fragment.stencil ---------------------------------------

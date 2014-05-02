@@ -51,11 +51,11 @@ void Player::draw(){
     // A little extra rotation depending on how much the plane is turning
     g_model.mMatrix = glm::rotate(g_model.mMatrix, -glm::radians(roll/3.0f), up);
     // Rolling effect
-    g_model.mMatrix = glm::rotate(g_model.mMatrix, glm::radians(roll), facing);
+    g_model.mMatrix = glm::rotate(g_model.mMatrix, glm::radians(roll/1.5f), facing);
 
     // Initial orientation
     g_model.mMatrix = glm::rotate(g_model.mMatrix, -glm::radians(rotation[0]), up);
-    g_model.mMatrix = glm::rotate(g_model.mMatrix, glm::radians(rotation[1]), glm::vec3(0,0,1.0f));
+    g_model.mMatrix = glm::rotate(g_model.mMatrix, glm::radians(rotation[1] + pitch/2.0f), glm::vec3(0,0,1.0f));
 
     // TODO: draw model
     m_gl->glBindVertexArray(object_vao);

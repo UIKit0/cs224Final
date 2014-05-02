@@ -162,7 +162,7 @@ void World::update(float seconds)
 {
     g_camera.update(seconds);
 
-    player->facing = glm::normalize(g_camera.m_lookAt - g_camera.m_position);
+    player->facing = g_camera.m_lookAt;
     player->up = glm::vec3(0,1.0f,0);
     player->left = glm::normalize(glm::cross(player->up, player->facing));
     player->location = g_camera.m_position;

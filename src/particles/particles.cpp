@@ -3,11 +3,12 @@
 #include <QImage>
 
 Particles::Particles(dWorldID w)
-    : m_gl(NULL), world(w)
+    : m_gl(NULL), world(w), active(true)
 {
     // Create a space for this group of particles
     space = dHashSpaceCreate(0);
     dHashSpaceSetLevels(space, 1, 5);
+    g_particles.append(this);
 }
 
 Particles::Particles(GLFunctions *gl, int maxParticles)
@@ -177,7 +178,6 @@ void Particles::renderDepthPass()
     m_gl->glBindVertexArray(m_vao);
     m_gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
     m_gl->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(ParticleBuffer) * data.size(), data.data());
-
 
     glDrawArrays(GL_POINTS, 0, data.size());
 }

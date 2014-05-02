@@ -15,9 +15,10 @@ TerrainObject::TerrainObject(GLFunctions *gl, Terrain *t, Tile *tile, glm::vec3 
 
 void TerrainObject::destroy(){
     if (particles != NULL){
+//        particles->active = false;
 //        particles->destroy();
-        // TODO: actually remove particles from the world
-        delete particles;
+//        // TODO: actually remove particles from the world
+//        delete particles;
     }
 }
 
@@ -30,6 +31,7 @@ void TerrainObject::onMissileHit(Missile &missile){
     }
     if (health < 0.0f && particles != NULL){
         active = false;
+        particles->active = false;
     }
 }
 
@@ -98,11 +100,5 @@ void TerrainObject::update(float seconds){
         rotation = glm::rotate(rotation, -(float)atan2(velocity[2], velocity[0]), glm::vec3(0.0f, 1.0f, 0.0f));
         // TODO: rename the rotation matrix, or not, whatever
         rotation = glm::translate(rotation, glm::vec3(0, EPSILON, 0));
-    }
-}
-
-void TerrainObject::draw(){
-    if (particles != NULL){
-        particles->draw();
     }
 }

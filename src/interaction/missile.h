@@ -6,6 +6,8 @@
 
 #include "scene/global.h"
 #include "interaction/collisions.h"
+#include "particles/smoketrailemitter.h"
+#include "scene/global.h"
 
 #define MISSILE_CATEGORY_BITS 8
 #define LIFETIME 10.0f
@@ -13,7 +15,7 @@
 class Missile
 {
 public:
-    Missile(dSpaceID s, glm::vec3 loc, glm::vec3 vel);
+    Missile(GLFunctions *gl, dSpaceID s, glm::vec3 loc, glm::vec3 vel);
 
     void destroy();
     void update(float seconds);
@@ -25,6 +27,8 @@ public:
     dGeomID geom;
 
     float time;
+
+    SmokeTrailEmitter *emitter;
 };
 
 #endif // MISSILE_H

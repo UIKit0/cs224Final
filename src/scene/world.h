@@ -20,7 +20,7 @@
 #include "graphics/program.h"
 
 #include "interaction/vortex.h"
-#include "interaction/solidobject.h"
+#include "interaction/enemy.h"
 #include "particles/smokeparticle.h"
 #include "particles/basicsmokeemitter.h"
 #include "particles/smoketrailemitter.h"
@@ -61,15 +61,10 @@ private:
     dSpaceID space;
 
     // PARTICLES
-//    QList<ParticleEmitter*> emitters;
-//    ParticleEmitter *circlingEmitter;
-    // Sphere that moves left and right through the smoke
-    void toggleMovingSphere();
-    void toggleDrawVortices();
-    SolidObject sphere;
     Obj sphereMesh;
 
     Player *player;
+    QList<Enemy*> enemies;
 
     bool moveSphere;
     bool moveWing;

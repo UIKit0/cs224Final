@@ -33,7 +33,6 @@ void ParticleEmitter::draw(){
     for (int i = 0; i < particles.size(); ++i){
         gl_particles->setBufferValue(i, particles[i].getPosition(), particles[i].size*particles[i].scale);
     }
-
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_MULTISAMPLE);
@@ -54,10 +53,9 @@ void ParticleEmitter::draw(){
 }
 
 void ParticleEmitter::update(float seconds){
-//    if (!active && data.size() == 0){
-//        g_particles.removeOne(this);
-//        g_free_particles.append(this);
-//    }
+    if (!active && particles.size() == 0){
+        g_emitters.removeOne(this);
+    }
 
     time += seconds*0.1;
     updateParticles();

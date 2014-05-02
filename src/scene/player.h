@@ -8,6 +8,7 @@
 #include "scene/global.h"
 #include "scene/terrain.h"
 #include "graphics/program.h"
+#include "scene/contour.h"
 
 #define COOLDOWN 0.3f
 
@@ -39,6 +40,7 @@ private:
     GLuint object_vao;
     GLuint object_vbo;
 
+    Contour m_obj;
     GLFunctions *m_gl;
     Program shader;
 

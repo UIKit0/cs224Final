@@ -10,7 +10,7 @@
 #include "scene/global.h"
 
 #define MISSILE_CATEGORY_BITS 8
-#define LIFETIME 10.0f
+#define LIFETIME 7.0f
 
 class Missile
 {

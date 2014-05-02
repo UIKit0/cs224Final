@@ -42,6 +42,5 @@ extern Particles* g_particles;
 
 class ParticleEmitter;
 extern QList<ParticleEmitter*> g_emitters;
-//extern QList<Particles*> g_free_particles;
 
 #endif // GLOBAL_H

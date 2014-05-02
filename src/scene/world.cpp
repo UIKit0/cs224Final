@@ -40,22 +40,6 @@ World::~World()
     dCloseODE();
 }
 
-void World::toggleDrawVortices()
-{
-//    for (int i = 0; i < emitters.size(); i++)
-//    {
-//        emitters[i]->drawVortices = !emitters[i]->drawVortices;
-//    }
-}
-
-void World::toggleMovingSphere()
-{
-//    if (sphere.moving != 0)
-//        sphere.stop();
-//    else
-//        sphere.start();
-}
-
 static void nearCallback(void* data, dGeomID o1, dGeomID o2)
 {
     World *world = (World*) data;
@@ -101,9 +85,10 @@ void World::initialize(GLFunctions *gl)
     player = new Player(space, &m_terrain);
     player->initialize(gl);
 
+    enemies.append(new Enemy(gl, space, glm::vec3(0,5.0f,0), glm::vec3(dRandReal()*(float)M_PI, 0, 0)));
+
 #ifdef PARTICLES
     BasicSmokeEmitter *emitter = new BasicSmokeEmitter(g_particles);
-//    emitter->initialize(gl, 2000);
     emitter->location = glm::vec3(3,0,0);
     emitter->maxInitialVel = glm::vec3(0.3f, 1.0f, 0.3f);
     emitter->minInitialVel = glm::vec3(-0.3f, 0.5f, -0.3f);
@@ -140,6 +125,10 @@ void World::render(GLFunctions *gl)
     m_terrain.draw();
 #endif
 
+    for (int i = 0; i < enemies.size(); i++){
+        enemies[i]->draw();
+    }
+
 #ifdef CONTOUR
     g_model.pushMatrix();
     g_model.mMatrix = glm::translate(glm::mat4(), glm::vec3(5,0,5));
@@ -161,6 +150,7 @@ void World::render(GLFunctions *gl)
 
 void World::update(float seconds)
 {
+
     g_camera.update(seconds);
 
     player->facing = g_camera.m_lookAt;
@@ -217,10 +207,6 @@ void World::keyPressEvent(QKeyEvent *event)
         g_camera.pressingRight = true;
         break;
     }
-
-    if (event->key() == Qt::Key_V) toggleDrawVortices();
-
-    if (event->key() == Qt::Key_B) toggleMovingSphere();
 
     if (event->key() == Qt::Key_Space) g_camera.pressingJump = true;
 }

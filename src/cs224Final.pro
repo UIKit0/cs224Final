@@ -49,6 +49,7 @@ GLSW = $${LIB}/glsw-2010
 SOURCES += \
     $${GLSW}/glsw/bstrlib.c \
     $${GLSW}/glsw/glsw.c \
+    interaction/enemy.cpp
 
 # glm library
 GLM = $${LIB}/glm-0.9.5.1
@@ -72,7 +73,6 @@ SOURCES += \
     interaction/windvolume.cpp \
     interaction/vortex.cpp \
     interaction/vortexshedder.cpp \
-    interaction/solidobject.cpp \
     scene/matrixstack.cpp \
     scene/global.cpp \
     scene/terrain.cpp \
@@ -98,7 +98,6 @@ HEADERS += \
     interaction/windvolume.h \
     interaction/vortex.h \
     interaction/vortexshedder.h \
-    interaction/solidobject.h \
     scene/matrixstack.h \
     scene/global.h \
     scene/terrain.h \
@@ -108,7 +107,8 @@ HEADERS += \
     interaction/missile.h \
     scene/terrainobject.h \
     scene/contour.h \
-    window/smokecontroller.h
+    window/smokecontroller.h \
+    interaction/enemy.h
 
 RESOURCES += \
     $${RES}/resources.qrc

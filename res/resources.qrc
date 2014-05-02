@@ -20,5 +20,6 @@
         <file>textures/smoke_depth2.png</file>
         <file>textures/smoke_normal2.png</file>
         <file>textures/smoke_alpha2.1.png</file>
+        <file>meshes/LP_Flyingcar_02.obj</file>
     </qresource>
 </RCC>

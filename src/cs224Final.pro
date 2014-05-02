@@ -49,7 +49,8 @@ GLSW = $${LIB}/glsw-2010
 SOURCES += \
     $${GLSW}/glsw/bstrlib.c \
     $${GLSW}/glsw/glsw.c \
-    interaction/enemy.cpp
+    interaction/enemy.cpp \
+    particles/explosionemitter.cpp
 
 # glm library
 GLM = $${LIB}/glm-0.9.5.1
@@ -108,7 +109,8 @@ HEADERS += \
     scene/terrainobject.h \
     scene/contour.h \
     window/smokecontroller.h \
-    interaction/enemy.h
+    interaction/enemy.h \
+    particles/explosionemitter.h
 
 RESOURCES += \
     $${RES}/resources.qrc

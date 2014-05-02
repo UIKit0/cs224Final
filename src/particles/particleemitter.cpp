@@ -3,15 +3,12 @@
 ParticleEmitter::ParticleEmitter(Particles *p)
     : gl_particles(p)
     , active(true)
-   // : Particles(w)
 {
     // Create a space for this group of particles
     space = dHashSpaceCreate(0);
     dHashSpaceSetLevels(space, 1, 5);
 
-//    mass = m;
     drawVortices = false;
-//    sprites = UINT_MAX;
     time = 0;
     g_emitters.append(this);
 }
@@ -57,7 +54,7 @@ void ParticleEmitter::update(float seconds){
         g_emitters.removeOne(this);
     }
 
-    time += seconds*0.1;
+    time += seconds;
     updateParticles();
     updateVortices();
 

@@ -182,7 +182,7 @@ void Particles::renderDepthPass()
     m_gl->glActiveTexture(GL_TEXTURE0);
     m_gl->glBindTexture(GL_TEXTURE_2D, m_texID[2]);
 
-    glDrawArrays(GL_POINTS, 0, data.size());
+    glDrawArrays(GL_POINTS, 0, m_particles);
 
 }
 
@@ -217,7 +217,7 @@ void Particles::renderLightingPass()
         m_gl->glBindTexture(GL_TEXTURE_2D, m_texID[i]);
     }
 
-    glDrawArrays(GL_POINTS, 0, data.size());
+    glDrawArrays(GL_POINTS, 0, m_particles);
 }
 
 void Particles::renderStencilPass()
@@ -253,7 +253,7 @@ void Particles::renderStencilPass()
 //    m_gl->glActiveTexture(GL_TEXTURE0);
 //    m_gl->glBindTexture(GL_TEXTURE_2D, m_texID[2]);
 
-    glDrawArrays(GL_POINTS, 0, data.size());
+    glDrawArrays(GL_POINTS, 0, m_particles);
 
     m_gl->glEnable(GL_CULL_FACE);
 }

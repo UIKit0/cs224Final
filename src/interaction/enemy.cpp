@@ -47,7 +47,6 @@ void Enemy::update(float seconds){
             yaw = yaw - (float)M_PI*2;
         }
         else{
-            std::cout<<rotation[0]<<" "<<yaw<<std::endl;
             yaw = yaw + (float)M_PI*2;
         }
     }
@@ -60,7 +59,7 @@ void Enemy::update(float seconds){
         finalyaw += (float)M_PI*2;
 
     float finalpitch = glm::mix(rotation[1], pitch, 0.1f);
-    rotation = glm::vec3(finalyaw, finalpitch, roll*1000.0f);
+    rotation = glm::vec3(finalyaw, finalpitch, roll*20.0f);
 
     dBodySetLinearVel(body, sin(rotation[0])*cos(rotation[1]), sin(rotation[1]), cos(rotation[0])*cos(rotation[1]));
 
@@ -102,14 +101,10 @@ void Enemy::draw(){
     // Translate to location
     g_model.mMatrix = glm::translate(g_model.mMatrix, location);
 
-//    // A little extra rotation depending on how much the plane is turning
-//    g_model.mMatrix = glm::rotate(g_model.mMatrix, -glm::radians(rotation[2]/3.0f), up);
-//    // Rolling effect
-
     // Initial orientation
     g_model.mMatrix = glm::rotate(g_model.mMatrix, rotation[0], glm::vec3(0,1.0f,0));
     g_model.mMatrix = glm::rotate(g_model.mMatrix, -rotation[1], glm::vec3(1.0f,0,0));
-    g_model.mMatrix = glm::rotate(g_model.mMatrix, -glm::radians(rotation[2]), glm::vec3(0, 0, 1.0f));
+    g_model.mMatrix = glm::rotate(g_model.mMatrix, -rotation[2], glm::vec3(0, 0, 1.0f));
 
     g_model.mMatrix = glm::rotate(g_model.mMatrix, glm::radians(180.0f), glm::vec3(0, 1.0,0));
 
@@ -128,6 +123,11 @@ void Enemy::onMissileHit(Missile *m){
         particles = new BasicSmokeEmitter(g_particles);
     }
     if (health < 0.0f && particles != NULL){
+        const dReal* loc = dBodyGetPosition(body);
+        glm::vec3 location(loc[0], loc[1], loc[2]);
+        ExplosionEmitter *e = new ExplosionEmitter(g_particles);
+        e->location = location;
+        e->duration = 2.0f;
         active = false;
         particles->active = false;
     }

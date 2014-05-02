@@ -21,5 +21,6 @@
         <file>textures/smoke_normal2.png</file>
         <file>textures/smoke_alpha2.1.png</file>
         <file>meshes/LP_Flyingcar_02.obj</file>
+        <file>meshes/F-14A_Tomcat.obj</file>
     </qresource>
 </RCC>

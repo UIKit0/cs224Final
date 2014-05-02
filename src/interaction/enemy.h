@@ -18,6 +18,7 @@
 #include "interaction/missile.h"
 #include "particles/particleemitter.h"
 #include "particles/basicsmokeemitter.h"
+#include "particles/explosionemitter.h"
 
 #define ENEMY_CATEGORY_BITS 4
 

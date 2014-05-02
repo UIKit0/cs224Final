@@ -14,15 +14,15 @@ void BasicSmokeEmitter::updateParticles(){
     else
         toAdd = 2;
 
-    if (!active)
+    if (!active || dRandReal() < 0.5f)
         toAdd = 0;
 
     for (int i = 0; i < toAdd; i++){
         SmokeParticle sp = SmokeParticle(g_world, space, g_mass, dRandReal()*0.5f + 1.5f);
 
-        dBodySetPosition(sp.body, location[0] + dRandReal()*SPAWN_SIZE - SPAWN_SIZE/2,
+        dBodySetPosition(sp.body, location[0],
                          location[1],
-                         location[2] + dRandReal()*SPAWN_SIZE - SPAWN_SIZE/2);
+                         location[2]);
 
         dBodySetLinearVel(sp.body, dRandReal()*(maxInitialVel[0] - minInitialVel[0]) + minInitialVel[0],
                                 dRandReal()*(maxInitialVel[1] - minInitialVel[1]) + minInitialVel[1],
@@ -32,8 +32,8 @@ void BasicSmokeEmitter::updateParticles(){
         sp.rotationSpeed = dRandReal() - 0.5f;
 
         // Actually make particles bigger with time, so there aren't random gaps
-        sp.shrink = -0.3f;
-        sp.initialScale = 0.2f;
+        sp.shrink = -0.5f;
+        sp.initialScale = 0.4f;
         sp.expand = 2.0f;
         sp.minScale = 0.1f;
         sp.fade = -0.0f;
@@ -43,7 +43,7 @@ void BasicSmokeEmitter::updateParticles(){
     }
 
     // Apply noise to particles for time-varying effect
-    float timescale = 0.1f;
+    float timescale = 0.01f;
     float noisescale = 0.0f;
     for (int i = 0; i < particles.size(); i++){
         const dReal *loc = dBodyGetPosition(particles[i].body);

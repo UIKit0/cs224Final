@@ -39,8 +39,6 @@ out G_OUT
     vec2 texcoord;
 } g_out;
 
-out vec4 cs_position;
-
 void main(void)
 {
     g_out.csPos = v_in[0].csPos;
@@ -53,14 +51,12 @@ void main(void)
     // bottom left
     pos.x -= halfSize;
     pos.y += halfSize;
-    cs_position = pos;
     gl_Position = p_matrix * pos;
     g_out.texcoord = vec2(0.0, 1.0);
     EmitVertex();
 
     // top left
     pos.y -= fullSize;
-    cs_position = pos;
     gl_Position = p_matrix * pos;
     g_out.texcoord = vec2(0.0, 0.0);
     EmitVertex();
@@ -68,14 +64,12 @@ void main(void)
     // bottom right
     pos.y += fullSize;
     pos.x += fullSize;
-    cs_position = pos;
     gl_Position = p_matrix * pos;
     g_out.texcoord = vec2(1.0, 1.0);
     EmitVertex();
 
     // top right
     pos.y -= fullSize;
-    cs_position = pos;
     gl_Position = p_matrix * pos;
     g_out.texcoord = vec2(1.0, 0.0);
     EmitVertex();
@@ -106,6 +100,8 @@ float lum(vec3 v)
     return 0.2126*v.x + 0.7152*v.y + 0.0722*v.z;
 }
 
+out vec4 color;
+
 void main(void)
 {
     vec4 depth = texture(tex_depth, g_in.texcoord);
@@ -114,9 +110,8 @@ void main(void)
     float d = lum(depth.xyz);
 
     vec4 cameraCoords = g_in.csPos;
-    cameraCoords.z -= 2*(1.0-d);
+    cameraCoords.z -= 2*(d);
     vec4 clipCoords = p_matrix * cameraCoords;
-
     float ndc_depth = clipCoords.z / clipCoords.w;
     float Far = gl_DepthRange.far;
     float Near = gl_DepthRange.near;

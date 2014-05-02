@@ -39,6 +39,9 @@ void Particles::initialize(GLFunctions *gl, int maxParticles)
     m_stencilPass.compile(GL_FRAGMENT_SHADER, "stencilPass.fragment.stencil");
     m_stencilPass.link();
 
+    m_stencilPosAttrib = m_stencilPass.attrib("position");
+    m_stencilSizeAttrib = m_stencilPass.attrib("size");
+
     // Smoke effects
     m_smokeFx.initialize(gl);
     m_smokeFx.compile(GL_VERTEX_SHADER, "smoke.vertex.billboard");
@@ -159,6 +162,8 @@ void Particles::renderDepthPass()
 
     // Set projection matrix
     m_gl->glUniformMatrix4fv(m_depthPass.uniform("mv_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix * g_model.mMatrix));
+    m_gl->glUniformMatrix4fv(m_depthPass.uniform("p_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix));
+    m_gl->glUniformMatrix4fv(m_depthPass.uniform("v_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix));
 
     //Draw smoke
     quintptr offset = 0;
@@ -173,23 +178,19 @@ void Particles::renderDepthPass()
     m_gl->glActiveTexture(GL_TEXTURE0);
     m_gl->glBindTexture(GL_TEXTURE_2D, m_texID[2]);
 
-    // Bind geometry
-    m_gl->glBindVertexArray(m_vao);
-    m_gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
-    m_gl->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(ParticleBuffer) * data.size(), data.data());
-
-
     glDrawArrays(GL_POINTS, 0, data.size());
+
 }
 
 void Particles::renderLightingPass()
 {
     m_gl->glDrawBuffer(GL_BACK);
+    m_gl->glDepthMask(GL_TRUE);
+
     m_gl->glStencilOpSeparate(GL_BACK, GL_KEEP, GL_KEEP, GL_KEEP);
     m_gl->glStencilFunc(GL_EQUAL, 0x0, 0xFF);
 
     m_gl->glUseProgram(m_smokeFx.program());
-
 
     m_gl->glUniformMatrix4fv(m_pUniform, 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix));
     m_gl->glUniformMatrix4fv(m_vUniform, 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix));
@@ -212,18 +213,13 @@ void Particles::renderLightingPass()
         m_gl->glBindTexture(GL_TEXTURE_2D, m_texID[i]);
     }
 
-    // Bind geometry
-    m_gl->glBindVertexArray(m_vao);
-    m_gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
-    m_gl->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(ParticleBuffer) * data.size(), data.data());
-
-
     glDrawArrays(GL_POINTS, 0, data.size());
 }
 
 void Particles::renderStencilPass()
 {
     m_gl->glDrawBuffer(GL_NONE);
+    m_gl->glDrawBuffer(GL_BACK);
     m_gl->glDepthMask(GL_FALSE);
 
     m_gl->glDisable(GL_CULL_FACE);
@@ -231,15 +227,15 @@ void Particles::renderStencilPass()
     // We need the stencil test to be enabled but we want it
     // to succeed always. Only the depth test matters.
     m_gl->glStencilFunc(GL_ALWAYS, 0, 0xff);
-
     m_gl->glStencilOpSeparate(GL_BACK, GL_KEEP, GL_INCR_WRAP, GL_KEEP);
     m_gl->glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);
 
     m_stencilPass.use();
 
     m_gl->glUniformMatrix4fv(m_stencilPass.uniform("vp_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix * g_camera.vMatrix));
-    m_gl->glUniformMatrix4fv(m_stencilPass.uniform("m_matrix"), 1, GL_FALSE, glm::value_ptr(g_model.mMatrix));
-
+    m_gl->glUniformMatrix4fv(m_stencilPass.uniform("v_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix));
+    m_gl->glUniformMatrix4fv(m_stencilPass.uniform("p_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix));
+    m_gl->glUniform3f(m_stencilPass.uniform("LightPosition"), 1.0f, 0.0f, 1.0f);
 
     quintptr offset = 0;
     m_gl->glEnableVertexAttribArray(m_stencilPosAttrib);
@@ -249,15 +245,9 @@ void Particles::renderStencilPass()
     m_gl->glVertexAttribPointer(m_stencilSizeAttrib, 1, GL_FLOAT, GL_FALSE, sizeof(ParticleBuffer), (const void *) offset);
 
     // Bind depth texture
-//    m_gl->glUniform1i(m_texUniform[2], 0);
-//    m_gl->glActiveTexture(GL_TEXTURE0+2);
+//    m_gl->glUniform1i(m_stencilPass.uniform("depth_tex"), 0);
+//    m_gl->glActiveTexture(GL_TEXTURE0);
 //    m_gl->glBindTexture(GL_TEXTURE_2D, m_texID[2]);
-
-    // Bind geometry
-    m_gl->glBindVertexArray(m_vao);
-    m_gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
-    m_gl->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(ParticleBuffer) * data.size(), data.data());
-
 
     glDrawArrays(GL_POINTS, 0, data.size());
 

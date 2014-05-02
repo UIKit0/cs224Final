@@ -48,8 +48,11 @@ void main(void)
     halfSize += vp_matrix[0].x*0.0000001;
     halfSize += LightPosition.x*0.0000001;
 
+    vec3 csLPos = -(v_matrix * vec4(LightPosition,0)).xyz;
+    vec4 infPos = vec4(csLPos,1);
+
     // Infinity vertex
-    gl_Position = vp_matrix * vec4(-LightPosition,0);
+    gl_Position = infPos;
     EmitVertex();
     // Front top left
     pos = opos;
@@ -59,7 +62,7 @@ void main(void)
     EmitVertex();
 
     // Infinity vertex
-    gl_Position = vp_matrix * vec4(-LightPosition,0);
+    gl_Position = infPos;
     EmitVertex();
     // Front top right
     pos = opos;
@@ -77,7 +80,7 @@ void main(void)
     gl_Position = p_matrix * pos;
     EmitVertex();
     // Infinity vertex
-    gl_Position = vp_matrix * vec4(-LightPosition,0);
+    gl_Position = infPos;
     EmitVertex();
 
     // top right
@@ -87,7 +90,7 @@ void main(void)
     gl_Position = p_matrix * pos;
     EmitVertex();
     // Infinity vertex
-    gl_Position = vp_matrix * vec4(-LightPosition,0);
+    gl_Position = infPos;
     EmitVertex();
 
     EndPrimitive();

@@ -37,6 +37,7 @@ public:
 
     // Timers for the particle
     float time;
+    float expandtime;
     float lifetime;
 
     // Parameters that control how the smoke dissipates. Calculated as exp(lifetime*base)
@@ -45,6 +46,8 @@ public:
     float minAlpha; // what fade to make the particle disappear
 
     float shrink;   // controls size
+    float expand;   // controls expanding to initial size
+    float initialScale;
     float scale;     // how much to scale the size
     float minScale;  // what scale to make the particle disappear
 

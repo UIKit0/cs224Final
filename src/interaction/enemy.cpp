@@ -2,24 +2,37 @@
 
 Enemy::Enemy(GLFunctions *gl, dSpaceID s, glm::vec3 loc, glm::vec3 rot) :
     m_gl(gl)
+  , health(5.0f)
+  , active(true)
+  , particles(NULL)
 {
     QString f("LP_Flyingcar_02.obj");
     Obj mesh(f);
     m_obj.initialize(gl, mesh);
 
     body = dBodyCreate(g_world);
-//    dBodySetKinematic(body);
-    dMassSetBox(&g_mass, 10.0f, SIDE_LENGTH, HEIGHT, SIDE_LENGTH);
+    dBodySetData(body, this);
+    dMassSetBox(&g_mass, 100.0f, SIDE_LENGTH, HEIGHT, SIDE_LENGTH);
+    dBodySetMass(body, &g_mass);
     geom = dCreateBox(s, SIDE_LENGTH, HEIGHT, SIDE_LENGTH);
     dGeomSetBody(geom, body);
     dGeomSetCategoryBits(geom, 4);
-    dGeomSetCollideBits(geom, 1);
+    dGeomSetCollideBits(geom, 1 | 2 | 4 | 8);
     dBodySetPosition(body, loc[0], loc[1], loc[2]);
     dBodySetLinearVel(body, sin(rot[0])*cos(rot[1]), sin(rot[1]), cos(rot[0])*cos(rot[1]));
     rotation = rot;
 }
 
-//void SolidObject::update(float seconds){
+void Enemy::destroy(){
+    dGeomDestroy(geom);
+    dBodyDestroy(body);
+}
+
+void Enemy::update(float seconds){
+    const dReal* loc = dBodyGetPosition(body);
+    if (particles != NULL){
+        particles->location = glm::vec3(loc[0], loc[1], loc[2]);
+    }
 //    if (moving > 0){
 //        dBodySetLinearVel(body, 4.0f, 0, 0);
 //    }
@@ -68,7 +81,7 @@ Enemy::Enemy(GLFunctions *gl, dSpaceID s, glm::vec3 loc, glm::vec3 rot) :
 
 //    wv = winds[1];
 //    dBodySetPosition(wv->body, pos[0] + vel[0]/5, pos[1] - HEIGHT/4, pos[2]);
-//}
+}
 
 void Enemy::draw(){
     const dReal *loc = dBodyGetPosition(body);
@@ -79,13 +92,13 @@ void Enemy::draw(){
     g_model.mMatrix = glm::translate(g_model.mMatrix, location);
 
 //    // A little extra rotation depending on how much the plane is turning
-//    g_model.mMatrix = glm::rotate(g_model.mMatrix, -glm::radians(roll/3.0f), up);
+//    g_model.mMatrix = glm::rotate(g_model.mMatrix, -glm::radians(rotation[2]/3.0f), up);
 //    // Rolling effect
-//    g_model.mMatrix = glm::rotate(g_model.mMatrix, glm::radians(roll/1.5f), facing);
 
     // Initial orientation
     g_model.mMatrix = glm::rotate(g_model.mMatrix, -rotation[0], glm::vec3(0,1.0f,0));
     g_model.mMatrix = glm::rotate(g_model.mMatrix, rotation[1], glm::vec3(0,0,1.0f));
+    g_model.mMatrix = glm::rotate(g_model.mMatrix, glm::radians(rotation[2]/1.5f), glm::vec3(1.0f, 0, 0));
 
     g_model.mMatrix = glm::rotate(g_model.mMatrix, glm::radians(-90.0f), glm::vec3(0, 1.0,0));
 
@@ -114,3 +127,17 @@ void Enemy::draw(){
 //        shedders[i]->destroy();
 //    }
 //}
+
+void Enemy::onMissileHit(Missile *m){
+    health -= m->damage;
+    m->active = false;
+    if (health < 5.0f && particles == NULL){
+        std::cout<<"what"<<std::endl;
+        particles = new BasicSmokeEmitter(g_particles);
+    }
+    if (health < 0.0f && particles != NULL){
+        active = false;
+        particles->active = false;
+    }
+}
+

@@ -33,7 +33,6 @@ World::World()
 
 World::~World()
 {
-//    emitters.clear();
     dJointGroupDestroy(contactgroup);
     dSpaceDestroy(space);
     dWorldDestroy(m_world_id);
@@ -65,6 +64,12 @@ static void nearCallback(void* data, dGeomID o1, dGeomID o2)
         else if (dGeomGetCategoryBits(o2) == WIND_VOLUME_CATEGORY_BITS){
             handleWindVolumeCollision((WindVolume*)dBodyGetData(b2), b1);
         }
+        else if (dGeomGetCategoryBits(o1) == MISSILE_CATEGORY_BITS && dGeomGetCategoryBits(o2) == ENEMY_CATEGORY_BITS){
+            ((Enemy*)dBodyGetData(b2))->onMissileHit((Missile*)dBodyGetData(b1));
+        }
+        else if (dGeomGetCategoryBits(o2) == MISSILE_CATEGORY_BITS && dGeomGetCategoryBits(o1) == ENEMY_CATEGORY_BITS){
+            ((Enemy*)dBodyGetData(b1))->onMissileHit((Missile*)dBodyGetData(b2));
+        }
         else{
             dJointID c = dJointCreateContact(world->m_world_id, world->contactgroup, &contact);
             dJointAttach(c, b1, b2);
@@ -85,7 +90,7 @@ void World::initialize(GLFunctions *gl)
     player = new Player(space, &m_terrain);
     player->initialize(gl);
 
-    enemies.append(new Enemy(gl, space, glm::vec3(0,5.0f,0), glm::vec3(dRandReal()*(float)M_PI, 0, 0)));
+    enemies.append(new Enemy(gl, space, glm::vec3(0,5.0f,-5.0f), glm::vec3(dRandReal()*(float)M_PI, 0, 0)));
 
 #ifdef PARTICLES
     BasicSmokeEmitter *emitter = new BasicSmokeEmitter(g_particles);
@@ -150,7 +155,6 @@ void World::render(GLFunctions *gl)
 
 void World::update(float seconds)
 {
-
     g_camera.update(seconds);
 
     player->facing = g_camera.m_lookAt;
@@ -169,12 +173,21 @@ void World::update(float seconds)
     m_terrain.update(seconds, g_camera.m_position);
 #endif
 
+    for (int i = enemies.size() - 1; i >= 0; i--){
+        enemies[i]->update(seconds);
+        if (!enemies[i]->active){
+            enemies[i]->destroy();
+            enemies.removeAt(i);
+        }
+    }
+
 #ifdef PARTICLES
     for (int i = 0; i < g_emitters.size(); i++){
         g_emitters[i]->update(seconds);
     }
 #endif
 
+    dSpaceCollide(space, this, nearCallback);
     dWorldQuickStep(m_world_id, 1/30.0f);
     dJointGroupEmpty(contactgroup);
 }

@@ -174,15 +174,15 @@ void main(void)
         vec3 n = normal.xyz;
         n *= 2.0;
         n -= vec3(1,1,1);
-        n = normalize(R*n.xyz);
+        n = normalize(n.xyz);
         vec3 hitToLight = normalize(vec3(lightPos));
         float difDot = max(dot(hitToLight,n),0.0);
         float toonDif = floor(difDot * granularity) * invGranularity;
 
     // Color the pixel
     vec3 Kd = shade.xyz;
-    vec3 ambLight = Ld*Kd*0.1;
-    vec3 difLight = Ld*(Kd*toonDif);
+    vec3 ambLight = Ld*Kd*0.3;
+    vec3 difLight = Ld*(Kd*toonDif)*0.5;
 
     float a = lum(alpha.xyz);
     color = vec4(ambLight + difLight, a);

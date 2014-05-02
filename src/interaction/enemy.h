@@ -15,15 +15,21 @@
 #include "graphics/program.h"
 #include "interaction/vortexshedder.h"
 #include "interaction/windvolume.h"
+#include "interaction/missile.h"
+#include "particles/particleemitter.h"
+#include "particles/basicsmokeemitter.h"
+
+#define ENEMY_CATEGORY_BITS 4
 
 class Enemy
 {
 public:
     Enemy(GLFunctions *gl, dSpaceID s, glm::vec3 loc, glm::vec3 rot);
 
-//    void update(float seconds);
-
+    void destroy();
+    void update(float seconds);
     void draw();
+    void onMissileHit(Missile* m);
 
     dBodyID body;
     dGeomID geom;
@@ -34,6 +40,9 @@ public:
     QList<VortexShedder*> shedders;
     QList<WindVolume*> winds;
 
+    float health;
+    bool active;
+
 private:
     GLFunctions *m_gl;
     Program shader;
@@ -41,6 +50,8 @@ private:
 
     GLuint object_vao;
     GLuint object_vbo;
+
+    ParticleEmitter *particles;
 };
 
 #endif // ENEMY_H

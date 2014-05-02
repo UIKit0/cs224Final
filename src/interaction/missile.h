@@ -9,7 +9,10 @@
 #include "particles/smoketrailemitter.h"
 #include "scene/global.h"
 
-#define MISSILE_CATEGORY_BITS 8
+// Collide with enemies and missiles
+#define MISSILE_CATEGORY_BITS 12
+// Collide with everything
+#define MISSILE_COLLIDE_BITS 15
 #define LIFETIME 7.0f
 
 class Missile

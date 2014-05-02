@@ -20,8 +20,8 @@ void Contour::initialize(GLFunctions *gl, Obj &mesh)
     m_goochFx.link();
 
     m_contourFx.initialize(gl);
-    m_contourFx.compile(GL_GEOMETRY_SHADER, "contour.geometry");
-    m_contourFx.compile(GL_VERTEX_SHADER, "contour.vertex.mvp");
+    m_contourFx.compile(GL_GEOMETRY_SHADER, "contour.geometry2");
+    m_contourFx.compile(GL_VERTEX_SHADER, "contour.vertex.line");
     m_contourFx.compile(GL_FRAGMENT_SHADER, "contour.fragment.black");
     m_contourFx.link();
 
@@ -159,12 +159,12 @@ void Contour::draw()
     m_gl->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_bufferIndex);
     m_gl->glBindBuffer(GL_ARRAY_BUFFER, m_bufferAttribs);
 
-    m_gl->glUseProgram(m_goochFx.program());
+//    m_gl->glUseProgram(m_goochFx.program());
 
-    m_gl->glUniformMatrix4fv(m_goochFx.uniform("proj_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix));
-    m_gl->glUniformMatrix4fv(m_goochFx.uniform("mv_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix * g_model.mMatrix));
+//    m_gl->glUniformMatrix4fv(m_goochFx.uniform("proj_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix));
+//    m_gl->glUniformMatrix4fv(m_goochFx.uniform("mv_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix * g_model.mMatrix));
 
-    m_gl->glDrawElements(GL_TRIANGLES_ADJACENCY, m_meshSize * 2, GL_UNSIGNED_SHORT, 0);
+//    m_gl->glDrawElements(GL_TRIANGLES_ADJACENCY, m_meshSize * 2, GL_UNSIGNED_SHORT, 0);
 
 //    m_gl->glDisable(GL_DEPTH_TEST);
 //    m_gl->glEnable(GL_BLEND);
@@ -172,9 +172,9 @@ void Contour::draw()
     m_gl->glUseProgram(m_contourFx.program());
 
     m_gl->glUniformMatrix4fv(m_contourFx.uniform("mvp_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix * g_camera.vMatrix * g_model.mMatrix));
-//    m_gl->glUniformMatrix4fv(m_contourFx.uniform("m_matrix"), 1, GL_FALSE, glm::value_ptr(g_model.mMatrix));
+    m_gl->glUniformMatrix4fv(m_contourFx.uniform("m_matrix"), 1, GL_FALSE, glm::value_ptr(g_model.mMatrix));
 //    m_gl->glUniformMatrix4fv(m_contourFx.uniform("v_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix));
-//    m_gl->glUniform3fv(m_contourFx.uniform("viewVec"), 1, glm::value_ptr(glm::normalize(g_camera.m_lookAt)));
+    m_gl->glUniform3fv(m_contourFx.uniform("viewVec"), 1, glm::value_ptr(g_camera.m_lookAt));
 
     m_gl->glDrawElements(GL_TRIANGLES_ADJACENCY, m_meshSize * 2, GL_UNSIGNED_SHORT, 0);
 

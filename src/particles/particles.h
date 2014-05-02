@@ -23,11 +23,14 @@ public:
     void setBufferValue(int index, glm::vec3 position, float size);
     void setBufferSize(int size);
     virtual void draw();
+    virtual void update(float seconds);
 
     struct ParticleBuffer {
         glm::vec3 position;
         GLfloat size;
     };
+
+    bool active;
 
 // To be shared with subclasses
 protected:

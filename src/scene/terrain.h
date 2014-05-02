@@ -12,7 +12,7 @@
 #define UPDATE_RADIUS 1
 #define TILE_SIZE 30
 #define NOISE_COORDINATE_RATIO 0.05f
-#define MIN_Y -5.0f
+#define MIN_Y -6.0f
 #define EPSILON 0.3f
 #define TRIANGLES_PER_TILE_ELEMENT 2
 
@@ -48,8 +48,9 @@ struct Tile{
     QList<TerrainObject> objects;
 };
 
+
 #include "graphics/program.h"
-#include "scene/terrainobject.h"
+#include "terrainobject.h"
 #include "interaction/missile.h"
 
 
@@ -80,11 +81,12 @@ public:
     // Returns NULL if the index is out of bounds or has an empty tile
     Tile* getTile(int i, int j);
     glm::vec3 trueLocation(Tile* tile, glm::vec3 location_in_tile);
+    glm::vec2 perlinLocation(Tile* tile, glm::vec3 location_in_tile);
+    float height(glm::vec2 loc);
 
 private:
     // Height for an element of a tile
     float height(Tile *tile, int i, int j);
-    float height(glm::vec2 loc);
     float raw_noise(glm::vec2 loc);
     void shiftTiles(int x, int y);
 
@@ -97,7 +99,6 @@ private:
 
     QList<VO> vos;
 
-//    QList<TerrainObject*> static_objects;
     GLuint object_vao;
     GLuint object_vbo;
 

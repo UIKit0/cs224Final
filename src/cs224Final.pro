@@ -49,7 +49,6 @@ GLSW = $${LIB}/glsw-2010
 SOURCES += \
     $${GLSW}/glsw/bstrlib.c \
     $${GLSW}/glsw/glsw.c \
-    window/smokecontroller.cpp
 
 # glm library
 GLM = $${LIB}/glm-0.9.5.1
@@ -81,7 +80,8 @@ SOURCES += \
     scene/contour.cpp \
     scene/player.cpp \
     interaction/missile.cpp \
-    scene/terrainobject.cpp
+    scene/terrainobject.cpp \
+    window/smokecontroller.cpp
 
 HEADERS += \
     scene/camera.h \

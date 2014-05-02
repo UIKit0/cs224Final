@@ -37,4 +37,9 @@ extern MatrixStack g_model;
 extern dWorldID g_world;
 extern dMass g_mass;
 
+class Particles;
+#include "QList"
+extern QList<Particles*> g_particles;
+extern QList<Particles*> g_free_particles;
+
 #endif // GLOBAL_H

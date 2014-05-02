@@ -19,12 +19,14 @@ SmokeParticle::SmokeParticle(dWorldID world, dSpaceID space, dMass mass, float r
 
     time = 0;
     lifetime = 0;
+    expandtime = 0;
     active = true;
 
     // Random rotation
     rotation = dRandReal()*M_PI*2;
 
     // Start
+    initialScale = 1.0f;
     scale = 1.0f;
     alpha = 1.0f;
 }
@@ -42,12 +44,22 @@ glm::vec3 SmokeParticle::getPosition(){
 void SmokeParticle::update(float seconds){
     time += seconds;
 
-    scale = exp(time*shrink);
+    scale = initialScale*exp(time*expand);
+//    std::cout<<scale<<std::endl;
+    if (scale > 1.0f && expandtime == 0){
+        expandtime = time;
+    }
+    if (expandtime != 0 && time > expandtime){
+        scale = exp((time - expandtime)*shrink);
+    }
+
     alpha = exp(time*fade);
-    if (scale < minScale || alpha < minAlpha){
+    if (scale < minScale || alpha < minAlpha || time > lifetime){
         active = false;
         return;
     }
+
+    // TODO: update the collision radius
 
     rotation += seconds*rotationSpeed;
 

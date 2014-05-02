@@ -3,11 +3,12 @@
 #include <QImage>
 
 Particles::Particles(dWorldID w)
-    : m_gl(NULL), world(w)
+    : m_gl(NULL), world(w), active(true)
 {
     // Create a space for this group of particles
     space = dHashSpaceCreate(0);
     dHashSpaceSetLevels(space, 1, 5);
+    g_particles.append(this);
 }
 
 Particles::Particles(GLFunctions *gl, int maxParticles)
@@ -124,6 +125,13 @@ void Particles::setBufferValue(int index, glm::vec3 position, float size)
     particle.size = size;
 }
 
+void Particles::update(float seconds){
+    if (!active && data.size() == 0){
+        g_particles.removeOne(this);
+        g_free_particles.append(this);
+    }
+}
+
 void Particles::draw()
 {
     Q_ASSERT(m_gl != NULL);
@@ -134,21 +142,21 @@ void Particles::draw()
 
     // Shadows!
     // 1. Render scene into depth buffer
-    renderDepthPass();
+//    renderDepthPass();
     //      a. Bind pass through shader.
     //          i.   Vertex: Simple transform
     //          ii.  Fragment: Nothing
     //      b. Render geometry
     // 2. Render shadow volume into stencil buffer
-    m_gl->glEnable(GL_STENCIL_TEST);
-    renderStencilPass();
+//    m_gl->glEnable(GL_STENCIL_TEST);
+//    renderStencilPass();
     //      a. Bind shadow volume shader
     //          i.   Vertex: Minor pass-thru
     //          ii.  Geometry: Quad emitter
     //          iii. Fragment: Nothing
     // 3. Render shadowed scene
     renderLightingPass();
-    m_gl->glDisable(GL_STENCIL_TEST);
+//    m_gl->glDisable(GL_STENCIL_TEST);
     //      a. Bind normal lighting shader
     //      b. Render geometry
 }

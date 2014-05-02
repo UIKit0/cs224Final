@@ -139,21 +139,21 @@ uniform mat4 v_matrix;
 uniform vec3 viewVec;
 
 // clockwise order
-void EdgeContour(vec4 v1, vec4 v2, vec4 v3, vec3 edge, vec3 nface1)
-{
-    vec3 tv1 = vec3(m_matrix * v1);
-    vec3 tv2 = vec3(m_matrix * v2);
-    vec3 tv3 = vec3(m_matrix * v3);
+//void EdgeContour(vec4 v1, vec4 v2, vec4 v3, vec3 edge, vec3 nface1)
+//{
+//    vec3 tv1 = vec3(m_matrix * v1);
+//    vec3 tv2 = vec3(m_matrix * v2);
+//    vec3 tv3 = vec3(m_matrix * v3);
 
-    vec3 nface2 = normalize(cross(v2 - v1, v3 - v1));
+//    vec3 nface2 = normalize(cross(v2 - v1, v3 - v1));
 
-    if (dot(nface2, edge - viewVec) * dot(nface1, edge - viewVec) > 0) {
-        gl_Position = mvp_matrix * vec4(v1, 1); EmitVertex();
-        gl_Position = mvp_matrix * vec4(v2, 1); EmitVertex();
-        gl_Position = mvp_matrix * vec4(v3, 1); EmitVertex();
-        EndPrimitive();
-    }
-}
+//    if (dot(nface2, edge - viewVec) * dot(nface1, edge - viewVec) > 0) {
+//        gl_Position = mvp_matrix * vec4(v1, 1); EmitVertex();
+//        gl_Position = mvp_matrix * vec4(v2, 1); EmitVertex();
+//        gl_Position = mvp_matrix * vec4(v3, 1); EmitVertex();
+//        EndPrimitive();
+//    }
+//}
 
 void main(void)
 {
@@ -170,11 +170,11 @@ void main(void)
 
     // check if triangle is front-facing
     if (viewDotN > 0) {
-        EdgeContour(gl_in[0].gl_Position, gl_in[0].gl_Position, gl_in[0].gl_Position)
-//        gl_Position = mvp_matrix * gl_in[0].gl_Position; EmitVertex();
-//        gl_Position = mvp_matrix * gl_in[2].gl_Position; EmitVertex();
-//        gl_Position = mvp_matrix * gl_in[4].gl_Position; EmitVertex();
-//        EndPrimitive();
+//        EdgeContour(gl_in[0].gl_Position, gl_in[0].gl_Position, gl_in[0].gl_Position)
+        gl_Position = mvp_matrix * gl_in[0].gl_Position; EmitVertex();
+        gl_Position = mvp_matrix * gl_in[2].gl_Position; EmitVertex();
+        gl_Position = mvp_matrix * gl_in[4].gl_Position; EmitVertex();
+        EndPrimitive();
     }
 }
 

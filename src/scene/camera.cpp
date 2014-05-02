@@ -74,7 +74,10 @@ void Camera::update(float seconds)
 //    std::cout << "pos: " << glm::to_string(m_position) << std::endl;
 //    std::cout << "loo: " << glm::to_string(m_rotation) << std::endl;
 
-    vMatrix = glm::lookAt(m_position - m_lookAt*3.0f, m_position, m_up);
+    // TODO: this is just plain wrong (too late to fix)
 
-    m_lookAt += m_position;
+    m_lookAt = m_position - m_lookAt*3.0f;
+    vMatrix = glm::lookAt(m_lookAt, m_position, m_up);
+
+    m_lookAt = -glm::normalize(m_lookAt - m_position);
 }

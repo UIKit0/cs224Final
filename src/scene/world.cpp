@@ -103,9 +103,8 @@ void World::initialize(GLFunctions *gl)
     BasicSmokeEmitter *emitter = new BasicSmokeEmitter(g_world, g_mass);
     emitter->initialize(gl, 2000);
     emitter->location = glm::vec3(3,0,0);
-    emitter->maxInitialVel = glm::vec3(0.5f, 2.0f, 0.5f);
-    emitter->minInitialVel = glm::vec3(-0.5f, 0.5f, -0.5f);
-    emitters.append(emitter);
+    emitter->maxInitialVel = glm::vec3(0.3f, 1.0f, 0.3f);
+    emitter->minInitialVel = glm::vec3(-0.3f, 0.5f, -0.3f);
 #endif
 
 #ifdef CONTOUR
@@ -147,8 +146,8 @@ void World::render(GLFunctions *gl)
 #endif
 
 #ifdef PARTICLES
-    for (int i = 0; i < emitters.size(); i++){
-        emitters[i]->draw();
+    for (int i = 0; i < g_particles.size(); i++){
+        g_particles[i]->draw();
     }
 #endif
 
@@ -162,7 +161,7 @@ void World::update(float seconds)
 {
     g_camera.update(seconds);
 
-    player->facing = glm::normalize(g_camera.m_lookAt - g_camera.m_position);
+    player->facing = g_camera.m_lookAt;
     player->up = glm::vec3(0,1.0f,0);
     player->left = glm::normalize(glm::cross(player->up, player->facing));
     player->location = g_camera.m_position;
@@ -178,13 +177,13 @@ void World::update(float seconds)
 #endif
 
 #ifdef PARTICLES
-    for (int i = 0; i < emitters.size(); i++){
-        emitters[i]->update(seconds);
+    for (int i = 0; i < g_particles.size(); i++){
+        g_particles[i]->update(seconds);
     }
 #endif
 
     dWorldQuickStep(m_world_id, 1/30.0f);
-//    dJointGroupEmpty(contactgroup);
+    dJointGroupEmpty(contactgroup);
 }
 
 void World::setScreenSize(int width, int height)

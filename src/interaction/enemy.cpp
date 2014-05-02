@@ -127,7 +127,6 @@ void Enemy::onMissileHit(Missile *m){
     health -= m->damage;
     m->active = false;
     if (health < 5.0f && particles == NULL){
-        std::cout<<"what"<<std::endl;
         particles = new SmokeTrailEmitter(g_particles);
     }
     if (health < 0.0f && particles != NULL){

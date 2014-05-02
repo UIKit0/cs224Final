@@ -101,6 +101,7 @@ static void nearCallback(void* data, dGeomID o1, dGeomID o2)
 
 void World::initialize(GLFunctions *gl)
 {
+    m_gl = gl;
     // camera
     g_camera.setAspectRatio((float)m_screenWidth/m_screenHeight);
 
@@ -146,7 +147,9 @@ void World::render(GLFunctions *gl)
 {
     g_model.reset();
 
-    player->draw();
+    if (player->active){
+        player->draw();
+    }
 
 #ifdef TERRAIN
     m_terrain.draw();
@@ -177,19 +180,22 @@ void World::render(GLFunctions *gl)
 
 void World::update(float seconds)
 {
-    g_camera.update(seconds);
+    if (player->active){
+        g_camera.update(seconds);
 
-    player->facing = g_camera.m_lookAt;
-    player->up = glm::vec3(0,1.0f,0);
-    player->left = glm::normalize(glm::cross(player->up, player->facing));
-    player->rotation = g_camera.m_lastRotation;
-    player->roll = glm::mix(player->roll, g_camera.m_rotation[0] - g_camera.m_lastRotation[0], 0.1f);
-    player->pitch = glm::mix(player->pitch, g_camera.m_rotation[1] - g_camera.m_lastRotation[1], 0.1f);
-    player->location = g_camera.m_position - 1.0f*glm::cross(player->facing, player->left);
+        player->facing = g_camera.m_lookAt;
+        player->up = glm::vec3(0,1.0f,0);
+        player->left = glm::normalize(glm::cross(player->up, player->facing));
+        player->rotation = g_camera.m_lastRotation;
+        player->roll = glm::mix(player->roll, g_camera.m_rotation[0] - g_camera.m_lastRotation[0], 0.1f);
+        player->pitch = glm::mix(player->pitch, g_camera.m_rotation[1] - g_camera.m_lastRotation[1], 0.1f);
+        player->location = g_camera.m_position - 1.0f*glm::cross(player->facing, player->left);
 
-    player->update(seconds);
-    if (firing)
-        player->fire();
+        player->update(seconds);
+
+        if (firing)
+            player->fire();
+    }
 
 #ifdef TERRAIN
     m_terrain.update(seconds, g_camera.m_position);
@@ -251,6 +257,20 @@ void World::keyPressEvent(QKeyEvent *event)
         break;
     }
 
+    if (event->key() == Qt::Key_R) {
+        for (int i = enemies.size() - 1; i >= 0; i--){
+            enemies[i]->destroy();
+            enemies.removeAt(i);
+        }
+
+        for (int i = g_emitters.size() - 1; i >= 0; i--){
+            g_emitters[i]->destroy();
+            g_emitters.removeAt(i);
+        }
+        g_camera = Camera();
+        initialize(m_gl);
+    }
+
     if (event->key() == Qt::Key_Space) g_camera.pressingJump = true;
 }
 
@@ -277,7 +297,8 @@ void World::keyReleaseEvent(QKeyEvent *event)
 void World::mousePressEvent(QMouseEvent *event)
 {
     firing = true;
-    player->fire();
+    if (player->active)
+        player->fire();
 }
 
 void World::mouseMoveEvent(QMouseEvent *event)

@@ -3,7 +3,9 @@
 Player::Player(dSpaceID s, Terrain *t) :
     up(0,1.0f,0),
     roll(0),
-    terrain(t)
+    pitch(0),
+    terrain(t),
+    active(true)
 {
     space = s;
     timer = 0;
@@ -111,7 +113,10 @@ void Player::draw(){
 void Player::update(float seconds){
     timer += seconds;
     if (terrain->collidePoint(location - 1.5f*glm::cross(facing, left))){
-        std::cout<<"smashing!"<<std::endl;
+        active = false;
+        ExplosionEmitter *e = new ExplosionEmitter(g_particles);
+        e->duration = 1.0f;
+        e->location = location;
     }
     for (int i = missiles.size() - 1; i >= 0; i--){
         missiles[i]->update(seconds);
@@ -131,8 +136,7 @@ void Player::update(float seconds){
 void Player::fire(){
     if (timer > COOLDOWN){
         missiles.append(new Missile(m_gl, space, location - 0.5f*glm::cross(facing, left), facing*10.0f));
-        missiles.last()->damage = 1.0f;
-        std::cout<<"fired "<<missiles.size()<<std::endl;
+        missiles.last()->damage = 2.0f;
         timer = 0;
     }
 }

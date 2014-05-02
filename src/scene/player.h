@@ -9,6 +9,7 @@
 #include "scene/terrain.h"
 #include "graphics/program.h"
 #include "scene/contour.h"
+#include "particles/explosionemitter.h"
 
 #define COOLDOWN 0.3f
 
@@ -29,6 +30,8 @@ public:
     glm::vec2 rotation;
     float roll;
     float pitch;
+
+    bool active;
 
 private:
     dWorldID world;

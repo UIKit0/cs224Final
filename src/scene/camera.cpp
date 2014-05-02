@@ -76,7 +76,7 @@ void Camera::update(float seconds)
 
     // TODO: this is just plain wrong (too late to fix)
 
-    m_lookAt = m_position - m_lookAt*5.0f;
+    m_lookAt = m_position - m_lookAt*4.5f;
     vMatrix = glm::lookAt(m_lookAt, m_position, m_up);
 
     m_lookAt = -glm::normalize(m_lookAt - m_position);

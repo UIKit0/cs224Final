@@ -66,7 +66,7 @@ void Player::draw(){
     g_model.mMatrix = glm::rotate(g_model.mMatrix, glm::radians(-90.0f), glm::vec3(0,1.0f,0));
 //    g_model.mMatrix = glm::rotate(g_model.mMatrix, glm::radians(-90.0f), glm::vec3(1.0f,0,0));
 
-    g_model.mMatrix = glm::scale(g_model.mMatrix, glm::vec3(0.3f, 0.3f, 0.3f));
+    g_model.mMatrix = glm::scale(g_model.mMatrix, glm::vec3(0.25f, 0.25f, 0.25f));
 
     m_obj.draw();
 

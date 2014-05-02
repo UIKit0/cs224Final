@@ -4,18 +4,19 @@ SmokeParticle::SmokeParticle(dWorldID world, dSpaceID space, dMass mass, float r
 {
     this->mass = mass;
     this->size = radius;
+    this->space = space;
     body = dBodyCreate(world);
     geom = dCreateSphere(space, radius);
 
     dGeomSetBody(geom, body);
 
-    // Collide with everything except self
     dGeomSetCategoryBits(geom, PARTICLE_CATEGORY_BITS);
-    dGeomSetCollideBits(geom, ~PARTICLE_CATEGORY_BITS);
+    dGeomSetCollideBits(geom, 0);
 
     // Unit mass
     dMassSetSphereTotal(&mass, 1.0f, radius);
     dBodySetMass(body, &mass);
+    dBodySetData(body, this);
 
     time = 0;
     lifetime = 0;

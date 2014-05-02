@@ -130,7 +130,7 @@ void Player::update(float seconds){
 
 void Player::fire(){
     if (timer > COOLDOWN){
-        missiles.append(new Missile(m_gl, space, location - 1.5f*glm::cross(facing, left), facing*10.0f));
+        missiles.append(new Missile(m_gl, space, location - 0.5f*glm::cross(facing, left), facing*10.0f));
         missiles.last()->damage = 1.0f;
         std::cout<<"fired "<<missiles.size()<<std::endl;
         timer = 0;

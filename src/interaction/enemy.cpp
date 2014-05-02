@@ -31,9 +31,6 @@ void Enemy::destroy(){
 void Enemy::update(float seconds){
     const dReal* loc = dBodyGetPosition(body);
     glm::vec3 location(loc[0], loc[1], loc[2]);
-    if (particles != NULL){
-        particles->location = location;
-    }
 
     glm::vec3 diff = glm::normalize(target - location);
     float yaw = atan2(diff[0], diff[2]);
@@ -61,7 +58,12 @@ void Enemy::update(float seconds){
     float finalpitch = glm::mix(rotation[1], pitch, 0.1f);
     rotation = glm::vec3(finalyaw, finalpitch, roll*20.0f);
 
-    dBodySetLinearVel(body, sin(rotation[0])*cos(rotation[1]), sin(rotation[1]), cos(rotation[0])*cos(rotation[1]));
+    glm::vec3 velocity( sin(rotation[0])*cos(rotation[1]), sin(rotation[1]), cos(rotation[0])*cos(rotation[1]) );
+    dBodySetLinearVel(body, velocity[0], velocity[1], velocity[2]);
+
+    if (particles != NULL){
+        particles->location = location + velocity*seconds;
+    }
 
 //    VortexShedder* vs = shedders[0];
 //    vs->axis = glm::normalize(glm::vec3(0, 0, vel[0]));
@@ -115,19 +117,25 @@ void Enemy::draw(){
     g_model.popMatrix();
 }
 
+bool Enemy::hitsParticle(SmokeParticle *p){
+    if (particles == NULL)
+        return true;
+    return particles->space != p->space;
+}
+
 void Enemy::onMissileHit(Missile *m){
     health -= m->damage;
     m->active = false;
     if (health < 5.0f && particles == NULL){
         std::cout<<"what"<<std::endl;
-        particles = new BasicSmokeEmitter(g_particles);
+        particles = new SmokeTrailEmitter(g_particles);
     }
     if (health < 0.0f && particles != NULL){
         const dReal* loc = dBodyGetPosition(body);
         glm::vec3 location(loc[0], loc[1], loc[2]);
         ExplosionEmitter *e = new ExplosionEmitter(g_particles);
         e->location = location;
-        e->duration = 2.0f;
+        e->duration = 0.5f;
         active = false;
         particles->active = false;
     }

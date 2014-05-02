@@ -26,22 +26,23 @@ public:
     void destroy();
     void update(float seconds);
     virtual void draw();
+    bool isActive();
 
     bool drawVortices;
 
     glm::vec3 location;
     bool active;
 
-protected:
     // To be shared with subclasses
     dSpaceID space;
 
+protected:
     Particles *gl_particles;
 
     virtual void updateParticles() = 0;
     virtual void updateVortices() = 0;
 
-    QList<SmokeParticle> particles;
+    QList<SmokeParticle*> particles;
 
     QList<Vortex*> vortices;
 

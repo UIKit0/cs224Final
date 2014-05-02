@@ -26,5 +26,7 @@
         <file>meshes/tank.obj</file>
         <file>meshes/SHED.obj</file>
         <file>meshes/SimpleTower.obj</file>
+        <file>meshes/arwing.obj</file>
+        <file>meshes/feisar.obj</file>
     </qresource>
 </RCC>

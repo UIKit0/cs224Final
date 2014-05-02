@@ -13,7 +13,7 @@ Player::Player(dSpaceID s, Terrain *t) :
 
 void Player::initialize(GLFunctions *gl){
     m_gl = gl;
-    QString f("F-14A_Tomcat.obj");
+    QString f("feisar.obj");
     Obj mesh(f);
     m_obj.initialize(gl, mesh);
 
@@ -63,9 +63,9 @@ void Player::draw(){
     g_model.mMatrix = glm::rotate(g_model.mMatrix, -glm::radians(rotation[0]), up);
     g_model.mMatrix = glm::rotate(g_model.mMatrix, glm::radians(rotation[1] + pitch/2.0f), glm::vec3(0,0,1.0f));
     g_model.mMatrix = glm::rotate(g_model.mMatrix, glm::radians(-90.0f), glm::vec3(0,1.0f,0));
-    g_model.mMatrix = glm::rotate(g_model.mMatrix, glm::radians(-90.0f), glm::vec3(1.0f,0,0));
+//    g_model.mMatrix = glm::rotate(g_model.mMatrix, glm::radians(-90.0f), glm::vec3(1.0f,0,0));
 
-    g_model.mMatrix = glm::scale(g_model.mMatrix, glm::vec3(0.1f, 0.1f, 0.1f));
+    g_model.mMatrix = glm::scale(g_model.mMatrix, glm::vec3(0.25f, 0.25f, 0.25f));
 
     m_obj.draw();
 

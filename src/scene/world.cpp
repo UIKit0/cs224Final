@@ -110,8 +110,11 @@ void World::initialize(GLFunctions *gl)
 #ifdef TERRAIN
     m_terrain.initialize(gl);
 #endif
+
+#ifdef PLAYER
     player = new Player(space, &m_terrain);
     player->initialize(gl);
+#endif
 
     enemies.append(new Enemy(gl, space, glm::vec3(0,5.0f,-5.0f), glm::vec3(dRandReal()*(float)M_PI, 0, 0)));
 
@@ -124,8 +127,8 @@ void World::initialize(GLFunctions *gl)
 
 #ifdef CONTOUR
     // TODO: support multiple contour drawn meshes
-    QString f("monkey.obj");
-//    Obj mesh("cube.obj");
+    QString f("feisar.obj");
+//    Obj f("cube.obj");
     Obj mesh(f);
     m_contour.initialize(gl, mesh);
 #endif
@@ -147,9 +150,11 @@ void World::render(GLFunctions *gl)
 {
     g_model.reset();
 
+#ifdef PLAYER
     if (player->active){
         player->draw();
     }
+#endif
 
 #ifdef TERRAIN
     m_terrain.draw();
@@ -180,6 +185,10 @@ void World::render(GLFunctions *gl)
 
 void World::update(float seconds)
 {
+
+    g_camera.update(seconds);
+
+#ifdef PLAYER
     if (player->active){
         g_camera.update(seconds);
 
@@ -196,6 +205,7 @@ void World::update(float seconds)
         if (firing)
             player->fire();
     }
+#endif
 
 #ifdef TERRAIN
     m_terrain.update(seconds, g_camera.m_position);

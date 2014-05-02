@@ -1,5 +1,8 @@
 #include "contour.h"
 
+#define GOOD_CONTOUR
+//#define BAD_CONTOUR
+
 Contour::Contour()
     : m_gl(NULL)
 {
@@ -20,15 +23,29 @@ void Contour::initialize(GLFunctions *gl, Obj &mesh)
     m_goochFx.link();
 
     m_contourFx.initialize(gl);
-    m_contourFx.compile(GL_GEOMETRY_SHADER, "contour.geometry2");
-    m_contourFx.compile(GL_VERTEX_SHADER, "contour.vertex.line");
+#ifdef GOOD_CONTOUR
+    m_contourFx.compile(GL_GEOMETRY_SHADER, "contour.geometry");
+    m_contourFx.compile(GL_VERTEX_SHADER, "contour.vertex.mvp");
     m_contourFx.compile(GL_FRAGMENT_SHADER, "contour.fragment.black");
     m_contourFx.link();
+#endif
+#ifdef BAD_CONTOUR
+    m_contourFx.compile(GL_GEOMETRY_SHADER, "contour.geometry2.tri");
+    m_contourFx.compile(GL_VERTEX_SHADER, "contour.vertex.line");
+    m_contourFx.compile(GL_FRAGMENT_SHADER, "contour.fragment.color");
+    m_contourFx.link();
+
+    m_contour2Fx.initialize(gl);
+    m_contour2Fx.compile(GL_GEOMETRY_SHADER, "contour.geometry2.points");
+    m_contour2Fx.compile(GL_VERTEX_SHADER, "contour.vertex.line");
+    m_contour2Fx.compile(GL_FRAGMENT_SHADER, "contour.fragment.color");
+    m_contour2Fx.link();
+#endif
 
     m_meshSize = mesh.triangles.size() * 3;
 
     if (m_meshSize > USHRT_MAX)
-        qCritical() << "Critical: mesh is too big!";
+        qCritical() << "Critical: mesh is too big!" << m_meshSize;
 
     QHash<QPair<int,int>, Adjacent> edgeMap;
     for(int i = 0; i < mesh.triangles.size(); ++i) {
@@ -48,7 +65,7 @@ void Contour::initialize(GLFunctions *gl, Obj &mesh)
                 edgeMap.insert(p, adj);
             } else {
                 Adjacent &adj = edgeMap[p];
-                Q_ASSERT(adj.face2 == -1);
+//                Q_ASSERT(adj.face2 == -1);
                 adj.face2 = i;
                 adj.vertex2 = ic;
             }
@@ -125,12 +142,20 @@ void Contour::initialize(GLFunctions *gl, Obj &mesh)
 
     gl->glVertexAttribPointer(m_contourFx.attrib("position"), 3, GL_FLOAT, GL_FALSE, sizeof(MeshBuffer), (const void *) offset);
     gl->glEnableVertexAttribArray(m_contourFx.attrib("position"));
-
+#ifdef BAD_CONTOUR
+    gl->glVertexAttribPointer(m_contour2Fx.attrib("position"), 3, GL_FLOAT, GL_FALSE, sizeof(MeshBuffer), (const void *) offset);
+    gl->glEnableVertexAttribArray(m_contour2Fx.attrib("position"));
+#endif
     offset += sizeof(glm::vec3);
 
     gl->glVertexAttribPointer(m_goochFx.attrib("normal"), 3, GL_FLOAT, GL_FALSE, sizeof(MeshBuffer), (const void *) offset);
     gl->glEnableVertexAttribArray(m_goochFx.attrib("normal"));
-
+#ifdef BAD_CONTOUR
+    gl->glVertexAttribPointer(m_contourFx.attrib("normal"), 3, GL_FLOAT, GL_FALSE, sizeof(MeshBuffer), (const void *) offset);
+    gl->glEnableVertexAttribArray(m_contourFx.attrib("normal"));
+    gl->glVertexAttribPointer(m_contour2Fx.attrib("normal"), 3, GL_FLOAT, GL_FALSE, sizeof(MeshBuffer), (const void *) offset);
+    gl->glEnableVertexAttribArray(m_contour2Fx.attrib("normal"));
+#endif
     offset += sizeof(glm::vec3);
 
     //    gl->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(MeshBuffer), (void *)offsetof(MeshBuffer, texcoord));
@@ -146,8 +171,8 @@ void Contour::initialize(GLFunctions *gl, Obj &mesh)
 //    // uniforms
     m_goochFx.use();
     m_gl->glUniform3f(m_goochFx.uniform("lightPos"), 0.0f, 10.0f, 4.0f);
-    m_gl->glUniform3f(m_goochFx.uniform("surfaceColor"), 0.4f, 0.75f, 0.75f);
-    m_gl->glUniform3f(m_goochFx.uniform("warmColor"), 0.6f, 0.6f, 0.0f);
+    m_gl->glUniform3f(m_goochFx.uniform("surfaceColor"), 0.1f, 0.55f, 0.75f);
+    m_gl->glUniform3f(m_goochFx.uniform("warmColor"), 0.9f, 0.9f, 0.1f);
     m_gl->glUniform3f(m_goochFx.uniform("coolColor"), 0.0f, 0.1f, 0.6f);
     m_gl->glUniform1f(m_goochFx.uniform("diffuseWarm"), 0.45f);
     m_gl->glUniform1f(m_goochFx.uniform("diffuseCool"), 0.15f);
@@ -158,6 +183,10 @@ void Contour::draw()
     g_model.pushMatrix();
 
     g_model.mMatrix = g_model.mMatrix*transform;
+#ifdef BAD_CONTOUR
+    m_gl->glEnable(GL_PROGRAM_POINT_SIZE);
+    m_gl->glPointSize(3.0f);
+#endif
 
     m_gl->glBindVertexArray(m_vao);
     m_gl->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_bufferIndex);
@@ -175,13 +204,27 @@ void Contour::draw()
 
     m_gl->glUseProgram(m_contourFx.program());
 
+#ifdef GOOD_CONTOUR
     m_gl->glUniformMatrix4fv(m_contourFx.uniform("mvp_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix * g_camera.vMatrix * g_model.mMatrix));
+#endif
+
+#ifdef BAD_CONTOUR
     m_gl->glUniformMatrix4fv(m_contourFx.uniform("m_matrix"), 1, GL_FALSE, glm::value_ptr(g_model.mMatrix));
-//    m_gl->glUniformMatrix4fv(m_contourFx.uniform("v_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix));
+    m_gl->glUniformMatrix4fv(m_contourFx.uniform("vp_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix * g_camera.vMatrix));
     m_gl->glUniform3fv(m_contourFx.uniform("viewVec"), 1, glm::value_ptr(g_camera.m_lookAt));
+#endif
 
     m_gl->glDrawElements(GL_TRIANGLES_ADJACENCY, m_meshSize * 2, GL_UNSIGNED_SHORT, 0);
 
+#ifdef BAD_CONTOUR
+    m_gl->glUseProgram(m_contour2Fx.program());
+
+    m_gl->glUniformMatrix4fv(m_contour2Fx.uniform("m_matrix"), 1, GL_FALSE, glm::value_ptr(g_model.mMatrix));
+    m_gl->glUniformMatrix4fv(m_contour2Fx.uniform("vp_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix * g_camera.vMatrix));
+    m_gl->glUniform3fv(m_contour2Fx.uniform("viewVec"), 1, glm::value_ptr(g_camera.m_lookAt));
+
+    m_gl->glDrawElements(GL_TRIANGLES_ADJACENCY, m_meshSize * 2, GL_UNSIGNED_SHORT, 0);
+#endif
 //    m_gl->glDisable(GL_BLEND);
 
     g_model.popMatrix();

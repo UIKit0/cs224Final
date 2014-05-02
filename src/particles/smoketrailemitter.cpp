@@ -17,7 +17,7 @@ void SmokeTrailEmitter::updateParticles()
                          location[1] + dRandReal()*ratio - ratio/2,
                          location[2] + dRandReal()*ratio - ratio/2);
 
-        dBodySetLinearVel(sp->body, 0, dRandReal()*0.5f, 0);
+        dBodySetLinearVel(sp->body, 0, dRandReal()*0.05f, 0);
 
         sp->rotationSpeed = dRandReal() - 0.5f;
 

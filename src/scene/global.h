@@ -17,7 +17,7 @@ typedef QOpenGLFunctions_2_0 GLFunctions;
 
 #ifndef DEBUG_TRIANGLE
     #define TERRAIN
-    #define CONTOUR
+//    #define CONTOUR
     #define PARTICLES
 #endif
 

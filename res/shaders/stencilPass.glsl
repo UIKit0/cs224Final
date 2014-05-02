@@ -49,6 +49,7 @@ void main()
     halfSize += LightPosition.x*0.0000001;
 
     vec3 csLPos = -(v_matrix * vec4(LightPosition,0)).xyz;
+    vec4 psLPos = p_matrix*vec4(csLPos,0);
     vec4 infPos = vec4(csLPos,1)*4;
 
     vec4 ptop;
@@ -85,7 +86,8 @@ void main()
         ptop.x -= halfSize;
         ptop.z += halfSize;
         pbot = ptop + infPos;
-        gl_Position = p_matrix * pbot;
+//        gl_Position = p_matrix * pbot;
+        gl_Position = psLPos;
         EmitVertex();
         gl_Position = p_matrix * ptop;
         EmitVertex();
@@ -94,7 +96,8 @@ void main()
         ptop.x += halfSize;
         ptop.z += halfSize;
         pbot = ptop + infPos;
-        gl_Position = p_matrix * pbot;
+//        gl_Position = p_matrix * pbot;
+        gl_Position = psLPos;
         EmitVertex();
         gl_Position = p_matrix * ptop;
         EmitVertex();
@@ -106,18 +109,20 @@ void main()
         ptop.x -= halfSize;
         ptop.z -= halfSize;
         pbot = ptop + infPos;
-        gl_Position = p_matrix * pbot;
+//        gl_Position = p_matrix * ptop;
+        gl_Position = psLPos;
         EmitVertex();
-        gl_Position = p_matrix * ptop;
+        gl_Position = p_matrix * pbot;
         EmitVertex();
 
         ptop = pos;
         ptop.x += halfSize;
         ptop.z -= halfSize;
         pbot = ptop + infPos;
-        gl_Position = p_matrix * pbot;
+//        gl_Position = p_matrix * ptop;
+        gl_Position = psLPos;
         EmitVertex();
-        gl_Position = p_matrix * ptop;
+        gl_Position = p_matrix * pbot;
         EmitVertex();
     }
 }

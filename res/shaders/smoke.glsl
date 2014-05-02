@@ -107,7 +107,7 @@ uniform sampler2D tex_norm;
 uniform vec3 Ld = vec3(1.0,1.0,1.0);
 uniform vec3 LightPosition = vec3(1.0, -1.0, -1.0);
 
-float granularity = 4.0;
+float granularity = 3.0;
 float invGranularity = 1.0/granularity;
 
 uniform mat4 p_matrix;

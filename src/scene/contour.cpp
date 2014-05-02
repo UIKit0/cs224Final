@@ -155,6 +155,10 @@ void Contour::initialize(GLFunctions *gl, Obj &mesh)
 
 void Contour::draw()
 {
+    g_model.pushMatrix();
+
+    g_model.mMatrix = g_model.mMatrix*transform;
+
     m_gl->glBindVertexArray(m_vao);
     m_gl->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_bufferIndex);
     m_gl->glBindBuffer(GL_ARRAY_BUFFER, m_bufferAttribs);
@@ -179,4 +183,6 @@ void Contour::draw()
     m_gl->glDrawElements(GL_TRIANGLES_ADJACENCY, m_meshSize * 2, GL_UNSIGNED_SHORT, 0);
 
 //    m_gl->glDisable(GL_BLEND);
+
+    g_model.popMatrix();
 }

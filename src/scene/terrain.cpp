@@ -17,6 +17,40 @@ Terrain::~Terrain(){
 void Terrain::initialize(GLFunctions *gl){
     originLocation = glm::vec3(-GRID_SIZE / 2.0f * TILE_SIZE, 0, -GRID_SIZE / 2.0f * TILE_SIZE);
     m_gl = gl;
+
+    object_objs.append(Contour());
+    object_objs.append(Contour());
+    object_objs.append(Contour());
+    object_objs.append(Contour());
+
+    QString f1("boat.obj");
+    Obj mesh1(f1);
+    object_objs[Type::BOAT].initialize(gl, mesh1);
+    object_objs[Type::BOAT].transform = glm::scale(object_objs[Type::BOAT].transform, glm::vec3(0.5f,0.5f,0.5f));
+
+
+    QString f2("tank.obj");
+    Obj mesh2(f2);
+    object_objs[Type::TANK].initialize(gl, mesh2);
+    object_objs[Type::TANK].transform = glm::rotate(object_objs[Type::TANK].transform, -0.3f, glm::vec3(0,1.0f,0));
+    object_objs[Type::TANK].transform = glm::rotate(object_objs[Type::TANK].transform, (float)M_PI/2, glm::vec3(0,0,1.0f));
+    object_objs[Type::TANK].transform = glm::rotate(object_objs[Type::TANK].transform, (float)M_PI/2, glm::vec3(0,1.0f,0));
+    object_objs[Type::TANK].transform = glm::scale(object_objs[Type::TANK].transform, glm::vec3(0.25f,0.25f,0.25f));
+
+    QString f3("SHED.obj");
+    Obj mesh3(f3);
+    object_objs[Type::BUNKER].initialize(gl, mesh3);
+    object_objs[Type::BUNKER].transform = glm::scale(object_objs[Type::BUNKER].transform, glm::vec3(10,10,10));
+
+
+    QString f4("SimpleTower.obj");
+    Obj mesh4(f4);
+    object_objs[Type::BUILDING].initialize(gl, mesh4);
+    object_objs[Type::BUILDING].transform = glm::rotate(object_objs[Type::BUILDING].transform, -(float)M_PI/2, glm::vec3(1.0f, 0, 0  ));
+    object_objs[Type::BUILDING].transform = glm::translate(object_objs[Type::BUILDING].transform, glm::vec3(0, -1.0f, 0));
+    object_objs[Type::BUILDING].transform = glm::scale(object_objs[Type::BUILDING].transform, glm::vec3(0.003f,0.003f,0.003f));
+
+
     shader.initialize(gl);
     shader.compile(GL_VERTEX_SHADER, "terrain.vertex");
     shader.compile(GL_FRAGMENT_SHADER, "terrain.fragment");
@@ -172,7 +206,7 @@ void Terrain::addObjects(int i, int j){
                     && height > tile->terrain[x - 1][y - 1][1]){
 
                 tile->objects.append(TerrainObject(m_gl, this, tile, glm::vec3(x, height + EPSILON, y)));
-                tile->objects.last().rotation = glm::rotate(glm::mat4(), (float)M_PI/2.0f, glm::vec3(1.0f,0,0));
+//                tile->objects.last().rotation = glm::rotate(glm::mat4(), (float)M_PI/2.0f, glm::vec3(1.0f,0,0));
             }
             glm::vec3 tangent = tangentPlaneInTile(i, j, glm::vec3(x, 0, y));
             if ((fabs(tangent[0]) > 0.7f || fabs(tangent[2]) > 0.7f) && dRandReal() > 0.995f){
@@ -259,7 +293,10 @@ void Terrain::draw(){
                 m_gl->glUniformMatrix4fv(shader.uniform("mv_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix*g_model.mMatrix));
 
                 m_gl->glUniform3fv(shader.uniform("terrain_color"), 1, glm::value_ptr(color));
-                m_gl->glDrawArrays(GL_TRIANGLES, 0, 3*3*2);
+//                m_gl->glDrawArrays(GL_TRIANGLES, 0, 3*3*2);
+
+                object_objs[tiles[i][j]->objects[k].type].draw();
+
                 g_model.popMatrix();
             }
         }

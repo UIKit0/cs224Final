@@ -22,5 +22,9 @@
         <file>textures/smoke_alpha2.1.png</file>
         <file>meshes/LP_Flyingcar_02.obj</file>
         <file>meshes/F-14A_Tomcat.obj</file>
+        <file>meshes/boat.obj</file>
+        <file>meshes/tank.obj</file>
+        <file>meshes/SHED.obj</file>
+        <file>meshes/SimpleTower.obj</file>
     </qresource>
 </RCC>

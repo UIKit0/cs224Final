@@ -37,6 +37,8 @@ public:
                 return face1;
         }
     };
+
+    glm::mat4 transform;
 private:
     GLuint m_meshSize;
 
@@ -46,7 +48,6 @@ private:
     GLuint m_bufferIndex;
     GLuint m_bufferAttribs;
     GLuint m_vao;
-
 };
 
 #endif // CONTOUR_H

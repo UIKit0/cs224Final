@@ -14,6 +14,7 @@
 #include "particles/basicsmokeemitter.h"
 #include "interaction/missile.h"
 #include "terrain.h"
+#include "scene/contour.h"
 
 //// THIS IS SO BAD, BUT I NO C++ WELL, SO WHATEVER
 enum Type{
@@ -25,7 +26,7 @@ enum Type{
 
 class Terrain;
 
-#define BOAT_SIZE 1
+#define BOAT_SIZE 2
 
 class TerrainObject
 {
@@ -61,7 +62,6 @@ public:
     bool active;
 
 private:
-    // Used only to pass onto the particles
     GLFunctions *m_gl;
     BasicSmokeEmitter *particles;
 };

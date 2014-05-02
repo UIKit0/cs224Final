@@ -7,6 +7,7 @@
 #include <QHash>
 #include <iostream>
 #include "scene/global.h"
+#include "scene/contour.h"
 
 #define GRID_SIZE 5
 #define UPDATE_RADIUS 1
@@ -101,6 +102,8 @@ private:
 
     GLuint object_vao;
     GLuint object_vbo;
+
+    QList<Contour> object_objs;
 
     GLFunctions *m_gl;
     Program shader;

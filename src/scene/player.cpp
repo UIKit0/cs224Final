@@ -17,7 +17,6 @@ void Player::initialize(GLFunctions *gl){
     Obj mesh(f);
     m_obj.initialize(gl, mesh);
 
-
     // TODO: load model
     shader.initialize(gl);
     shader.compile(GL_VERTEX_SHADER, "terrain.vertex");
@@ -112,7 +111,7 @@ void Player::draw(){
 
 void Player::update(float seconds){
     timer += seconds;
-    if (terrain->collidePoint(location - 1.5f*glm::cross(facing, left))){
+    if (terrain->collidePoint(location)){
         active = false;
         ExplosionEmitter *e = new ExplosionEmitter(g_particles);
         e->duration = 1.0f;

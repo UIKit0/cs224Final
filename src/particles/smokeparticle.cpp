@@ -49,6 +49,8 @@ void SmokeParticle::update(float seconds){
         return;
     }
 
+    // TODO: update the collision radius
+
     rotation += seconds*rotationSpeed;
 
     dBodyAddForce(body, wind[0]*dRandReal(), wind[1]*dRandReal(), wind[2]*dRandReal());

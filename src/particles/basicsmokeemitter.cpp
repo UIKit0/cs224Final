@@ -9,13 +9,16 @@ BasicSmokeEmitter::BasicSmokeEmitter(dWorldID w, dMass m) : ParticleEmitter(w, m
 void BasicSmokeEmitter::updateParticles(){
     // Spawn more particles
     int toAdd;
-    if (particles.size() > 500)
+    if (particles.size() > 100)
         toAdd = 1;
     else
         toAdd = 2;
 
+    if (!active)
+        toAdd = 0;
+
     for (int i = 0; i < toAdd; i++){
-        SmokeParticle sp = SmokeParticle(world, space, mass, dRandReal()*0.05f + 0.03f);
+        SmokeParticle sp = SmokeParticle(world, space, mass, dRandReal()*0.5f + 1.5f);
 
         dBodySetPosition(sp.body, location[0] + dRandReal()*SPAWN_SIZE - SPAWN_SIZE/2,
                          location[1] + dRandReal()*SPAWN_SIZE - SPAWN_SIZE/2,
@@ -25,14 +28,15 @@ void BasicSmokeEmitter::updateParticles(){
                                 dRandReal()*(maxInitialVel[1] - minInitialVel[1]) + minInitialVel[1],
                                 dRandReal()*(maxInitialVel[2] - minInitialVel[2]) + minInitialVel[2]);
 
-        sp.wind = glm::vec3(0,0.5f,0);
+        sp.wind = glm::vec3(0,0.3f,0);
         sp.rotationSpeed = dRandReal() - 0.5f;
 
         // Actually make particles bigger with time, so there aren't random gaps
-        sp.shrink = 0.05f;
-        sp.minScale = 0.1f;
+        sp.shrink = -0.5f;
+        sp.minScale = 0.2f;
         sp.fade = -0.4f;
         sp.minAlpha = 0.02f;
+        sp.lifetime = 2.0f;
         particles.append(sp);
     }
 

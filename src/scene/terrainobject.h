@@ -34,7 +34,6 @@ public:
 
     void destroy();
     void update(float seconds);
-    void draw();
     void onMissileHit(Missile &missile);
 
     /*

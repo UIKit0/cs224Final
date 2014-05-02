@@ -251,18 +251,6 @@ void Terrain::draw(){
             }
         }
     }
-
-    // Draw the smoke in a different pass
-    for (int i = 0; i < GRID_SIZE; i++){
-        for (int j = 0; j < GRID_SIZE; j++){
-            if (tiles[i][j] == NULL)
-                continue;
-            for (int k = 0; k < tiles[i][j]->objects.size(); k++){
-                tiles[i][j]->objects[k].draw();
-            }
-        }
-    }
-
 }
 
 void Terrain::shiftTiles(int sx, int sy){

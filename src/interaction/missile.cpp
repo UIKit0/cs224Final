@@ -7,30 +7,34 @@ Missile::Missile(GLFunctions *gl, dSpaceID s, glm::vec3 loc, glm::vec3 vel) :
   , emitter(NULL)
 {
     body = dBodyCreate(g_world);
-    geom = dCreateSphere(s, 0.5f);
-    dMassSetSphere(&g_mass, 100.0f, 0.5f);
+    dBodySetData(body, this);
+    geom = dCreateSphere(s, 1.0f);
+    dMassSetSphere(&g_mass, 0.1f, 0.5f);
+    dBodySetMass(body, &g_mass);
     dGeomSetBody(geom, body);
-    dGeomSetCategoryBits(geom, MISSILE_CATEGORY_BITS);
-    // Don't interact with smoke
-    dGeomSetCollideBits(geom, 2 + 4);
+    dGeomSetCategoryBits(geom, 8 | 4);
+    // Hit themselves
+    dGeomSetCollideBits(geom, 4);
     dBodySetLinearVel(body, vel[0], vel[1], vel[2]);
     dBodySetPosition(body, loc[0], loc[1], loc[2]);
 
-//    emitter = new SmokeTrailEmitter(g_world, g_mass);
-//    emitter->initialize(gl);
+    emitter = new SmokeTrailEmitter(g_particles);
 }
 
 void Missile::destroy(){
     dGeomDestroy(geom);
     dBodyDestroy(body);
-//    emitter->
+    emitter->active = false;
 }
 
 void Missile::update(float seconds){
     time += seconds;
 
+    const dReal* loc = dBodyGetPosition(body);
+    emitter->location = glm::vec3(loc[0], loc[1], loc[2]);
+    emitter->update(seconds);
     // Decay power over time/distance
     if (time > LIFETIME)
         active = false;
-
 }
+

@@ -107,14 +107,11 @@ uniform sampler2D tex_norm;
 uniform vec3 Ld = vec3(1.0,1.0,1.0);
 uniform vec3 LightPosition = vec3(1.0, -1.0, -1.0);
 
-float granularity = 4.0;
+float granularity = 3.0;
 float invGranularity = 1.0/granularity;
 
 uniform mat4 p_matrix;
 uniform mat4 v_matrix;
-
-uniform float zNear = 0.1;
-uniform float zFar = 100.0;
 
 in G_OUT
 {
@@ -140,7 +137,7 @@ void main(void)
     float d = lum(depth.xyz);
 
     vec4 cameraCoords = g_in.csPos;
-    cameraCoords.z -= 2*(d);
+    cameraCoords.z -= 2*d;
     vec4 clipCoords = p_matrix * cameraCoords;
     float ndc_depth = clipCoords.z / clipCoords.w;
     float Far = gl_DepthRange.far;
@@ -157,7 +154,7 @@ void main(void)
         //      Does proper lighting
 
         // Get axis of rotation
-        vec3 pos = g_in.csPos.xyz + d*normalize(g_in.csPos.xyz);
+        vec3 pos = g_in.csPos.xyz;// + d*normalize(g_in.csPos.xyz);
         vec3 look = vec3(0,0,-1);
         vec3 axis = cross(pos, look);
         axis = normalize(axis);
@@ -177,15 +174,15 @@ void main(void)
         vec3 n = normal.xyz;
         n *= 2.0;
         n -= vec3(1,1,1);
-        n = normalize(R*n.xyz);
+        n = normalize(n.xyz);
         vec3 hitToLight = normalize(vec3(lightPos));
         float difDot = max(dot(hitToLight,n),0.0);
         float toonDif = floor(difDot * granularity) * invGranularity;
 
     // Color the pixel
     vec3 Kd = shade.xyz;
-    vec3 ambLight = Ld*Kd*0.1;
-    vec3 difLight = Ld*(Kd*toonDif);
+    vec3 ambLight = Ld*Kd*0.3;
+    vec3 difLight = Ld*(Kd*toonDif)*0.5;
 
     float a = lum(alpha.xyz);
     color = vec4(ambLight + difLight, a);
@@ -259,9 +256,6 @@ float invGranularity = 1.0/granularity;
 
 uniform mat4 proj_matrix;
 uniform mat4 V_Matrix;
-
-uniform float zNear = 0.1;
-uniform float zFar = 100.0;
 
 //in V_OUT
 //{

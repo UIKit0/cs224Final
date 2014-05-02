@@ -33,27 +33,10 @@ World::World()
 
 World::~World()
 {
-    emitters.clear();
     dJointGroupDestroy(contactgroup);
     dSpaceDestroy(space);
     dWorldDestroy(m_world_id);
     dCloseODE();
-}
-
-void World::toggleDrawVortices()
-{
-    for (int i = 0; i < emitters.size(); i++)
-    {
-        emitters[i]->drawVortices = !emitters[i]->drawVortices;
-    }
-}
-
-void World::toggleMovingSphere()
-{
-//    if (sphere.moving != 0)
-//        sphere.stop();
-//    else
-//        sphere.start();
 }
 
 static void nearCallback(void* data, dGeomID o1, dGeomID o2)
@@ -81,6 +64,12 @@ static void nearCallback(void* data, dGeomID o1, dGeomID o2)
         else if (dGeomGetCategoryBits(o2) == WIND_VOLUME_CATEGORY_BITS){
             handleWindVolumeCollision((WindVolume*)dBodyGetData(b2), b1);
         }
+        else if (dGeomGetCategoryBits(o1) == MISSILE_CATEGORY_BITS && dGeomGetCategoryBits(o2) == ENEMY_CATEGORY_BITS){
+            ((Enemy*)dBodyGetData(b2))->onMissileHit((Missile*)dBodyGetData(b1));
+        }
+        else if (dGeomGetCategoryBits(o2) == MISSILE_CATEGORY_BITS && dGeomGetCategoryBits(o1) == ENEMY_CATEGORY_BITS){
+            ((Enemy*)dBodyGetData(b1))->onMissileHit((Missile*)dBodyGetData(b2));
+        }
         else{
             dJointID c = dJointCreateContact(world->m_world_id, world->contactgroup, &contact);
             dJointAttach(c, b1, b2);
@@ -93,6 +82,8 @@ void World::initialize(GLFunctions *gl)
     // camera
     g_camera.setAspectRatio((float)m_screenWidth/m_screenHeight);
 
+    g_particles = new Particles(gl, 2000);
+
 #ifdef TERRAIN
     m_terrain.initialize(gl);
 #endif
@@ -102,18 +93,18 @@ void World::initialize(GLFunctions *gl)
     player->initialize(gl);
 #endif
 
+    enemies.append(new Enemy(gl, space, glm::vec3(0,5.0f,-5.0f), glm::vec3(dRandReal()*(float)M_PI, 0, 0)));
+
 #ifdef PARTICLES
-    BasicSmokeEmitter *emitter = new BasicSmokeEmitter(g_world, g_mass);
-    emitter->initialize(gl, 2000);
+    BasicSmokeEmitter *emitter = new BasicSmokeEmitter(g_particles);
     emitter->location = glm::vec3(3,0,0);
     emitter->maxInitialVel = glm::vec3(0.3f, 1.0f, 0.3f);
     emitter->minInitialVel = glm::vec3(-0.3f, 0.5f, -0.3f);
-//    emitters.append(emitter);
 #endif
 
 #ifdef CONTOUR
     // TODO: support multiple contour drawn meshes
-    QString f("monkey.obj");
+    QString f("darkfighter.obj");
 //    Obj f("cube.obj");
     Obj mesh(f);
     m_contour.initialize(gl, mesh);
@@ -143,6 +134,10 @@ void World::render(GLFunctions *gl)
     m_terrain.draw();
 #endif
 
+    for (int i = 0; i < enemies.size(); i++){
+        enemies[i]->draw();
+    }
+
 #ifdef CONTOUR
     g_model.pushMatrix();
     g_model.mMatrix = glm::translate(glm::mat4(), glm::vec3(5,0,5));
@@ -151,8 +146,8 @@ void World::render(GLFunctions *gl)
 #endif
 
 #ifdef PARTICLES
-    for (int i = 0; i < g_particles.size(); i++){
-        g_particles[i]->draw();
+    for (int i = 0; i < g_emitters.size(); i++){
+        g_emitters[i]->draw();
     }
 #endif
 
@@ -170,9 +165,11 @@ void World::update(float seconds)
     player->facing = g_camera.m_lookAt;
     player->up = glm::vec3(0,1.0f,0);
     player->left = glm::normalize(glm::cross(player->up, player->facing));
-    player->location = g_camera.m_position;
+//    player->location = g_camera.m_position;
     player->rotation = g_camera.m_lastRotation;
     player->roll = glm::mix(player->roll, g_camera.m_rotation[0] - g_camera.m_lastRotation[0], 0.1f);
+    player->pitch = glm::mix(player->pitch, g_camera.m_rotation[1] - g_camera.m_lastRotation[1], 0.1f);
+    player->location = g_camera.m_position - 1.0f*glm::cross(player->facing, player->left);
 
     player->update(seconds);
     if (firing)
@@ -183,13 +180,22 @@ void World::update(float seconds)
     m_terrain.update(seconds, g_camera.m_position);
 #endif
 
+    for (int i = enemies.size() - 1; i >= 0; i--){
+        enemies[i]->target = player->location;
+        enemies[i]->update(seconds);
+        if (!enemies[i]->active){
+            enemies[i]->destroy();
+            enemies.removeAt(i);
+        }
+    }
+
 #ifdef PARTICLES
-    for (int i = 0; i < g_particles.size(); i++){
-        g_particles[i]->update(seconds);
+    for (int i = 0; i < g_emitters.size(); i++){
+        g_emitters[i]->update(seconds);
     }
 #endif
 
-
+    dSpaceCollide(space, this, nearCallback);
     dWorldQuickStep(m_world_id, 1/30.0f);
     dJointGroupEmpty(contactgroup);
 }
@@ -222,10 +228,6 @@ void World::keyPressEvent(QKeyEvent *event)
         g_camera.pressingRight = true;
         break;
     }
-
-    if (event->key() == Qt::Key_V) toggleDrawVortices();
-
-    if (event->key() == Qt::Key_B) toggleMovingSphere();
 
     if (event->key() == Qt::Key_Space) g_camera.pressingJump = true;
 }

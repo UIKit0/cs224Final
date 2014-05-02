@@ -155,11 +155,12 @@ void Terrain::updateVBO(int i, int j){
 void Terrain::addObjects(int i, int j){
     Tile* tile = getTile(i, j);
     Q_ASSERT(tile != NULL);
+    // Bunkers on the hills
     for (int x = 1; x < TILE_SIZE; x++){
         for (int y = 1; y < TILE_SIZE; y++){
             float height = tile->terrain[x][y][1];
             // TODO: change height threshold
-            if (    rand() / (float) RAND_MAX > 0.7f
+            if (    rand() / (float) RAND_MAX > 0.8f
                     && height > 1.5f
                     && height > tile->terrain[x + 1][y][1]
                     && height > tile->terrain[x + 1][y + 1][1]
@@ -173,9 +174,21 @@ void Terrain::addObjects(int i, int j){
                 tile->objects.append(TerrainObject(m_gl, this, tile, glm::vec3(x, height + EPSILON, y)));
                 tile->objects.last().rotation = glm::rotate(glm::mat4(), (float)M_PI/2.0f, glm::vec3(1.0f,0,0));
             }
+            glm::vec3 tangent = tangentPlaneInTile(i, j, glm::vec3(x, 0, y));
+            if ((fabs(tangent[0]) > 0.7f || fabs(tangent[2]) > 0.7f) && dRandReal() > 0.995f){
+                tile->objects.append(TerrainObject(m_gl, this, tile, glm::vec3(x, height + EPSILON, y)));
+                tile->objects.last().rotation = glm::rotate(glm::mat4(), (float)M_PI/2.0f, glm::vec3(1.0f,0,0));
+                tile->objects.last().type = Type::BUILDING;
+            }
+            if (dRandReal() > 0.998f){
+                tile->objects.append(TerrainObject(m_gl, this, tile, glm::vec3(x, height + EPSILON, y)));
+                tile->objects.last().velocity = glm::vec3(dRandReal()*2.0f, 0, dRandReal()*2.0f);
+                tile->objects.last().type = Type::TANK;
+            }
         }
     }
 
+    // Boats on the lake
     for (int x = BOAT_SIZE*2; x < TILE_SIZE - BOAT_SIZE*2; x += 2){
         for (int y = BOAT_SIZE*2; y < TILE_SIZE - BOAT_SIZE*2; y += 2){
             bool canPlace = true;
@@ -397,7 +410,7 @@ void Terrain::update(float seconds, glm::vec3 playerLocation){
                 maxx = tiles[u.ix][u.iy - 1]->loc1[0];
                 minx = tiles[u.ix][u.iy - 1]->loc0[0];
             }
-            // Check corner touching tiles, necessary or not?
+            // Check corner touching tiles, turns out to not actually be necessary
 //            if (getTile(u.ix + 1, u.iy + 1) != NULL){
 //                maxx = tiles[u.ix + 1][u.iy + 1]->loc0[0];
 //                maxy = tiles[u.ix + 1][u.iy + 1]->loc0[1];
@@ -424,7 +437,7 @@ void Terrain::update(float seconds, glm::vec3 playerLocation){
                     updateQueue.push_back(u);
                     break;
                 }
-                minx = maxx - TILE_SIZE*glm::linearRand(0.4f, 2.0f);
+                minx = maxx - TILE_SIZE*glm::linearRand(0.4f, 1.5f);
             }
             if (maxx == FLT_MAX){
                 if (minx == FLT_MAX){
@@ -434,7 +447,7 @@ void Terrain::update(float seconds, glm::vec3 playerLocation){
                     updateQueue.push_back(u);
                     break;
                 }
-                maxx = minx + TILE_SIZE*glm::linearRand(0.4f, 2.0f);
+                maxx = minx + TILE_SIZE*glm::linearRand(0.4f, 1.5f);
             }
             if (miny == FLT_MAX){
                 if (maxy == FLT_MAX){
@@ -444,7 +457,7 @@ void Terrain::update(float seconds, glm::vec3 playerLocation){
                     updateQueue.push_back(u);
                     break;
                 }
-                miny = maxy - TILE_SIZE*glm::linearRand(0.4f, 2.0f);
+                miny = maxy - TILE_SIZE*glm::linearRand(0.4f, 1.5f);
             }
             if (maxy == FLT_MAX){
                 if (miny == FLT_MAX){
@@ -454,7 +467,7 @@ void Terrain::update(float seconds, glm::vec3 playerLocation){
                     updateQueue.push_back(u);
                     break;
                 }
-                maxy = miny + TILE_SIZE*glm::linearRand(0.4f, 2.0f);
+                maxy = miny + TILE_SIZE*glm::linearRand(0.4f, 1.5f);
             }
 
             tile->loc0 = glm::vec2(minx, miny);
@@ -498,8 +511,7 @@ float Terrain::heightInTile(int i, int j, glm::vec3 location_in_tile){
     Tile* tile = getTile(i,j);
 
     Q_ASSERT(tile);
-    glm::vec2 loc_in_tile(location_in_tile[0], location_in_tile[2]);
-    glm::vec2 loc = tile->loc0 + (tile->loc1 - tile->loc0) * loc_in_tile / (float)TILE_SIZE;
+    glm::vec2 loc = perlinLocation(tile, location_in_tile);
     return height(loc);
 }
 
@@ -507,8 +519,7 @@ glm::vec3 Terrain::tangentPlaneInTile(int i, int j, glm::vec3 location_in_tile){
     Tile* tile = getTile(i,j);
 
     Q_ASSERT(tile);
-    glm::vec2 loc_in_tile(location_in_tile[0], location_in_tile[2]);
-    glm::vec2 loc = tile->loc0 + (tile->loc1 - tile->loc0) * loc_in_tile / (float)TILE_SIZE;
+    glm::vec2 loc = perlinLocation(tile, location_in_tile);
 
     float eps = 0.1f;
     // Calculate x and z derivatives

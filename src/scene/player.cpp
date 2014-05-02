@@ -11,6 +11,11 @@ Player::Player(dSpaceID s, Terrain *t) :
 
 void Player::initialize(GLFunctions *gl){
     m_gl = gl;
+    QString f("arwing.obj");
+    Obj mesh(f);
+    m_obj.initialize(gl, mesh);
+
+
     // TODO: load model
     shader.initialize(gl);
     shader.compile(GL_VERTEX_SHADER, "terrain.vertex");
@@ -46,28 +51,22 @@ void Player::initialize(GLFunctions *gl){
 void Player::draw(){
     g_model.pushMatrix();
     // Translate to location
-    g_model.mMatrix = glm::translate(g_model.mMatrix, location - 1.5f*glm::cross(facing, left));
+    g_model.mMatrix = glm::translate(g_model.mMatrix, location);
 
     // A little extra rotation depending on how much the plane is turning
     g_model.mMatrix = glm::rotate(g_model.mMatrix, -glm::radians(roll/3.0f), up);
     // Rolling effect
-    g_model.mMatrix = glm::rotate(g_model.mMatrix, glm::radians(roll), facing);
+    g_model.mMatrix = glm::rotate(g_model.mMatrix, glm::radians(roll/1.5f), facing);
 
     // Initial orientation
     g_model.mMatrix = glm::rotate(g_model.mMatrix, -glm::radians(rotation[0]), up);
-    g_model.mMatrix = glm::rotate(g_model.mMatrix, glm::radians(rotation[1]), glm::vec3(0,0,1.0f));
+    g_model.mMatrix = glm::rotate(g_model.mMatrix, glm::radians(rotation[1] + pitch/2.0f), glm::vec3(0,0,1.0f));
+    g_model.mMatrix = glm::rotate(g_model.mMatrix, glm::radians(-90.0f), glm::vec3(0,1.0f,0));
+//    g_model.mMatrix = glm::rotate(g_model.mMatrix, glm::radians(-90.0f), glm::vec3(1.0f,0,0));
 
-    // TODO: draw model
-    m_gl->glBindVertexArray(object_vao);
-    m_gl->glBindBuffer(GL_ARRAY_BUFFER, object_vbo);
+    g_model.mMatrix = glm::scale(g_model.mMatrix, glm::vec3(0.8f, 0.8f, 0.8f));
 
-    m_gl->glUseProgram(shader.program());
-
-    m_gl->glUniformMatrix4fv(shader.uniform("proj_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix));
-    m_gl->glUniformMatrix4fv(shader.uniform("mv_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix*g_model.mMatrix));
-    m_gl->glUniform3fv(shader.uniform("terrain_color"), 1, glm::value_ptr(glm::vec3(0.0f,0.0f,0.0f)));
-
-    m_gl->glDrawArrays(GL_TRIANGLES, 0, 3*3);
+    m_obj.draw();
 
     g_model.popMatrix();
     // Draw bullets

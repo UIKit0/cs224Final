@@ -3,203 +3,139 @@ Render shadow volumes into the stencil buffer
 -- vertex.stencil ---------------------------------------
 
 in vec3 position;
+in float size;
+uniform mat4 mv_matrix;
 
-out vec3 WorldPos;                                                                 
-
-//uniform mat4 mvp_matrix;
-uniform mat4 m_matrix;
-                                                                                    
-void main()                                                                         
-{                                                                                   
-    vec4 PosL   = vec4(position, 1.0);
-//    gl_Position = mvp_matrix * PosL;
-    WorldPos    = (m_matrix * PosL).xyz;
-}
-
--- geometry.stencil ---------------------------------------
-
-layout (triangles_adjacency) in;
-layout (triangle_strip, max_vertices = 18) out;
-
-in vec3 WorldPos[];
-
-uniform vec3 LightPosition;
-uniform mat4 vp_matrix;
-
-float EPSILON = 0.01;
-
-void EmitQuad(int StartIndex, vec3 StartVertex, int EndIndex, vec3 EndVertex)
+out V_OUT
 {
-    vec3 LightDir = normalize(StartVertex - LightPosition);
-    vec3 l = LightDir * EPSILON;
+    float size;
+} v_out;
 
-    gl_Position = vp_matrix * vec4((StartVertex + l), 1.0);
-    EmitVertex();
-    
-    gl_Position = vp_matrix * vec4(LightDir, 0.0);
-    EmitVertex();
-
-    LightDir = normalize(EndVertex - LightPosition);
-    l = LightDir * EPSILON;
-    gl_Position = vp_matrix * vec4((EndVertex + l), 1.0);
-    EmitVertex();
-    
-    gl_Position = vp_matrix * vec4(LightDir, 0.0);
-    EmitVertex();
-
-    EndPrimitive();            
-}
-
-
-void main()
+void main(void)
 {
-    vec3 e1 = WorldPos[2] - WorldPos[0];
-    vec3 e2 = WorldPos[4] - WorldPos[0];
-    vec3 e3 = WorldPos[1] - WorldPos[0];
-    vec3 e4 = WorldPos[3] - WorldPos[2];
-    vec3 e5 = WorldPos[4] - WorldPos[2];
-    vec3 e6 = WorldPos[5] - WorldPos[0];
-
-    vec3 Normal = cross(e1,e2);
-    vec3 LightDir = LightPosition - WorldPos[0];
-
-
-    // Calculate front top vertices
-    //  Extend bottom two vertices far away
-    //  Emit a quad
-
-    // Emit the degenerate endpoints
-
-    // Calculate back top vertices
-    //  Extend bottom two vertices far away
-    //  Emit a quad
-
-    if (dot(Normal, LightDir) > 0.000001) {
-
-        Normal = cross(e3,e1);
-
-        if (dot(Normal, LightDir) <= 0) {
-            vec3 StartVertex = WorldPos[0];
-            vec3 EndVertex = WorldPos[2];
-            EmitQuad(0, StartVertex, 2, EndVertex);
-        }
-
-        Normal = cross(e4,e5);
-        LightDir = LightPosition - WorldPos[2];
-
-        if (dot(Normal, LightDir) <= 0) {
-            vec3 StartVertex = WorldPos[2];
-            vec3 EndVertex = WorldPos[4];
-            EmitQuad(2, StartVertex, 4, EndVertex);
-        }
-
-        Normal = cross(e2,e6);
-        LightDir = LightPosition - WorldPos[4];
-
-        if (dot(Normal, LightDir) <= 0) {
-            vec3 StartVertex = WorldPos[4];
-            vec3 EndVertex = WorldPos[0];
-            EmitQuad(4, StartVertex, 0, EndVertex);
-        }
-
-        vec3 LightDir = (normalize(WorldPos[0] - LightPosition)) * EPSILON;
-        gl_Position = vp_matrix * vec4((WorldPos[0] + LightDir), 1.0);
-        EmitVertex();
-
-        LightDir = (normalize(WorldPos[2] - LightPosition)) * EPSILON;
-        gl_Position = vp_matrix * vec4((WorldPos[2] + LightDir), 1.0);
-        EmitVertex();
-
-        LightDir = (normalize(WorldPos[4] - LightPosition)) * EPSILON;
-        gl_Position = vp_matrix * vec4((WorldPos[4] + LightDir), 1.0);
-        EmitVertex();
-        EndPrimitive();
-    }
+    v_out.size = size;
+    gl_Position = vec4(position, 1.0);
 }
 
--- fragment.stencil ---------------------------------------
-
-void main()
-{
-	// Stencil buffer automatically updated
-}
-
-
--- geometry.billboard -----------------------------------------
+-- geometry.stencil -----------------------------------------
 
 layout(points) in;
-layout(triangle_strip, max_vertices = 10) out;
+layout(triangle_strip, max_vertices = 8) out;
 
 uniform mat4 p_matrix;
 uniform mat4 v_matrix;
+uniform mat4 vp_matrix;
 
 uniform vec3 LightPosition;
 
 in V_OUT
 {
     float size;
-    vec4 csPos;
 } v_in[];
 
 out G_OUT
 {
-    vec4 csPos;
     vec2 texcoord;
 } g_out;
 
-void main(void)
-{
-    g_out.csPos = v_in[0].csPos;
 
+void main()
+{
     vec4 pos = v_matrix * gl_in[0].gl_Position;
-    vec4 opos = pos;
 
     float fullSize = v_in[0].size;
     float halfSize = v_in[0].size / 2.0;
+    halfSize += vp_matrix[0].x*0.0000001;
+    halfSize += LightPosition.x*0.0000001;
 
-    float infty = 100.0*2;
+    vec3 csLPos = -(v_matrix * vec4(LightPosition,0)).xyz;
+    vec4 psLPos = p_matrix*vec4(csLPos,0);
+    vec4 infPos = vec4(csLPos,1)*4;
 
-    // TODO: Outline is in Shadow Volumes how to
+    vec4 ptop;
+    vec4 pbot;
 
-    // Infinity vertex
-    glPosition = vp_matrix * vec4(Lightdirection,0);
-    EmitVertex();
-    // Front top left
-    pos = opos;
-    pos.x -= halfSize;
-    pos.z += halfSize;
-    gl_Position = p_matrix * pos;
-    EmitVertex();
+    // Shadow casting square:
+//    {
+//        ptop = pos;
+//        ptop.x -= halfSize;
+//        ptop.z += halfSize;
+//        pbot = pos;
+//        pbot.x -= halfSize;
+//        pbot.z -= halfSize;
+//        gl_Position = p_matrix * pbot;
+//        EmitVertex();
+//        gl_Position = p_matrix * ptop;
+//        EmitVertex();
 
-    // Infinity vertex
-    glPosition = vp_matrix * vec4(Lightdirection,0);
-    EmitVertex();
-    // Front top right
-    pos = opos;
-    pos.x += halfSize;
-    pos.z += halfSize;
-    gl_Position = p_matrix * pos;
-    EmitVertex();
+//        ptop = pos;
+//        ptop.x += halfSize;
+//        ptop.z += halfSize;
+//        pbot = pos;
+//        pbot.x += halfSize;
+//        pbot.z -= halfSize;
+//        gl_Position = p_matrix * pbot;
+//        EmitVertex();
+//        gl_Position = p_matrix * ptop;
+//        EmitVertex();
+//    }
 
-    EndPrimitive();
+    // Front square
+    {
+        ptop = pos;
+        ptop.x -= halfSize;
+        ptop.z += halfSize;
+        pbot = ptop + infPos;
+//        gl_Position = p_matrix * pbot;
+        gl_Position = psLPos;
+        EmitVertex();
+        gl_Position = p_matrix * ptop;
+        EmitVertex();
 
-    // back top left
-    pos = opos;
-    pos.x -= halfSize;
-    pos.z -= halfSize;
-    gl_Position = p_matrix * pos;
-    // Infinity vertex
-    glPosition = vp_matrix * vec4(Lightdirection,0);
-    EmitVertex();
+        ptop = pos;
+        ptop.x += halfSize;
+        ptop.z += halfSize;
+        pbot = ptop + infPos;
+//        gl_Position = p_matrix * pbot;
+        gl_Position = psLPos;
+        EmitVertex();
+        gl_Position = p_matrix * ptop;
+        EmitVertex();
+    }
 
-    // top right
-    pos = opos;
-    pos.x += halfSize;
-    pos.z -= halfSize;
-    gl_Position = p_matrix * pos;
-    // Infinity vertex
-    glPosition = vp_matrix * vec4(Lightdirection,0);
-    EmitVertex();
+    // Back square
+    {
+        ptop = pos;
+        ptop.x -= halfSize;
+        ptop.z -= halfSize;
+        pbot = ptop + infPos;
+//        gl_Position = p_matrix * ptop;
+        gl_Position = psLPos;
+        EmitVertex();
+        gl_Position = p_matrix * pbot;
+        EmitVertex();
 
-    EndPrimitive();
+        ptop = pos;
+        ptop.x += halfSize;
+        ptop.z -= halfSize;
+        pbot = ptop + infPos;
+//        gl_Position = p_matrix * ptop;
+        gl_Position = psLPos;
+        EmitVertex();
+        gl_Position = p_matrix * pbot;
+        EmitVertex();
+    }
 }
+
+-- fragment.stencil ---------------------------------------
+
+out vec4 color;
+
+void main()
+{
+	// Stencil buffer automatically updated
+//    gl_FragDepth = 0.0;
+    color = vec4(0,1,0,1);
+}
+
+

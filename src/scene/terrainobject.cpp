@@ -25,8 +25,7 @@ void TerrainObject::destroy(){
 void TerrainObject::onMissileHit(Missile &missile){
     health -= missile.damage;
     if (health < 5.0f && particles == NULL){
-        particles = new BasicSmokeEmitter(g_world, g_mass);
-        particles->initialize(m_gl);
+        particles = new BasicSmokeEmitter(g_particles);
         particles->location = terrain->trueLocation(tile, location);
     }
     if (health < 0.0f && particles != NULL){

@@ -17,25 +17,17 @@
 class Particles
 {
 public:
-    Particles(dWorldID w);
+    Particles();
     Particles(GLFunctions *gl, int maxParticles = 1000);
     void initialize(GLFunctions *gl, int maxParticles = 1000);
     void setBufferValue(int index, glm::vec3 position, float size);
     void setBufferSize(int size);
     virtual void draw();
-    virtual void update(float seconds) = 0;
 
     struct ParticleBuffer {
         glm::vec3 position;
         GLfloat size;
     };
-
-    bool active;
-
-// To be shared with subclasses
-protected:
-    dWorldID world;
-    dSpaceID space;
 
 // Rendering only, no need to share with subclasses
 private:
@@ -68,11 +60,14 @@ private:
     GLint m_stencilSizeAttrib;
 
     int m_maxParticles;
+    int m_particles;
 
     GLuint m_texID[4];
     GLuint m_texUniform[4];
 
     QVector<ParticleBuffer> data;
+
+    GLfloat m_lightpos[3];
 
     void renderDepthPass();
     void renderLightingPass();

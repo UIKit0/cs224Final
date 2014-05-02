@@ -1,12 +1,16 @@
 #include "particleemitter.h"
 
-ParticleEmitter::ParticleEmitter(dWorldID w, dMass m)
-    : Particles(w)
+ParticleEmitter::ParticleEmitter(Particles *p)
+    : gl_particles(p)
+    , active(true)
 {
-    mass = m;
+    // Create a space for this group of particles
+    space = dHashSpaceCreate(0);
+    dHashSpaceSetLevels(space, 1, 5);
+
     drawVortices = false;
-    sprites = UINT_MAX;
     time = 0;
+    g_emitters.append(this);
 }
 
 void ParticleEmitter::draw(){
@@ -20,13 +24,18 @@ void ParticleEmitter::draw(){
 //    glBindTexture(GL_TEXTURE_2D, sprites);
 
     //glDepthMask(GL_FALSE);
+    gl_particles->setBufferSize(particles.size());
 
+    //update buffer
+    for (int i = 0; i < particles.size(); ++i){
+        gl_particles->setBufferValue(i, particles[i].getPosition(), particles[i].size*particles[i].scale);
+    }
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_MULTISAMPLE);
     glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 
-    Particles::draw();
+    gl_particles->draw();
 
     glDepthMask(GL_TRUE);
 
@@ -41,7 +50,11 @@ void ParticleEmitter::draw(){
 }
 
 void ParticleEmitter::update(float seconds){
-    time += seconds*0.1;
+    if (!active && particles.size() == 0){
+        g_emitters.removeOne(this);
+    }
+
+    time += seconds;
     updateParticles();
     updateVortices();
 
@@ -59,13 +72,6 @@ void ParticleEmitter::update(float seconds){
             delete vortices[i];
             vortices.removeAt(i);
         }
-    }
-
-    Particles::setBufferSize(particles.size());
-
-    //update buffer
-    for (int i = 0; i < particles.size(); ++i){
-        Particles::setBufferValue(i, particles[i].getPosition(), particles[i].size*particles[i].scale);
     }
 }
 

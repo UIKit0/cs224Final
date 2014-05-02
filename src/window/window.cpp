@@ -19,7 +19,10 @@ void Window::update(float seconds)
 
 void Window::initialize()
 {
-    m_gl->glClearColor(1,1,1,1);
+    m_gl->glClearColor(255/255.0f,
+                       255/255.0f,
+                       255/255.0f,
+                       1);
 
     QVector<GLenum> attribs;
     attribs << GL_DEPTH_TEST

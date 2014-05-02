@@ -274,8 +274,8 @@ layout(triangle_strip, max_vertices = 6) out;
 uniform mat4 vp_matrix;
 uniform vec3 viewVec;
 
-uniform float offsetDepth = 0.15;
-uniform float hstrokeWidth = 0.01;
+uniform float offsetDepth = 0.001;
+uniform float hstrokeWidth = 0.015;
 
 in V_OUT
 {

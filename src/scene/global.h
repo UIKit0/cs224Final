@@ -16,10 +16,10 @@ typedef QOpenGLFunctions_2_0 GLFunctions;
 //#define DEBUG_TRIANGLE
 
 #ifndef DEBUG_TRIANGLE
-//    #define PLAYER
-//    #define TERRAIN
+    #define PLAYER
+    #define TERRAIN
     #define CONTOUR
-//    #define PARTICLES
+    #define PARTICLES
 #endif
 
 #include "matrixstack.h"
@@ -39,7 +39,9 @@ extern dWorldID g_world;
 extern dMass g_mass;
 
 class Particles;
-#include "QList"
-extern QList<Particles*> g_particles;
+extern Particles* g_particles;
+
+class ParticleEmitter;
+extern QList<ParticleEmitter*> g_emitters;
 
 #endif // GLOBAL_H

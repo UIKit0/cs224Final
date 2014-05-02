@@ -45,7 +45,7 @@ void Contour::initialize(GLFunctions *gl, Obj &mesh)
     m_meshSize = mesh.triangles.size() * 3;
 
     if (m_meshSize > USHRT_MAX)
-        qCritical() << "Critical: mesh is too big!";
+        qCritical() << "Critical: mesh is too big!" << m_meshSize;
 
     QHash<QPair<int,int>, Adjacent> edgeMap;
     for(int i = 0; i < mesh.triangles.size(); ++i) {
@@ -65,7 +65,7 @@ void Contour::initialize(GLFunctions *gl, Obj &mesh)
                 edgeMap.insert(p, adj);
             } else {
                 Adjacent &adj = edgeMap[p];
-                Q_ASSERT(adj.face2 == -1);
+//                Q_ASSERT(adj.face2 == -1);
                 adj.face2 = i;
                 adj.vertex2 = ic;
             }
@@ -171,8 +171,8 @@ void Contour::initialize(GLFunctions *gl, Obj &mesh)
 //    // uniforms
     m_goochFx.use();
     m_gl->glUniform3f(m_goochFx.uniform("lightPos"), 0.0f, 10.0f, 4.0f);
-    m_gl->glUniform3f(m_goochFx.uniform("surfaceColor"), 0.4f, 0.75f, 0.75f);
-    m_gl->glUniform3f(m_goochFx.uniform("warmColor"), 0.6f, 0.6f, 0.0f);
+    m_gl->glUniform3f(m_goochFx.uniform("surfaceColor"), 0.1f, 0.55f, 0.75f);
+    m_gl->glUniform3f(m_goochFx.uniform("warmColor"), 0.9f, 0.9f, 0.1f);
     m_gl->glUniform3f(m_goochFx.uniform("coolColor"), 0.0f, 0.1f, 0.6f);
     m_gl->glUniform1f(m_goochFx.uniform("diffuseWarm"), 0.45f);
     m_gl->glUniform1f(m_goochFx.uniform("diffuseCool"), 0.15f);

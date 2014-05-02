@@ -140,7 +140,7 @@ void main(void)
     float d = lum(depth.xyz);
 
     vec4 cameraCoords = g_in.csPos;
-    cameraCoords.z -= 2*(d);
+    cameraCoords.z -= 2*d;
     vec4 clipCoords = p_matrix * cameraCoords;
     float ndc_depth = clipCoords.z / clipCoords.w;
     float Far = gl_DepthRange.far;
@@ -157,7 +157,7 @@ void main(void)
         //      Does proper lighting
 
         // Get axis of rotation
-        vec3 pos = g_in.csPos.xyz + d*normalize(g_in.csPos.xyz);
+        vec3 pos = g_in.csPos.xyz;// + d*normalize(g_in.csPos.xyz);
         vec3 look = vec3(0,0,-1);
         vec3 axis = cross(pos, look);
         axis = normalize(axis);

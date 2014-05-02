@@ -41,6 +41,8 @@ void ParticleEmitter::draw(){
 }
 
 void ParticleEmitter::update(float seconds){
+    Particles::update(seconds);
+
     time += seconds*0.1;
     updateParticles();
     updateVortices();

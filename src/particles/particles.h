@@ -23,7 +23,7 @@ public:
     void setBufferValue(int index, glm::vec3 position, float size);
     void setBufferSize(int size);
     virtual void draw();
-    virtual void update(float seconds) = 0;
+    virtual void update(float seconds);
 
     struct ParticleBuffer {
         glm::vec3 position;

@@ -47,7 +47,7 @@ public:
 
     float shrink;   // controls size
     float expand;   // controls expanding to initial size
-    float initialScale;
+    float initialScale; // scale when the particle is first spawned
     float scale;     // how much to scale the size
     float minScale;  // what scale to make the particle disappear
 

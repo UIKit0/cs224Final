@@ -122,6 +122,13 @@ void Particles::setBufferValue(int index, glm::vec3 position, float size)
     particle.size = size;
 }
 
+void Particles::update(float seconds){
+    if (!active && data.size() == 0){
+        g_particles.removeOne(this);
+        g_free_particles.append(this);
+    }
+}
+
 void Particles::draw()
 {
     Q_ASSERT(m_gl != NULL);

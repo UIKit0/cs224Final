@@ -40,5 +40,6 @@ extern dMass g_mass;
 class Particles;
 #include "QList"
 extern QList<Particles*> g_particles;
+extern QList<Particles*> g_free_particles;
 
 #endif // GLOBAL_H

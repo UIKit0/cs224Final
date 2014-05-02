@@ -7,3 +7,4 @@ dWorldID g_world;
 dMass g_mass;
 
 QList<Particles*> g_particles;
+QList<Particles*> g_free_particles;

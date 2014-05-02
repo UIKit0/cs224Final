@@ -26,6 +26,8 @@ void TerrainObject::onMissileHit(Missile &missile){
     health -= missile.damage;
     if (health < 5.0f && particles == NULL){
         particles = new BasicSmokeEmitter(g_particles);
+        particles->maxInitialVel = glm::vec3(0.5f,0.5f,0.5f);
+        particles->minInitialVel = glm::vec3(0,0,0);
         particles->location = terrain->trueLocation(tile, location);
     }
     if (health < 0.0f && particles != NULL){

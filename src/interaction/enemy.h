@@ -17,8 +17,9 @@
 #include "interaction/windvolume.h"
 #include "interaction/missile.h"
 #include "particles/particleemitter.h"
-#include "particles/basicsmokeemitter.h"
+#include "particles/smoketrailemitter.h"
 #include "particles/explosionemitter.h"
+#include "particles/smokeparticle.h"
 
 #define ENEMY_CATEGORY_BITS 4
 
@@ -31,6 +32,7 @@ public:
     void update(float seconds);
     void draw();
     void onMissileHit(Missile* m);
+    bool hitsParticle(SmokeParticle *p);
 
     dBodyID body;
     dGeomID geom;

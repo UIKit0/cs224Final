@@ -75,6 +75,7 @@ private:
     GLuint m_buffer;
     GLuint m_vao;
 
+    GLFunctions *m_gl;
     Program m_goochFx;
 
     GLuint m_posAttr;

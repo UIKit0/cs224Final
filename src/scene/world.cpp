@@ -41,6 +41,16 @@ World::~World()
 
 static void nearCallback(void* data, dGeomID o1, dGeomID o2)
 {
+    if (dGeomIsSpace (o1) || dGeomIsSpace (o2)) {
+        // colliding a space with something
+        dSpaceCollide2 (o1,o2,data,&nearCallback);
+        // collide all geoms internal to the space(s)
+        if (dGeomIsSpace (o1)) dSpaceCollide ((dSpaceID)o1,data,&nearCallback);
+        if (dGeomIsSpace (o2)) dSpaceCollide ((dSpaceID)o2,data,&nearCallback);
+
+        return;
+    }
+
     World *world = (World*) data;
     dBodyID b1 = dGeomGetBody(o1);
     dBodyID b2 = dGeomGetBody(o2);
@@ -70,6 +80,18 @@ static void nearCallback(void* data, dGeomID o1, dGeomID o2)
         else if (dGeomGetCategoryBits(o2) == MISSILE_CATEGORY_BITS && dGeomGetCategoryBits(o1) == ENEMY_CATEGORY_BITS){
             ((Enemy*)dBodyGetData(b1))->onMissileHit((Missile*)dBodyGetData(b2));
         }
+        else if (dGeomGetCategoryBits(o1) == ENEMY_CATEGORY_BITS && dGeomGetCategoryBits(o2) == PARTICLE_CATEGORY_BITS){
+            if ( ((Enemy*)dBodyGetData(b1))->hitsParticle((SmokeParticle*)dBodyGetData(b2)) ){
+                dJointID c = dJointCreateContact(world->m_world_id, world->contactgroup, &contact);
+                dJointAttach(c, b1, b2);
+            }
+        }
+        else if (dGeomGetCategoryBits(o2) == ENEMY_CATEGORY_BITS && dGeomGetCategoryBits(o1) == PARTICLE_CATEGORY_BITS){
+            if ( ((Enemy*)dBodyGetData(b2))->hitsParticle((SmokeParticle*)dBodyGetData(b1)) ){
+                dJointID c = dJointCreateContact(world->m_world_id, world->contactgroup, &contact);
+                dJointAttach(c, b1, b2);
+            }
+        }
         else{
             dJointID c = dJointCreateContact(world->m_world_id, world->contactgroup, &contact);
             dJointAttach(c, b1, b2);
@@ -79,6 +101,7 @@ static void nearCallback(void* data, dGeomID o1, dGeomID o2)
 
 void World::initialize(GLFunctions *gl)
 {
+    m_gl = gl;
     // camera
     g_camera.setAspectRatio((float)m_screenWidth/m_screenHeight);
 
@@ -126,8 +149,11 @@ void World::initialize(GLFunctions *gl)
 void World::render(GLFunctions *gl)
 {
     g_model.reset();
+
 #ifdef PLAYER
-    player->draw();
+    if (player->active){
+        player->draw();
+    }
 #endif
 
 #ifdef TERRAIN
@@ -159,21 +185,26 @@ void World::render(GLFunctions *gl)
 
 void World::update(float seconds)
 {
+
     g_camera.update(seconds);
 
 #ifdef PLAYER
-    player->facing = g_camera.m_lookAt;
-    player->up = glm::vec3(0,1.0f,0);
-    player->left = glm::normalize(glm::cross(player->up, player->facing));
-//    player->location = g_camera.m_position;
-    player->rotation = g_camera.m_lastRotation;
-    player->roll = glm::mix(player->roll, g_camera.m_rotation[0] - g_camera.m_lastRotation[0], 0.1f);
-    player->pitch = glm::mix(player->pitch, g_camera.m_rotation[1] - g_camera.m_lastRotation[1], 0.1f);
-    player->location = g_camera.m_position - 1.0f*glm::cross(player->facing, player->left);
+    if (player->active){
+        g_camera.update(seconds);
 
-    player->update(seconds);
-    if (firing)
-        player->fire();
+        player->facing = g_camera.m_lookAt;
+        player->up = glm::vec3(0,1.0f,0);
+        player->left = glm::normalize(glm::cross(player->up, player->facing));
+        player->rotation = g_camera.m_lastRotation;
+        player->roll = glm::mix(player->roll, g_camera.m_rotation[0] - g_camera.m_lastRotation[0], 0.1f);
+        player->pitch = glm::mix(player->pitch, g_camera.m_rotation[1] - g_camera.m_lastRotation[1], 0.1f);
+        player->location = g_camera.m_position - 1.0f*glm::cross(player->facing, player->left);
+
+        player->update(seconds);
+
+        if (firing)
+            player->fire();
+    }
 #endif
 
 #ifdef TERRAIN
@@ -190,12 +221,19 @@ void World::update(float seconds)
     }
 
 #ifdef PARTICLES
-    for (int i = 0; i < g_emitters.size(); i++){
+    for (int i = g_emitters.size() - 1; i >= 0; i--){
         g_emitters[i]->update(seconds);
+        if (dSpaceQuery(space, (dGeomID)g_emitters[i]->space) == 0)
+            dSpaceAdd(space, (dGeomID)g_emitters[i]->space);
+
+        if (!g_emitters[i]->isActive()){
+            g_emitters[i]->destroy();
+            g_emitters.removeAt(i);
+        }
     }
 #endif
 
-    dSpaceCollide(space, this, nearCallback);
+    dSpaceCollide(space, this, &nearCallback);
     dWorldQuickStep(m_world_id, 1/30.0f);
     dJointGroupEmpty(contactgroup);
 }
@@ -229,6 +267,20 @@ void World::keyPressEvent(QKeyEvent *event)
         break;
     }
 
+    if (event->key() == Qt::Key_R) {
+        for (int i = enemies.size() - 1; i >= 0; i--){
+            enemies[i]->destroy();
+            enemies.removeAt(i);
+        }
+
+        for (int i = g_emitters.size() - 1; i >= 0; i--){
+            g_emitters[i]->destroy();
+            g_emitters.removeAt(i);
+        }
+        g_camera = Camera();
+        initialize(m_gl);
+    }
+
     if (event->key() == Qt::Key_Space) g_camera.pressingJump = true;
 }
 
@@ -255,7 +307,8 @@ void World::keyReleaseEvent(QKeyEvent *event)
 void World::mousePressEvent(QMouseEvent *event)
 {
     firing = true;
-    player->fire();
+    if (player->active)
+        player->fire();
 }
 
 void World::mouseMoveEvent(QMouseEvent *event)

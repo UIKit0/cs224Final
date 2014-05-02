@@ -18,27 +18,27 @@ void BasicSmokeEmitter::updateParticles(){
         toAdd = 0;
 
     for (int i = 0; i < toAdd; i++){
-        SmokeParticle sp = SmokeParticle(g_world, space, g_mass, dRandReal()*0.5f + 1.5f);
+        SmokeParticle* sp = new SmokeParticle(g_world, space, g_mass, dRandReal()*0.5f + 1.5f);
 
-        dBodySetPosition(sp.body, location[0],
+        dBodySetPosition(sp->body, location[0],
                          location[1],
                          location[2]);
 
-        dBodySetLinearVel(sp.body, dRandReal()*(maxInitialVel[0] - minInitialVel[0]) + minInitialVel[0],
+        dBodySetLinearVel(sp->body, dRandReal()*(maxInitialVel[0] - minInitialVel[0]) + minInitialVel[0],
                                 dRandReal()*(maxInitialVel[1] - minInitialVel[1]) + minInitialVel[1],
                                 dRandReal()*(maxInitialVel[2] - minInitialVel[2]) + minInitialVel[2]);
 
-        sp.wind = glm::vec3(0,0.2f,0);
-        sp.rotationSpeed = dRandReal() - 0.5f;
+        sp->wind = glm::vec3(0,0.2f,0);
+        sp->rotationSpeed = dRandReal() - 0.5f;
 
         // Actually make particles bigger with time, so there aren't random gaps
-        sp.shrink = -0.5f;
-        sp.initialScale = 0.4f;
-        sp.expand = 2.0f;
-        sp.minScale = 0.1f;
-        sp.fade = -0.0f;
-        sp.minAlpha = 0.02f;
-        sp.lifetime = 100.0f;
+        sp->shrink = -0.5f;
+        sp->initialScale = 0.4f;
+        sp->expand = 2.0f;
+        sp->minScale = 0.1f;
+        sp->fade = -0.0f;
+        sp->minAlpha = 0.02f;
+        sp->lifetime = 100.0f;
         particles.push_front(sp);
     }
 
@@ -46,11 +46,11 @@ void BasicSmokeEmitter::updateParticles(){
     float timescale = 0.01f;
     float noisescale = 0.0f;
     for (int i = 0; i < particles.size(); i++){
-        const dReal *loc = dBodyGetPosition(particles[i].body);
+        const dReal *loc = dBodyGetPosition(particles[i]->body);
 
         float noise0 = glm::perlin(glm::vec3(loc[0], loc[1], time*timescale));
         float noise2 = glm::perlin(glm::vec3(loc[2], loc[1], time*timescale));
-        dBodyAddForce(particles[i].body, noise0*noisescale, 0.0f, noise2*noisescale);
+        dBodyAddForce(particles[i]->body, noise0*noisescale, 0.0f, noise2*noisescale);
     }
 }
 

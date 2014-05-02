@@ -23,6 +23,7 @@ public:
     void destroy();
     void update(float time);
 
+    dSpaceID space;
     dBodyID body;
     dGeomID geom;
     dMass mass;

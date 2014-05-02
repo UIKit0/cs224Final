@@ -2,7 +2,6 @@
 
 Terrain::Terrain()
 {
-    originLocation = glm::vec3(-GRID_SIZE / 2.0f * TILE_SIZE, 0, -GRID_SIZE / 2.0f * TILE_SIZE);
 }
 
 Terrain::~Terrain(){
@@ -16,6 +15,7 @@ Terrain::~Terrain(){
 }
 
 void Terrain::initialize(GLFunctions *gl){
+    originLocation = glm::vec3(-GRID_SIZE / 2.0f * TILE_SIZE, 0, -GRID_SIZE / 2.0f * TILE_SIZE);
     m_gl = gl;
     shader.initialize(gl);
     shader.compile(GL_VERTEX_SHADER, "terrain.vertex");

@@ -240,7 +240,6 @@ void Particles::renderStencilPass()
     m_gl->glUniformMatrix4fv(m_stencilPass.uniform("vp_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix * g_camera.vMatrix));
     m_gl->glUniformMatrix4fv(m_stencilPass.uniform("m_matrix"), 1, GL_FALSE, glm::value_ptr(g_model.mMatrix));
 
-
     quintptr offset = 0;
     m_gl->glEnableVertexAttribArray(m_stencilPosAttrib);
     m_gl->glVertexAttribPointer(m_stencilPosAttrib, 3, GL_FLOAT, GL_FALSE, sizeof(ParticleBuffer), (const void *) offset);

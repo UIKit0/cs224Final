@@ -18,8 +18,8 @@ int main(int argc, char *argv[])
 //    window.setGeometry(0,0,screen.width(),screen.height());
 #endif
 
-    window.show();
-//    window.showFullScreen();
+//    window.show();
+    window.showFullScreen();
     // will tick according to sreen refresh screen rate
     window.setAnimating(true);
 

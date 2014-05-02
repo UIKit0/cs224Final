@@ -96,8 +96,11 @@ void World::initialize(GLFunctions *gl)
 #ifdef TERRAIN
     m_terrain.initialize(gl);
 #endif
+
+#ifdef PLAYER
     player = new Player(space, &m_terrain);
     player->initialize(gl);
+#endif
 
 #ifdef PARTICLES
     BasicSmokeEmitter *emitter = new BasicSmokeEmitter(g_world, g_mass);
@@ -111,7 +114,7 @@ void World::initialize(GLFunctions *gl)
 #ifdef CONTOUR
     // TODO: support multiple contour drawn meshes
     QString f("monkey.obj");
-//    Obj mesh("cube.obj");
+//    Obj f("cube.obj");
     Obj mesh(f);
     m_contour.initialize(gl, mesh);
 #endif
@@ -132,8 +135,9 @@ void World::initialize(GLFunctions *gl)
 void World::render(GLFunctions *gl)
 {
     g_model.reset();
-
+#ifdef PLAYER
     player->draw();
+#endif
 
 #ifdef TERRAIN
     m_terrain.draw();
@@ -162,6 +166,7 @@ void World::update(float seconds)
 {
     g_camera.update(seconds);
 
+#ifdef PLAYER
     player->facing = g_camera.m_lookAt;
     player->up = glm::vec3(0,1.0f,0);
     player->left = glm::normalize(glm::cross(player->up, player->facing));
@@ -172,6 +177,7 @@ void World::update(float seconds)
     player->update(seconds);
     if (firing)
         player->fire();
+#endif
 
 #ifdef TERRAIN
     m_terrain.update(seconds, g_camera.m_position);

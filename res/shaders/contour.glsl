@@ -23,11 +23,20 @@ void main(void)
 
 -- vertex.line -------------------------------------------------
 
+uniform mat4 m_matrix;
+
 in vec3 position;
+in vec3 normal;
+
+out V_OUT
+{
+    vec4 normal;
+} v_out;
 
 void main(void)
 {
-    gl_Position = vec4(position, 1.0);
+    v_out.normal = m_matrix * vec4(normal, 0);
+    gl_Position = m_matrix * vec4(position, 1.0);
 }
 
 -- fragment.black ------------------------------------------------
@@ -36,7 +45,21 @@ out vec4 color;
 
 void main(void)
 {
-    color = vec4(0.0, 0.0, 0.0, 1.0);
+    color = vec4(0,0,0, 1.0);
+}
+
+-- fragment.color ------------------------------------------------
+
+in G_OUT
+{
+    vec3 color;
+} g_in;
+
+out vec4 color;
+
+void main(void)
+{
+    color = vec4(g_in.color, 1.0);
 }
 
 -- vertex ----------------------------------------------------------
@@ -79,8 +102,10 @@ void main(void)
 
 -- geometry ------------------------------------------------------
 
+// shader from pez (works much better than method from gooch)
+
 layout(triangles_adjacency) in;
-layout(triangle_strip, max_vertices = 12) out;
+layout(points, max_vertices = 12) out;
 // 3 edges x 4 quads = 12 vertices
 
 uniform float HalfWidth = 0.005;
@@ -130,39 +155,106 @@ void main()
 -- geometry2 ---------------------------------------------------------
 
 layout(triangles_adjacency) in;
-layout(points, max_vertices = 12) out;
+layout(triangle_strip, max_vertices = 6) out;
 // 3 edges x 4 quads = 12 vertices
 
-uniform mat4 mvp_matrix;
-uniform mat4 m_matrix;
-uniform mat4 v_matrix;
+uniform mat4 vp_matrix;
 uniform vec3 viewVec;
 
-// clockwise order
-//void EdgeContour(vec4 v1, vec4 v2, vec4 v3, vec3 edge, vec3 nface1)
-//{
-//    vec3 tv1 = vec3(m_matrix * v1);
-//    vec3 tv2 = vec3(m_matrix * v2);
-//    vec3 tv3 = vec3(m_matrix * v3);
+uniform float offsetDepth = 0.15;
+uniform float hstrokeWidth = 0.01;
 
-//    vec3 nface2 = normalize(cross(v2 - v1, v3 - v1));
+in V_OUT
+{
+    vec4 normal;
+} v_in[];
 
-//    if (dot(nface2, edge - viewVec) * dot(nface1, edge - viewVec) > 0) {
-//        gl_Position = mvp_matrix * vec4(v1, 1); EmitVertex();
-//        gl_Position = mvp_matrix * vec4(v2, 1); EmitVertex();
-//        gl_Position = mvp_matrix * vec4(v3, 1); EmitVertex();
-//        EndPrimitive();
-//    }
-//}
+out G_OUT
+{
+    vec3 color;
+} g_out;
+
+void emitEdge(int vId1, int vId2, int vId3, bool isCrease)
+{
+    vec3 clr = vec3(0,0,0);
+    if (isCrease)
+        clr = vec3(1,0,0);
+
+    vec3 wsv1 = gl_in[vId1].gl_Position.xyz;
+    vec3 wsv2 = gl_in[vId2].gl_Position.xyz;
+    vec3 wsv3 = gl_in[vId3].gl_Position.xyz;
+
+    vec3 nv1 = v_in[vId1].normal.xyz;
+    vec3 nv2 = v_in[vId2].normal.xyx;
+
+//    vec3 offv1 = v1 - viewVec * offsetDepth;
+//    vec3 offv2 = v2 - viewVec * offsetDepth;
+//    vec3 offv3 = v3 - viewVec * offsetDepth;
+//    vec3 edgeVec1 = normalize(offv3 - offv1);
+//    vec3 edgeVec2 = normalize(offv3 - offv2);
+
+    // bottom left
+    vec3 v2 = wsv2 + nv2 * hstrokeWidth;
+    g_out.color = clr;
+    gl_Position = vp_matrix * vec4(v2, 1);
+    gl_Position.z += offsetDepth;
+    EmitVertex();
+
+    // top left
+     v2 = wsv2;
+    g_out.color = clr;
+    gl_Position = vp_matrix * vec4(v2, 1);
+    gl_Position.z += offsetDepth;
+    EmitVertex();
+
+    // bottom right
+    vec3 v1 = wsv1 + nv1 * hstrokeWidth;
+    g_out.color = clr;
+    gl_Position = vp_matrix * vec4(v1, 1);
+    gl_Position.z += offsetDepth;
+    EmitVertex();
+
+    // top right
+     v1 = wsv1;
+    g_out.color = clr;
+    gl_Position = vp_matrix * vec4(v1, 1);
+    gl_Position.z += offsetDepth;
+    EmitVertex();
+
+    EndPrimitive();
+}
+
+void checkContour(vec3 nface1, int vId1, int vId2, int vId3)
+{
+    vec3 v1 = gl_in[vId1].gl_Position.xyz;
+    vec3 v2 = gl_in[vId2].gl_Position.xyz;
+    vec3 v3 = gl_in[vId3].gl_Position.xyz;
+
+    vec3 nface2 = normalize(cross(v2 - v3, v1 - v3));
+
+    // silohuette
+
+    // equation from gooch
+    float contour = ( dot(nface1, nface2));
+
+    if (contour > 0) {
+        if (contour < 0.8)
+            emitEdge(vId1,vId2,vId3, true);
+        else
+            emitEdge(vId1,vId2,vId3, false);
+    }
+
+    // TODO: creases ?
+}
 
 void main(void)
 {
     // get face normal (0,2,4) [ triangle ]
     // adjecent indices (5,1,3)
 
-    vec3 v0 = vec3(m_matrix * gl_in[0].gl_Position);
-    vec3 v2 = vec3(m_matrix * gl_in[2].gl_Position);
-    vec3 v4 = vec3(m_matrix * gl_in[4].gl_Position);
+    vec3 v0 = gl_in[0].gl_Position.xyz;
+    vec3 v2 = gl_in[2].gl_Position.xyz;
+    vec3 v4 = gl_in[4].gl_Position.xyz;
 
     vec3 nface = normalize(cross(v2 - v0, v4 - v0));
 
@@ -170,11 +262,9 @@ void main(void)
 
     // check if triangle is front-facing
     if (viewDotN > 0) {
-//        EdgeContour(gl_in[0].gl_Position, gl_in[0].gl_Position, gl_in[0].gl_Position)
-        gl_Position = mvp_matrix * gl_in[0].gl_Position; EmitVertex();
-        gl_Position = mvp_matrix * gl_in[2].gl_Position; EmitVertex();
-        gl_Position = mvp_matrix * gl_in[4].gl_Position; EmitVertex();
-        EndPrimitive();
+        checkContour(nface, 2,0,1);
+        checkContour(nface, 4,2,3);
+        checkContour(nface, 0,4,5);
     }
 }
 

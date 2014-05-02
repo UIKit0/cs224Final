@@ -16,8 +16,8 @@ Missile::Missile(GLFunctions *gl, dSpaceID s, glm::vec3 loc, glm::vec3 vel) :
     dBodySetLinearVel(body, vel[0], vel[1], vel[2]);
     dBodySetPosition(body, loc[0], loc[1], loc[2]);
 
-    emitter = new SmokeTrailEmitter(g_world, g_mass);
-    emitter->initialize(gl);
+    emitter = new SmokeTrailEmitter(g_particles);
+//    emitter->initialize(gl);
 }
 
 void Missile::destroy(){

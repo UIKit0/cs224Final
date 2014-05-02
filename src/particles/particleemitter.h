@@ -18,10 +18,10 @@
 #include "scene/global.h"
 #include "particles.h"
 
-class ParticleEmitter : public Particles
+class ParticleEmitter // : public Particles
 {
 public:
-    ParticleEmitter(dWorldID w, dMass m);
+    ParticleEmitter(Particles *p);
 
     void destroy();
     void update(float seconds);
@@ -30,19 +30,22 @@ public:
     bool drawVortices;
 
     glm::vec3 location;
+    bool active;
 
 protected:
+    // To be shared with subclasses
+    dSpaceID space;
+
+    Particles *gl_particles;
+
     virtual void updateParticles() = 0;
     virtual void updateVortices() = 0;
-
-    dMass mass;
 
     QList<SmokeParticle> particles;
 
     QList<Vortex*> vortices;
 
     float time;
-    GLuint sprites;
 };
 
 #endif // SMOKEEMITTER_H

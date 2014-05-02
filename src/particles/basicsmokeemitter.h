@@ -6,13 +6,15 @@
 #include <glm/gtc/noise.hpp>
 
 #include "particles/particleemitter.h"
+#include "particles/particles.h"
+#include "scene/global.h"
 
 #define SPAWN_SIZE 2.0f
 
 class BasicSmokeEmitter : public ParticleEmitter
 {
 public:
-    BasicSmokeEmitter(dWorldID w, dMass m);
+    BasicSmokeEmitter(Particles *p);
 
     void updateParticles();
     void updateVortices();

@@ -2,13 +2,8 @@
 
 #include <QImage>
 
-Particles::Particles(dWorldID w)
-    : world(w), active(true)
+Particles::Particles()
 {
-    // Create a space for this group of particles
-    space = dHashSpaceCreate(0);
-    dHashSpaceSetLevels(space, 1, 5);
-    g_particles.append(this);
 }
 
 Particles::Particles(GLFunctions *gl, int maxParticles)
@@ -114,11 +109,14 @@ void Particles::initialize(GLFunctions *gl, int maxParticles)
                      0, GL_RGBA, GL_UNSIGNED_BYTE, img.bits());
         delete textures[i];
     }
+
+    data.resize(maxParticles);
 }
 
 void Particles::setBufferSize(int size)
 {
-    data.resize(size);
+//    data.resize(size);
+    m_particles = size;
 }
 
 void Particles::setBufferValue(int index, glm::vec3 position, float size)
@@ -130,20 +128,13 @@ void Particles::setBufferValue(int index, glm::vec3 position, float size)
     particle.size = size;
 }
 
-void Particles::update(float seconds){
-    if (!active && data.size() == 0){
-        g_particles.removeOne(this);
-        g_free_particles.append(this);
-    }
-}
-
 void Particles::draw()
 {
     Q_ASSERT(m_gl != NULL);
 
     m_gl->glBindVertexArray(m_vao);
     m_gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
-    m_gl->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(ParticleBuffer) * data.size(), data.data());
+    m_gl->glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(ParticleBuffer) * m_particles, data.data());//data.size(), data.data());
 
     // Shadows!
     // 1. Render scene into depth buffer

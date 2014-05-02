@@ -1,6 +1,6 @@
 #include "smoketrailemitter.h"
 
-SmokeTrailEmitter::SmokeTrailEmitter(dWorldID w, dMass m) : ParticleEmitter(w, m)
+SmokeTrailEmitter::SmokeTrailEmitter(Particles *p) : ParticleEmitter(p)
 {
 }
 
@@ -10,7 +10,7 @@ void SmokeTrailEmitter::updateParticles()
         return;
 
     for (int i = 0; i < 1; i++){
-        SmokeParticle sp = SmokeParticle(world, space, mass, dRandReal()*0.2f + 1.0f);
+        SmokeParticle sp = SmokeParticle(g_world, space, g_mass, dRandReal()*0.2f + 1.0f);
 
         float ratio = 0.5f;
         dBodySetPosition(sp.body, location[0] + dRandReal()*ratio - ratio/2,

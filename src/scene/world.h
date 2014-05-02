@@ -61,8 +61,8 @@ private:
     dSpaceID space;
 
     // PARTICLES
-    QList<ParticleEmitter*> emitters;
-    ParticleEmitter *circlingEmitter;
+//    QList<ParticleEmitter*> emitters;
+//    ParticleEmitter *circlingEmitter;
     // Sphere that moves left and right through the smoke
     void toggleMovingSphere();
     void toggleDrawVortices();

@@ -33,7 +33,7 @@ World::World()
 
 World::~World()
 {
-    emitters.clear();
+//    emitters.clear();
     dJointGroupDestroy(contactgroup);
     dSpaceDestroy(space);
     dWorldDestroy(m_world_id);
@@ -42,10 +42,10 @@ World::~World()
 
 void World::toggleDrawVortices()
 {
-    for (int i = 0; i < emitters.size(); i++)
-    {
-        emitters[i]->drawVortices = !emitters[i]->drawVortices;
-    }
+//    for (int i = 0; i < emitters.size(); i++)
+//    {
+//        emitters[i]->drawVortices = !emitters[i]->drawVortices;
+//    }
 }
 
 void World::toggleMovingSphere()
@@ -93,6 +93,8 @@ void World::initialize(GLFunctions *gl)
     // camera
     g_camera.setAspectRatio((float)m_screenWidth/m_screenHeight);
 
+    g_particles = new Particles(gl, 2000);
+
 #ifdef TERRAIN
     m_terrain.initialize(gl);
 #endif
@@ -100,8 +102,8 @@ void World::initialize(GLFunctions *gl)
     player->initialize(gl);
 
 #ifdef PARTICLES
-    BasicSmokeEmitter *emitter = new BasicSmokeEmitter(g_world, g_mass);
-    emitter->initialize(gl, 2000);
+    BasicSmokeEmitter *emitter = new BasicSmokeEmitter(g_particles);
+//    emitter->initialize(gl, 2000);
     emitter->location = glm::vec3(3,0,0);
     emitter->maxInitialVel = glm::vec3(0.3f, 1.0f, 0.3f);
     emitter->minInitialVel = glm::vec3(-0.3f, 0.5f, -0.3f);
@@ -146,8 +148,8 @@ void World::render(GLFunctions *gl)
 #endif
 
 #ifdef PARTICLES
-    for (int i = 0; i < g_particles.size(); i++){
-        g_particles[i]->draw();
+    for (int i = 0; i < g_emitters.size(); i++){
+        g_emitters[i]->draw();
     }
 #endif
 
@@ -178,8 +180,8 @@ void World::update(float seconds)
 #endif
 
 #ifdef PARTICLES
-    for (int i = 0; i < g_particles.size(); i++){
-        g_particles[i]->update(seconds);
+    for (int i = 0; i < g_emitters.size(); i++){
+        g_emitters[i]->update(seconds);
     }
 #endif
 

@@ -18,10 +18,10 @@ void Terrain::initialize(GLFunctions *gl){
     originLocation = glm::vec3(-GRID_SIZE / 2.0f * TILE_SIZE, 0, -GRID_SIZE / 2.0f * TILE_SIZE);
     m_gl = gl;
 
-    object_objs.append(Contour());
-    object_objs.append(Contour());
-    object_objs.append(Contour());
-    object_objs.append(Contour());
+//    object_objs[0] = new Contour();
+//    object_objs[1] = new Contour();
+//    object_objs[2] = new Contour();
+//    object_objs[3] = new Contour();
 
     QString f1("boat.obj");
     Obj mesh1(f1);
@@ -194,7 +194,7 @@ void Terrain::addObjects(int i, int j){
         for (int y = 1; y < TILE_SIZE; y++){
             float height = tile->terrain[x][y][1];
             // TODO: change height threshold
-            if (    rand() / (float) RAND_MAX > 0.8f
+            if (    rand() / (float) RAND_MAX > 0.89f
                     && height > 1.5f
                     && height > tile->terrain[x + 1][y][1]
                     && height > tile->terrain[x + 1][y + 1][1]
@@ -209,12 +209,12 @@ void Terrain::addObjects(int i, int j){
 //                tile->objects.last().rotation = glm::rotate(glm::mat4(), (float)M_PI/2.0f, glm::vec3(1.0f,0,0));
             }
             glm::vec3 tangent = tangentPlaneInTile(i, j, glm::vec3(x, 0, y));
-            if ((fabs(tangent[0]) > 0.7f || fabs(tangent[2]) > 0.7f) && dRandReal() > 0.995f){
+            if ((fabs(tangent[0]) > 0.7f || fabs(tangent[2]) > 0.7f) && dRandReal() > 0.997f){
                 tile->objects.append(TerrainObject(m_gl, this, tile, glm::vec3(x, height + EPSILON, y)));
                 tile->objects.last().rotation = glm::rotate(glm::mat4(), (float)M_PI/2.0f, glm::vec3(1.0f,0,0));
                 tile->objects.last().type = Type::BUILDING;
             }
-            if (dRandReal() > 0.998f){
+            if (dRandReal() > 0.999f){
                 tile->objects.append(TerrainObject(m_gl, this, tile, glm::vec3(x, height + EPSILON, y)));
                 tile->objects.last().velocity = glm::vec3(dRandReal()*2.0f, 0, dRandReal()*2.0f);
                 tile->objects.last().type = Type::TANK;
@@ -234,7 +234,7 @@ void Terrain::addObjects(int i, int j){
                     }
                 }
             }
-            if (canPlace && rand() / (float)RAND_MAX > 0.6f){
+            if (canPlace && rand() / (float)RAND_MAX > 0.5f){
                 tile->objects.append(TerrainObject(m_gl, this, tile, glm::vec3(x, tile->terrain[x][y][1] + EPSILON, y)));
                 tile->objects.last().velocity = glm::vec3(dRandReal()*2.0f, 0, dRandReal()*2.0f);
                 tile->objects.last().type = Type::BOAT;

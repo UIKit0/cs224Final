@@ -181,8 +181,8 @@ void main(void)
 
     // Color the pixel
     vec3 Kd = shade.xyz;
-    vec3 ambLight = Ld*Kd*0.3;
-    vec3 difLight = Ld*(Kd*toonDif)*0.5;
+    vec3 ambLight = Ld*Kd*0.6;
+    vec3 difLight = Ld*(Kd*toonDif)*0.6;
 
     float a = lum(alpha.xyz);
     color = vec4(ambLight + difLight, a);

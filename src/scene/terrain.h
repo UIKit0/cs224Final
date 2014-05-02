@@ -103,7 +103,7 @@ private:
     GLuint object_vao;
     GLuint object_vbo;
 
-    QList<Contour> object_objs;
+ 	Contour object_objs[4];
 
     GLFunctions *m_gl;
     Program shader;

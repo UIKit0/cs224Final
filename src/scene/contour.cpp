@@ -1,7 +1,7 @@
 #include "contour.h"
 
-#define GOOD_CONTOUR
-//#define BAD_CONTOUR
+//#define GOOD_CONTOUR
+#define BAD_CONTOUR
 
 Contour::Contour()
     : m_gl(NULL)

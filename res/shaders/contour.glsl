@@ -162,7 +162,7 @@ uniform mat4 vp_matrix;
 uniform vec3 viewVec;
 
 uniform float offsetDepth = 0.15;
-uniform float hstrokeWidth = 0.008;
+uniform float hstrokeWidth = 0.08;
 
 in V_OUT
 {
@@ -275,7 +275,7 @@ uniform mat4 vp_matrix;
 uniform vec3 viewVec;
 
 uniform float offsetDepth = 0.001;
-uniform float hstrokeWidth = 0.015;
+uniform float hstrokeWidth = 0.045;
 
 in V_OUT
 {

@@ -160,10 +160,11 @@ void World::update(float seconds)
     player->facing = g_camera.m_lookAt;
     player->up = glm::vec3(0,1.0f,0);
     player->left = glm::normalize(glm::cross(player->up, player->facing));
-    player->location = g_camera.m_position;
+//    player->location = g_camera.m_position;
     player->rotation = g_camera.m_lastRotation;
     player->roll = glm::mix(player->roll, g_camera.m_rotation[0] - g_camera.m_lastRotation[0], 0.1f);
     player->pitch = glm::mix(player->pitch, g_camera.m_rotation[1] - g_camera.m_lastRotation[1], 0.1f);
+    player->location = g_camera.m_position - 1.0f*glm::cross(player->facing, player->left);
 
     player->update(seconds);
     if (firing)
@@ -174,6 +175,7 @@ void World::update(float seconds)
 #endif
 
     for (int i = enemies.size() - 1; i >= 0; i--){
+        enemies[i]->target = player->location;
         enemies[i]->update(seconds);
         if (!enemies[i]->active){
             enemies[i]->destroy();

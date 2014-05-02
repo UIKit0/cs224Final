@@ -37,6 +37,9 @@ public:
     // Yaw, pitch, roll
     glm::vec3 rotation;
 
+    // Can be player or somewhere else
+    glm::vec3 target;
+
     QList<VortexShedder*> shedders;
     QList<WindVolume*> winds;
 

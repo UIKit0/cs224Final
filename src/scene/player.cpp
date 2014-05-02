@@ -51,7 +51,7 @@ void Player::initialize(GLFunctions *gl){
 void Player::draw(){
     g_model.pushMatrix();
     // Translate to location
-    g_model.mMatrix = glm::translate(g_model.mMatrix, location - 1.0f*glm::cross(facing, left));
+    g_model.mMatrix = glm::translate(g_model.mMatrix, location);
 
     // A little extra rotation depending on how much the plane is turning
     g_model.mMatrix = glm::rotate(g_model.mMatrix, -glm::radians(roll/3.0f), up);

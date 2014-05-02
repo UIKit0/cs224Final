@@ -30,28 +30,39 @@ void Enemy::destroy(){
 
 void Enemy::update(float seconds){
     const dReal* loc = dBodyGetPosition(body);
+    glm::vec3 location(loc[0], loc[1], loc[2]);
     if (particles != NULL){
-        particles->location = glm::vec3(loc[0], loc[1], loc[2]);
+        particles->location = location;
     }
-//    if (moving > 0){
-//        dBodySetLinearVel(body, 4.0f, 0, 0);
-//    }
-//    else if (moving < 0){
-//        dBodySetLinearVel(body, -4.0f, 0, 0);
-//    }
-//    else{
-//        dBodySetLinearVel(body, 0, 0, 0);
-//    }
-//    if (dBodyGetPosition(body)[0] > 10){
-//        moving = -1;
-//        left = glm::vec3(0, 0, 1);
-//    }
-//    if (dBodyGetPosition(body)[0] < -10){
-//        moving = 1;
-//        left = glm::vec3(0, 0, -1);
-//    }
 
-//    const dReal *vel = dBodyGetLinearVel(body);
+    glm::vec3 diff = glm::normalize(target - location);
+    float yaw = atan2(diff[0], diff[2]);
+    float pitch = asin(diff[1]);
+
+    if (yaw < 0)
+        yaw = yaw + (float)M_PI*2;
+
+    if (fabs(yaw - rotation[0]) > (float)M_PI){
+        if (yaw > (float)M_PI){
+            yaw = yaw - (float)M_PI*2;
+        }
+        else{
+            std::cout<<rotation[0]<<" "<<yaw<<std::endl;
+            yaw = yaw + (float)M_PI*2;
+        }
+    }
+    float finalyaw = glm::mix(rotation[0], yaw, 0.1f);
+    float roll = finalyaw - rotation[0];
+
+    if (finalyaw > (float)M_PI*2)
+        finalyaw -= (float)M_PI*2                                                                                                                                                                                                                                                                                                                                                                                                                                                 ;
+    if (finalyaw < 0)
+        finalyaw += (float)M_PI*2;
+
+    float finalpitch = glm::mix(rotation[1], pitch, 0.1f);
+    rotation = glm::vec3(finalyaw, finalpitch, roll*1000.0f);
+
+    dBodySetLinearVel(body, sin(rotation[0])*cos(rotation[1]), sin(rotation[1]), cos(rotation[0])*cos(rotation[1]));
 
 //    VortexShedder* vs = shedders[0];
 //    vs->axis = glm::normalize(glm::vec3(0, 0, vel[0]));
@@ -96,37 +107,18 @@ void Enemy::draw(){
 //    // Rolling effect
 
     // Initial orientation
-    g_model.mMatrix = glm::rotate(g_model.mMatrix, -rotation[0], glm::vec3(0,1.0f,0));
-    g_model.mMatrix = glm::rotate(g_model.mMatrix, rotation[1], glm::vec3(0,0,1.0f));
-    g_model.mMatrix = glm::rotate(g_model.mMatrix, glm::radians(rotation[2]/1.5f), glm::vec3(1.0f, 0, 0));
+    g_model.mMatrix = glm::rotate(g_model.mMatrix, rotation[0], glm::vec3(0,1.0f,0));
+    g_model.mMatrix = glm::rotate(g_model.mMatrix, -rotation[1], glm::vec3(1.0f,0,0));
+    g_model.mMatrix = glm::rotate(g_model.mMatrix, -glm::radians(rotation[2]), glm::vec3(0, 0, 1.0f));
 
-    g_model.mMatrix = glm::rotate(g_model.mMatrix, glm::radians(-90.0f), glm::vec3(0, 1.0,0));
+    g_model.mMatrix = glm::rotate(g_model.mMatrix, glm::radians(180.0f), glm::vec3(0, 1.0,0));
 
     g_model.mMatrix = glm::scale(g_model.mMatrix, glm::vec3(0.02f, 0.02f, 0.02f));
 
     m_obj.draw();
 
     g_model.popMatrix();
-
-//    glColor3f(1,0,0);
-//    for (int i = 0; i < winds.size(); i++){
-//        glPushMatrix();
-//        const dReal* loc = dBodyGetPosition(winds[i]->body);
-//        glTranslatef(loc[0], loc[1], loc[2]);
-//        glScalef(0.5f, HEIGHT/2, SIDE_LENGTH);
-//        obj.draw();
-//        glPopMatrix();
-//    }
 }
-
-
-//void SolidObject::destroy(){
-//    dBodyDestroy(body);
-//    dGeomDestroy(geom);
-//    for (int i = 0; i < shedders.size(); i++){
-//        shedders[i]->destroy();
-//    }
-//}
 
 void Enemy::onMissileHit(Missile *m){
     health -= m->damage;

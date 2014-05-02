@@ -167,6 +167,7 @@ void World::update(float seconds)
     player->location = g_camera.m_position;
     player->rotation = g_camera.m_lastRotation;
     player->roll = glm::mix(player->roll, g_camera.m_rotation[0] - g_camera.m_lastRotation[0], 0.1f);
+    player->pitch = glm::mix(player->pitch, g_camera.m_rotation[1] - g_camera.m_lastRotation[1], 0.1f);
 
     player->update(seconds);
     if (firing)

@@ -27,6 +27,7 @@ public:
     glm::vec3 location;
     glm::vec2 rotation;
     float roll;
+    float pitch;
 
 private:
     dWorldID world;

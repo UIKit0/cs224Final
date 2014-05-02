@@ -3,7 +3,7 @@
 #include <QImage>
 
 Particles::Particles(dWorldID w)
-    : m_gl(NULL), world(w), active(true)
+    : world(w), active(true)
 {
     // Create a space for this group of particles
     space = dHashSpaceCreate(0);

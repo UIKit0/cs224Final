@@ -70,43 +70,43 @@ void Player::draw(){
     m_obj.draw();
 
     g_model.popMatrix();
-    // Draw bullets
-    for (int i = 0; i < missiles.size(); i++){
-        // TODO: draw
-        const dReal *l = dBodyGetPosition(missiles[i]->body);
-        glm::vec3 loc(l[0], l[1], l[2]);
+//    // Draw bullets
+//    for (int i = 0; i < missiles.size(); i++){
+//        // TODO: draw
+//        const dReal *l = dBodyGetPosition(missiles[i]->body);
+//        glm::vec3 loc(l[0], l[1], l[2]);
 
-        g_model.pushMatrix();
+//        g_model.pushMatrix();
 
-        // Translate to location
-        g_model.mMatrix = glm::translate(g_model.mMatrix, loc);
+//        // Translate to location
+//        g_model.mMatrix = glm::translate(g_model.mMatrix, loc);
 
-        // Vertical triangles
-        g_model.mMatrix = glm::scale(g_model.mMatrix, glm::vec3(0.2f,0.2f,0.2f));
+//        // Vertical triangles
+//        g_model.mMatrix = glm::scale(g_model.mMatrix, glm::vec3(0.2f,0.2f,0.2f));
 
-        m_gl->glBindVertexArray(object_vao);
-        m_gl->glBindBuffer(GL_ARRAY_BUFFER, object_vbo);
+//        m_gl->glBindVertexArray(object_vao);
+//        m_gl->glBindBuffer(GL_ARRAY_BUFFER, object_vbo);
 
-        m_gl->glUseProgram(shader.program());
+//        m_gl->glUseProgram(shader.program());
 
-        m_gl->glUniformMatrix4fv(shader.uniform("proj_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix));
-        m_gl->glUniform3fv(shader.uniform("terrain_color"), 1, glm::value_ptr(glm::vec3(0.0f,1.0f,0.0f)));
+//        m_gl->glUniformMatrix4fv(shader.uniform("proj_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix));
+//        m_gl->glUniform3fv(shader.uniform("terrain_color"), 1, glm::value_ptr(glm::vec3(0.0f,1.0f,0.0f)));
 
-        for (int j = 0; j < 3; j++){
-            g_model.pushMatrix();
+//        for (int j = 0; j < 3; j++){
+//            g_model.pushMatrix();
 
-            // Remove this: only for visualization
-            g_model.mMatrix = glm::rotate(g_model.mMatrix, (float)M_PI*2.0f/3*j + missiles[i]->time*5.0f, up);
-            g_model.mMatrix = glm::rotate(g_model.mMatrix, (float)M_PI/2, glm::vec3(0,0,1.0f));
+//            // Remove this: only for visualization
+//            g_model.mMatrix = glm::rotate(g_model.mMatrix, (float)M_PI*2.0f/3*j + missiles[i]->time*5.0f, up);
+//            g_model.mMatrix = glm::rotate(g_model.mMatrix, (float)M_PI/2, glm::vec3(0,0,1.0f));
 
-            m_gl->glUniformMatrix4fv(shader.uniform("mv_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix*g_model.mMatrix));
-            m_gl->glDrawArrays(GL_TRIANGLES, 0, 3*3);
+//            m_gl->glUniformMatrix4fv(shader.uniform("mv_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix*g_model.mMatrix));
+//            m_gl->glDrawArrays(GL_TRIANGLES, 0, 3*3);
 
-            g_model.popMatrix();
-        }
+//            g_model.popMatrix();
+//        }
 
-        g_model.popMatrix();
-    }
+//        g_model.popMatrix();
+//    }
 }
 
 void Player::update(float seconds){

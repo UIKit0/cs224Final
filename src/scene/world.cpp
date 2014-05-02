@@ -185,13 +185,10 @@ void World::render(GLFunctions *gl)
 
 void World::update(float seconds)
 {
-
-    g_camera.update(seconds);
-
-#ifdef PLAYER
     if (player->active){
         g_camera.update(seconds);
 
+#ifdef PLAYER
         player->facing = g_camera.m_lookAt;
         player->up = glm::vec3(0,1.0f,0);
         player->left = glm::normalize(glm::cross(player->up, player->facing));

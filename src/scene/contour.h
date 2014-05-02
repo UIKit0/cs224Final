@@ -11,6 +11,7 @@ class Contour
 public:
     Contour();
     Contour(GLFunctions *gl, Obj &mesh);
+    ~Contour() {}
     void initialize(GLFunctions *gl, Obj &mesh);
     void draw();
 
@@ -24,7 +25,7 @@ public:
         int face1 = -1; int vertex1 = -1;
         int face2 = -1; int vertex2 = -1;
         int getAdjVertex(int f) {
-            Q_ASSERT_X(f == face1 || f == face2, "adj struct", "bad face request");
+//            Q_ASSERT_X(f == face1 || f == face2, "adj struct", "bad face request");
             if (f == face1)
                 return vertex2;
             else

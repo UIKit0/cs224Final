@@ -9,8 +9,8 @@
 #include "scene/global.h"
 #include "scene/contour.h"
 
-#define GRID_SIZE 5
-#define UPDATE_RADIUS 1
+#define GRID_SIZE 9
+#define UPDATE_RADIUS 2
 #define TILE_SIZE 30
 #define NOISE_COORDINATE_RATIO 0.05f
 #define MIN_Y -6.0f
@@ -103,7 +103,7 @@ private:
     GLuint object_vao;
     GLuint object_vbo;
 
-    QList<Contour*> object_objs;
+ 	Contour object_objs[4];
 
     GLFunctions *m_gl;
     Program shader;

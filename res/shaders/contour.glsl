@@ -108,8 +108,8 @@ layout(triangles_adjacency) in;
 layout(triangle_strip, max_vertices = 12) out;
 // 3 edges x 4 quads = 12 vertices
 
-uniform float HalfWidth = 0.002;
-uniform float OverhangLength = 0.15;
+uniform float HalfWidth = 0.003;
+uniform float OverhangLength = 0.01;
 
 bool IsFront(vec3 A, vec3 B, vec3 C)
 {

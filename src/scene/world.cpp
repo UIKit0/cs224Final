@@ -127,7 +127,7 @@ void World::initialize(GLFunctions *gl)
 
 #ifdef CONTOUR
     // TODO: support multiple contour drawn meshes
-    QString f("darkfighter.obj");
+    QString f("feisar.obj");
 //    Obj f("cube.obj");
     Obj mesh(f);
     m_contour.initialize(gl, mesh);

@@ -232,7 +232,7 @@ void Particles::renderLightingPass()
 void Particles::renderStencilPass()
 {
     m_gl->glDrawBuffer(GL_NONE);
-    m_gl->glDrawBuffer(GL_BACK);
+//    m_gl->glDrawBuffer(GL_BACK);
     m_gl->glDepthMask(GL_FALSE);
 
     m_gl->glDisable(GL_CULL_FACE);

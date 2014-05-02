@@ -113,9 +113,6 @@ float invGranularity = 1.0/granularity;
 uniform mat4 p_matrix;
 uniform mat4 v_matrix;
 
-uniform float zNear = 0.1;
-uniform float zFar = 100.0;
-
 in G_OUT
 {
     vec4 csPos;
@@ -259,9 +256,6 @@ float invGranularity = 1.0/granularity;
 
 uniform mat4 proj_matrix;
 uniform mat4 V_Matrix;
-
-uniform float zNear = 0.1;
-uniform float zFar = 100.0;
 
 //in V_OUT
 //{

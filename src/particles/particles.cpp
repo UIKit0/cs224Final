@@ -65,6 +65,11 @@ void Particles::initialize(GLFunctions *gl, int maxParticles)
 
     data.reserve(maxParticles);
 
+    m_lightpos[0] =  0.0f;
+    m_lightpos[0] =  1.0f;
+    m_lightpos[0] =  1.0f;
+
+
     m_gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
     m_gl->glBufferData(GL_ARRAY_BUFFER,
                        sizeof(ParticleBuffer) * maxParticles, data.data(),
@@ -142,14 +147,14 @@ void Particles::draw()
 
     // Shadows!
     // 1. Render scene into depth buffer
-    renderDepthPass();
+//    renderDepthPass();
     //      a. Bind pass through shader.
     //          i.   Vertex: Simple transform
     //          ii.  Fragment: Nothing
     //      b. Render geometry
     // 2. Render shadow volume into stencil buffer
 //    m_gl->glEnable(GL_STENCIL_TEST);
-    renderStencilPass();
+//    renderStencilPass();
     //      a. Bind shadow volume shader
     //          i.   Vertex: Minor pass-thru
     //          ii.  Geometry: Quad emitter
@@ -195,15 +200,15 @@ void Particles::renderLightingPass()
     m_gl->glDrawBuffer(GL_BACK);
     m_gl->glDepthMask(GL_TRUE);
 
-    m_gl->glStencilOpSeparate(GL_BACK, GL_KEEP, GL_KEEP, GL_KEEP);
-    m_gl->glStencilFunc(GL_EQUAL, 0x0, 0xFF);
+//    m_gl->glStencilOpSeparate(GL_BACK, GL_KEEP, GL_KEEP, GL_KEEP);
+//    m_gl->glStencilFunc(GL_EQUAL, 0x0, 0xFF);
 
     m_gl->glUseProgram(m_smokeFx.program());
 
     m_gl->glUniformMatrix4fv(m_pUniform, 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix));
     m_gl->glUniformMatrix4fv(m_vUniform, 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix));
     m_gl->glUniformMatrix4fv(m_mvUniform, 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix * g_model.mMatrix));
-    m_gl->glUniform3f(m_lightUniform, 1.0f, 0.0f, 1.0f);
+    m_gl->glUniform3fv(m_lightUniform, 1, m_lightpos);
 
     // Vertex attributes
     quintptr offset = 0;
@@ -243,7 +248,7 @@ void Particles::renderStencilPass()
     m_gl->glUniformMatrix4fv(m_stencilPass.uniform("vp_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix * g_camera.vMatrix));
     m_gl->glUniformMatrix4fv(m_stencilPass.uniform("v_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.vMatrix));
     m_gl->glUniformMatrix4fv(m_stencilPass.uniform("p_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix));
-    m_gl->glUniform3f(m_stencilPass.uniform("LightPosition"), 1.0f, 0.0f, 1.0f);
+    m_gl->glUniform3fv(m_stencilPass.uniform("LightPosition"), 1, m_lightpos);
 
     quintptr offset = 0;
     m_gl->glEnableVertexAttribArray(m_stencilPosAttrib);

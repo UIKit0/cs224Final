@@ -74,6 +74,8 @@ private:
 
     QVector<ParticleBuffer> data;
 
+    GLfloat m_lightpos[3];
+
     void renderDepthPass();
     void renderLightingPass();
     void renderStencilPass();

@@ -42,7 +42,6 @@ out G_OUT
 void main()
 {
     vec4 pos = v_matrix * gl_in[0].gl_Position;
-    vec4 opos = pos;
 
     float fullSize = v_in[0].size;
     float halfSize = v_in[0].size / 2.0;
@@ -55,9 +54,34 @@ void main()
     vec4 ptop;
     vec4 pbot;
 
+    // Shadow casting square:
+//    {
+//        ptop = pos;
+//        ptop.x -= halfSize;
+//        ptop.z += halfSize;
+//        pbot = pos;
+//        pbot.x -= halfSize;
+//        pbot.z -= halfSize;
+//        gl_Position = p_matrix * pbot;
+//        EmitVertex();
+//        gl_Position = p_matrix * ptop;
+//        EmitVertex();
+
+//        ptop = pos;
+//        ptop.x += halfSize;
+//        ptop.z += halfSize;
+//        pbot = pos;
+//        pbot.x += halfSize;
+//        pbot.z -= halfSize;
+//        gl_Position = p_matrix * pbot;
+//        EmitVertex();
+//        gl_Position = p_matrix * ptop;
+//        EmitVertex();
+//    }
+
     // Front square
     {
-        ptop = opos;
+        ptop = pos;
         ptop.x -= halfSize;
         ptop.z += halfSize;
         pbot = ptop + infPos;
@@ -66,7 +90,7 @@ void main()
         gl_Position = p_matrix * ptop;
         EmitVertex();
 
-        ptop = opos;
+        ptop = pos;
         ptop.x += halfSize;
         ptop.z += halfSize;
         pbot = ptop + infPos;
@@ -78,7 +102,7 @@ void main()
 
     // Back square
     {
-        ptop = opos;
+        ptop = pos;
         ptop.x -= halfSize;
         ptop.z -= halfSize;
         pbot = ptop + infPos;
@@ -87,7 +111,7 @@ void main()
         gl_Position = p_matrix * ptop;
         EmitVertex();
 
-        ptop = opos;
+        ptop = pos;
         ptop.x += halfSize;
         ptop.z -= halfSize;
         pbot = ptop + infPos;

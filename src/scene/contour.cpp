@@ -1,7 +1,7 @@
 #include "contour.h"
 
-//#define GOOD_CONTOUR
-#define BAD_CONTOUR
+#define GOOD_CONTOUR
+//#define BAD_CONTOUR
 
 Contour::Contour()
     : m_gl(NULL)
@@ -172,7 +172,7 @@ void Contour::initialize(GLFunctions *gl, Obj &mesh)
     m_goochFx.use();
     m_gl->glUniform3f(m_goochFx.uniform("lightPos"), 0.0f, 10.0f, 4.0f);
     m_gl->glUniform3f(m_goochFx.uniform("surfaceColor"), 0.1f, 0.55f, 0.75f);
-    m_gl->glUniform3f(m_goochFx.uniform("warmColor"), 0.9f, 0.9f, 0.1f);
+    m_gl->glUniform3f(m_goochFx.uniform("warmColor"), 255/255.0f, 222/255.0f, 189/255.0f);
     m_gl->glUniform3f(m_goochFx.uniform("coolColor"), 0.0f, 0.1f, 0.6f);
     m_gl->glUniform1f(m_goochFx.uniform("diffuseWarm"), 0.45f);
     m_gl->glUniform1f(m_goochFx.uniform("diffuseCool"), 0.15f);
@@ -207,23 +207,24 @@ void Contour::draw()
 #ifdef GOOD_CONTOUR
     m_gl->glUniformMatrix4fv(m_contourFx.uniform("mvp_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix * g_camera.vMatrix * g_model.mMatrix));
 #endif
+    m_gl->glDrawElements(GL_TRIANGLES_ADJACENCY, m_meshSize * 2, GL_UNSIGNED_SHORT, 0);
 
 #ifdef BAD_CONTOUR
     m_gl->glUniformMatrix4fv(m_contourFx.uniform("m_matrix"), 1, GL_FALSE, glm::value_ptr(g_model.mMatrix));
     m_gl->glUniformMatrix4fv(m_contourFx.uniform("vp_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix * g_camera.vMatrix));
     m_gl->glUniform3fv(m_contourFx.uniform("viewVec"), 1, glm::value_ptr(g_camera.m_lookAt));
+    m_gl->glDrawElements(GL_TRIANGLES_ADJACENCY, m_meshSize * 2, GL_UNSIGNED_SHORT, 0);
 #endif
 
-    m_gl->glDrawElements(GL_TRIANGLES_ADJACENCY, m_meshSize * 2, GL_UNSIGNED_SHORT, 0);
 
 #ifdef BAD_CONTOUR
-    m_gl->glUseProgram(m_contour2Fx.program());
+//    m_gl->glUseProgram(m_contour2Fx.program());
 
-    m_gl->glUniformMatrix4fv(m_contour2Fx.uniform("m_matrix"), 1, GL_FALSE, glm::value_ptr(g_model.mMatrix));
-    m_gl->glUniformMatrix4fv(m_contour2Fx.uniform("vp_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix * g_camera.vMatrix));
-    m_gl->glUniform3fv(m_contour2Fx.uniform("viewVec"), 1, glm::value_ptr(g_camera.m_lookAt));
+//    m_gl->glUniformMatrix4fv(m_contour2Fx.uniform("m_matrix"), 1, GL_FALSE, glm::value_ptr(g_model.mMatrix));
+//    m_gl->glUniformMatrix4fv(m_contour2Fx.uniform("vp_matrix"), 1, GL_FALSE, glm::value_ptr(g_camera.pMatrix * g_camera.vMatrix));
+//    m_gl->glUniform3fv(m_contour2Fx.uniform("viewVec"), 1, glm::value_ptr(g_camera.m_lookAt));
 
-    m_gl->glDrawElements(GL_TRIANGLES_ADJACENCY, m_meshSize * 2, GL_UNSIGNED_SHORT, 0);
+//    m_gl->glDrawElements(GL_TRIANGLES_ADJACENCY, m_meshSize * 2, GL_UNSIGNED_SHORT, 0);
 #endif
 //    m_gl->glDisable(GL_BLEND);
 

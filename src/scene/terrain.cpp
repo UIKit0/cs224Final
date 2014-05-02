@@ -194,7 +194,7 @@ void Terrain::addObjects(int i, int j){
         for (int y = 1; y < TILE_SIZE; y++){
             float height = tile->terrain[x][y][1];
             // TODO: change height threshold
-            if (    rand() / (float) RAND_MAX > 0.89f
+            if (    rand() / (float) RAND_MAX > 0.95f
                     && height > 1.5f
                     && height > tile->terrain[x + 1][y][1]
                     && height > tile->terrain[x + 1][y + 1][1]
@@ -209,12 +209,12 @@ void Terrain::addObjects(int i, int j){
 //                tile->objects.last().rotation = glm::rotate(glm::mat4(), (float)M_PI/2.0f, glm::vec3(1.0f,0,0));
             }
             glm::vec3 tangent = tangentPlaneInTile(i, j, glm::vec3(x, 0, y));
-            if ((fabs(tangent[0]) > 0.7f || fabs(tangent[2]) > 0.7f) && dRandReal() > 0.997f){
+            if ((fabs(tangent[0]) > 0.7f || fabs(tangent[2]) > 0.7f) && dRandReal() > 0.999f){
                 tile->objects.append(TerrainObject(m_gl, this, tile, glm::vec3(x, height + EPSILON, y)));
                 tile->objects.last().rotation = glm::rotate(glm::mat4(), (float)M_PI/2.0f, glm::vec3(1.0f,0,0));
                 tile->objects.last().type = Type::BUILDING;
             }
-            if (dRandReal() > 0.999f){
+            if (dRandReal() > 0.9995f){
                 tile->objects.append(TerrainObject(m_gl, this, tile, glm::vec3(x, height + EPSILON, y)));
                 tile->objects.last().velocity = glm::vec3(dRandReal()*2.0f, 0, dRandReal()*2.0f);
                 tile->objects.last().type = Type::TANK;
@@ -295,7 +295,15 @@ void Terrain::draw(){
                 m_gl->glUniform3fv(shader.uniform("terrain_color"), 1, glm::value_ptr(color));
 //                m_gl->glDrawArrays(GL_TRIANGLES, 0, 3*3*2);
 
+                if (tiles[i][j]->objects[k].type == Type::TANK) {
+                    m_gl->glDisable(GL_CULL_FACE);
+                }
+
                 object_objs[tiles[i][j]->objects[k].type].draw();
+
+                if (tiles[i][j]->objects[k].type == Type::TANK) {
+                    m_gl->glEnable(GL_CULL_FACE);
+                }
 
                 g_model.popMatrix();
             }

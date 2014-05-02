@@ -19,7 +19,7 @@ out vec4 color;
 
 void main(void)
 {
-    float far = 80.0f;
+    float far = 90.0f;
     float near = 40.0f;
     float fog = 1;
     float distance = gl_FragCoord.z/gl_FragCoord.w;

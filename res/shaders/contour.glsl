@@ -404,7 +404,24 @@ void main(void)
     float spec = max(dot (nreflect, nview), 0.0);
     spec = pow(spec, 32.0);
 
-    color = vec4(min (kfinal + spec, 1.0), 1.0);
+    float far = 90.0f;
+    float near = 40.0f;
+    float fog = 1;
+    float distance = gl_FragCoord.z/gl_FragCoord.w;
+    vec3 target_color = vec3(1.0f,1.0f,1.0f);
+
+    if (distance > near && distance < far){
+        // TODO: make this a different function to look better
+        fog = (far - distance)/(far - near);
+    }
+    if (distance > far){
+        fog = 0;
+    }
+
+    vec3 distColor = min (kfinal + spec, 1.0);
+    color = vec4(distColor*fog + target_color*(1 - fog), 1.0f);
+
+
 }
 
 -- directives.gles ------------------------------------------------

@@ -60,9 +60,9 @@ void Particles::initialize(GLFunctions *gl, int maxParticles)
 
     data.reserve(maxParticles);
 
-    m_lightpos[0] =  0.0f;
     m_lightpos[0] =  1.0f;
-    m_lightpos[0] =  1.0f;
+    m_lightpos[1] =  1.0f;
+    m_lightpos[2] =  1.0f;
 
 
     m_gl->glBindBuffer(GL_ARRAY_BUFFER, m_buffer);
@@ -138,21 +138,21 @@ void Particles::draw()
 
     // Shadows!
     // 1. Render scene into depth buffer
-//    renderDepthPass();
+    renderDepthPass();
     //      a. Bind pass through shader.
     //          i.   Vertex: Simple transform
     //          ii.  Fragment: Nothing
     //      b. Render geometry
     // 2. Render shadow volume into stencil buffer
-//    m_gl->glEnable(GL_STENCIL_TEST);
-//    renderStencilPass();
+    m_gl->glEnable(GL_STENCIL_TEST);
+    renderStencilPass();
     //      a. Bind shadow volume shader
     //          i.   Vertex: Minor pass-thru
     //          ii.  Geometry: Quad emitter
     //          iii. Fragment: Nothing
     // 3. Render shadowed scene
     renderLightingPass();
-//    m_gl->glDisable(GL_STENCIL_TEST);
+    m_gl->glDisable(GL_STENCIL_TEST);
     //      a. Bind normal lighting shader
     //      b. Render geometry
 }
@@ -223,7 +223,7 @@ void Particles::renderLightingPass()
 void Particles::renderStencilPass()
 {
     m_gl->glDrawBuffer(GL_NONE);
-    m_gl->glDrawBuffer(GL_BACK);
+//    m_gl->glDrawBuffer(GL_BACK);
     m_gl->glDepthMask(GL_FALSE);
 
     m_gl->glDisable(GL_CULL_FACE);

@@ -152,6 +152,3 @@ gcc {
                               -Wtrigraphs -Wuninitialized -Wunused-label -Wunused-variable \
                               -Wvolatile-register-var -Wno-extra
 }
-
-FORMS += \
-    window/smokecontroller.ui

@@ -5,30 +5,7 @@ World::World()
     , m_screenHeight(500)
     , firing(false)
 {
-    // Initialize ODE stuff
-    dInitODE();
-    m_world_id = dWorldCreate();
-    g_world = m_world_id;
-    dWorldSetGravity(m_world_id, 0, 0, 0);
 
-    dVector3 center;
-    center[0] = 0;
-    center[1] = 0;
-    center[2] = 0;
-
-    dVector3 extent;
-    extent[0] = 1;
-    extent[1] = 1;
-    extent[2] = 1;
-    space = dHashSpaceCreate(0);
-    dHashSpaceSetLevels(space, 1, 5);
-
-    contactgroup = dJointGroupCreate(0);
-
-    dAllocateODEDataForThread(dAllocateMaskAll);
-
-    moveSphere = false;
-    moveWing = false;
 }
 
 World::~World()
@@ -37,66 +14,6 @@ World::~World()
     dSpaceDestroy(space);
     dWorldDestroy(m_world_id);
     dCloseODE();
-}
-
-static void nearCallback(void* data, dGeomID o1, dGeomID o2)
-{
-    if (dGeomIsSpace (o1) || dGeomIsSpace (o2)) {
-        // colliding a space with something
-        dSpaceCollide2 (o1,o2,data,&nearCallback);
-        // collide all geoms internal to the space(s)
-        if (dGeomIsSpace (o1)) dSpaceCollide ((dSpaceID)o1,data,&nearCallback);
-        if (dGeomIsSpace (o2)) dSpaceCollide ((dSpaceID)o2,data,&nearCallback);
-
-        return;
-    }
-
-    World *world = (World*) data;
-    dBodyID b1 = dGeomGetBody(o1);
-    dBodyID b2 = dGeomGetBody(o2);
-
-    dContact contact;
-    contact.surface.mode = dContactBounce | dContactSoftCFM;
-    contact.surface.mu = dInfinity;
-    contact.surface.bounce = 0.01f;
-    contact.surface.bounce_vel = 0.1f;
-    contact.surface.soft_cfm = 0.001;
-    if (dCollide(o1, o2, 1, &contact.geom, sizeof(dContact))){
-        if (dGeomGetCategoryBits(o1) == VORTEX_CATEGORY_BITS){
-            handleVortexCollision((Vortex*)dBodyGetData(b1), b2);
-        }
-        else if (dGeomGetCategoryBits(o2) == VORTEX_CATEGORY_BITS){
-            handleVortexCollision((Vortex*)dBodyGetData(b2), b1);
-        }
-        else if (dGeomGetCategoryBits(o1) == WIND_VOLUME_CATEGORY_BITS){
-            handleWindVolumeCollision((WindVolume*)dBodyGetData(b1), b2);
-        }
-        else if (dGeomGetCategoryBits(o2) == WIND_VOLUME_CATEGORY_BITS){
-            handleWindVolumeCollision((WindVolume*)dBodyGetData(b2), b1);
-        }
-        else if (dGeomGetCategoryBits(o1) == MISSILE_CATEGORY_BITS && dGeomGetCategoryBits(o2) == ENEMY_CATEGORY_BITS){
-            ((Enemy*)dBodyGetData(b2))->onMissileHit((Missile*)dBodyGetData(b1));
-        }
-        else if (dGeomGetCategoryBits(o2) == MISSILE_CATEGORY_BITS && dGeomGetCategoryBits(o1) == ENEMY_CATEGORY_BITS){
-            ((Enemy*)dBodyGetData(b1))->onMissileHit((Missile*)dBodyGetData(b2));
-        }
-        else if (dGeomGetCategoryBits(o1) == ENEMY_CATEGORY_BITS && dGeomGetCategoryBits(o2) == PARTICLE_CATEGORY_BITS){
-            if ( ((Enemy*)dBodyGetData(b1))->hitsParticle((SmokeParticle*)dBodyGetData(b2)) ){
-                dJointID c = dJointCreateContact(world->m_world_id, world->contactgroup, &contact);
-                dJointAttach(c, b1, b2);
-            }
-        }
-        else if (dGeomGetCategoryBits(o2) == ENEMY_CATEGORY_BITS && dGeomGetCategoryBits(o1) == PARTICLE_CATEGORY_BITS){
-            if ( ((Enemy*)dBodyGetData(b2))->hitsParticle((SmokeParticle*)dBodyGetData(b1)) ){
-                dJointID c = dJointCreateContact(world->m_world_id, world->contactgroup, &contact);
-                dJointAttach(c, b1, b2);
-            }
-        }
-        else{
-            dJointID c = dJointCreateContact(world->m_world_id, world->contactgroup, &contact);
-            dJointAttach(c, b1, b2);
-        }
-    }
 }
 
 void World::initialize(GLFunctions *gl)
@@ -229,10 +146,6 @@ void World::update(float seconds)
         }
     }
 #endif
-
-    dSpaceCollide(space, this, &nearCallback);
-    dWorldQuickStep(m_world_id, 1/30.0f);
-    dJointGroupEmpty(contactgroup);
 }
 
 void World::setScreenSize(int width, int height)

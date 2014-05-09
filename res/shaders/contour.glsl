@@ -137,18 +137,21 @@ void EmitEdge(vec3 P0, vec3 P1)
 
 void main()
 {
-    // ps (perspective division)
-    vec3 v0 = gl_in[0].gl_Position.xyz / gl_in[0].gl_Position.w;
-    vec3 v1 = gl_in[1].gl_Position.xyz / gl_in[1].gl_Position.w;
-    vec3 v2 = gl_in[2].gl_Position.xyz / gl_in[2].gl_Position.w;
-    vec3 v3 = gl_in[3].gl_Position.xyz / gl_in[3].gl_Position.w;
-    vec3 v4 = gl_in[4].gl_Position.xyz / gl_in[4].gl_Position.w;
-    vec3 v5 = gl_in[5].gl_Position.xyz / gl_in[5].gl_Position.w;
+    if (gl_in[0].gl_Position.w > 1.5) {
 
-    if (IsFront(v0, v2, v4)) {
-        if (!IsFront(v0, v1, v2)) EmitEdge(v0, v2);
-        if (!IsFront(v2, v3, v4)) EmitEdge(v2, v4);
-        if (!IsFront(v0, v4, v5)) EmitEdge(v4, v0);
+        // ps (perspective division)
+        vec3 v0 = gl_in[0].gl_Position.xyz / gl_in[0].gl_Position.w;
+        vec3 v1 = gl_in[1].gl_Position.xyz / gl_in[1].gl_Position.w;
+        vec3 v2 = gl_in[2].gl_Position.xyz / gl_in[2].gl_Position.w;
+        vec3 v3 = gl_in[3].gl_Position.xyz / gl_in[3].gl_Position.w;
+        vec3 v4 = gl_in[4].gl_Position.xyz / gl_in[4].gl_Position.w;
+        vec3 v5 = gl_in[5].gl_Position.xyz / gl_in[5].gl_Position.w;
+
+        if (IsFront(v0, v2, v4)) {
+            if (!IsFront(v0, v1, v2)) EmitEdge(v0, v2);
+            if (!IsFront(v2, v3, v4)) EmitEdge(v2, v4);
+            if (!IsFront(v0, v4, v5)) EmitEdge(v4, v0);
+        }
     }
 }
 
